@@ -12,15 +12,145 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+@theme {
+  --breakpoint-xs: 465px;
+  --breakpoint-xxs: 370px;
+}
+
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+} */
+
+/* CSS Variables generated from Kigen.design */
+:root {
+  --cornflower-blue-50:  rgb(238, 240, 251);
+  --cornflower-blue-100: rgb(215, 221, 246);
+  --cornflower-blue-200: rgb(179, 193, 238);
+  --cornflower-blue-300: rgb(146, 167, 231);
+  --cornflower-blue-400: rgb(113, 144, 224);
+  --cornflower-blue-500: rgb(85, 126, 218);
+  --cornflower-blue-600: rgb(67, 104, 183);
+  --cornflower-blue-700: rgb(50, 79, 142);
+  --cornflower-blue-800: rgb(33, 54, 100);
+  --cornflower-blue-900: rgb(16, 29, 58);
+  --cornflower-blue-950: rgb(7, 16, 37);
+
+  --cornflower-cinza-700: rgb(119, 119, 119);
+  --white: rgb(255, 255, 255);
 }
+
+
+:root {
+  /* --- Escala Cornflower Blue (com nomes e numeração) --- */
+  /* Tons mais claros para mais escuros */
+  --blue-50:  238 240 251;
+  --blue-100: 215 221 246;
+  --blue-200: 179 193 238;
+  --blue-300: 146 167 231;
+  --blue-400: 113 144 224;
+  --blue-500: 85 126 218;   /* Cor principal / brand */
+  --blue-600: 67 104 183;   /* Hover do brand */
+  --blue-700: 50, 79, 142;
+  --blue-800: 33 54 100;
+  --blue-900: 16 29 58;
+  --blue-950: 7 16 37;      /* Quase preto */
+
+  --zinc-700: 119, 119, 119; /* Cinza-azulado claro para textos */
+  --white: 255, 255, 255;    /* Branco puro */
+  --black: 0, 0, 0;  
+  --zinc-200: 242, 242, 242;     /* Preto puro */
+  --zinc-300: 238, 238, 238; 
+
+
+  /* --- Cores de Texto --- */
+  --text-title: var( --black); 
+  --text: var(--black); /* Texto comum (quase preto) */
+  --text-blue: var(--blue-700); /* Texto secundário (azul escuro) */
+  --text-paragraph: var( --black); /* Parágrafos (cinza-azulado claro) */
+  --text-links: var(--blue-500); /* Parágrafos (cinza-azulado claro) */
+
+  /* --- Fundo e Foreground --- */
+  --background: var(--blue-500);      /* Fundo principal */
+  --background-secundary: var(--blue-800);  /* Fundo secundário */
+
+  /* --- Cores da Marca (Brand) --- */
+  --brand: var(--blue-500);          /* Cor principal */
+  --brand-hover: var(--blue-600);    /* Hover da cor principal */
+  --brand-foreground: var(--blue-50);/* Texto em cima do brand */
+
+  /* --- Superfícies (fundos e cartões) --- */
+  --surface: var(--blue-50);         /* Fundo mais claro */
+  --surface-alt: var(--blue-100);    /* Fundo alternativo */
+  --surface-strong: var(--blue-200); /* Fundo mais destacado */
+
+  /* --- Ícones --- */
+  --icon: var(--blue-950);           /* Cor padrão do ícone */
+  --icon-secundary: var(--zinc-700); /* Cor  secundário */
+  --icon-hover: var(--blue-600);     /* Ícone ao passar o mouse */
+
+  /* --- Botões --- */
+  --btn: var(--blue-950);           /* Fundo do botão */
+  --btn-hover: var(--blue-800);     /* Hover do botão */
+  --btn-text: var(--white);    
+  --btn-bg-secundary: var(--zinc-200);  
+  --btn-bg-secundary-hover: var(--zinc-300);    /* Texto do botão */
+
+  --input-bg: var(--blue-50);      /* Fundo do input */
+}
+
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-roboto);
+  
+}
+
+/* Aplica a todos os estados do autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px rgb(var(--input-bg)) inset; 
+  -webkit-text-fill-color: #858585;  
+  font-size: 0.9rem;     
+  font-weight: normal;  
+}
+
+/* CENTRALIZAR TODOS OS TOASTS NO MEIO DA TELA */
+#react-hot-toast {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+
+  z-index: 999999 !important;
+  pointer-events: none !important; /* deixa clicar atrás se quiser */
+}
+
+
+::-webkit-scrollbar {
+  width: 5px;       /* largura da barra vertical */
+  height: 5px;      /* altura da barra horizontal */
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0; /* cor do fundo da barra */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #324F8E; /* cor do "polegar" */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #557EDA;
+  cursor: pointer;
 }

@@ -1,65 +1,54 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Loading from "@/components/Loading";
+import { useAuth } from "@/context/AuthContext";
+import { useProtectedRoute } from "@/hooks/useProtectedRoute";
+import SignInButton from "@/components/Btns/SignInButton";
+
+export default function Welcome() {
+  const { user, handleLogout, loading } = useAuth();
+
+  useProtectedRoute();
+  if (loading) return <Loading />;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[rgb(var(--background))] to-[rgb(var(--background-secundary))] p-4">
+      <div className="flex flex-col items-center justify-center relative bg-white shadow-2xl  rounded-3xl p-8 w-full max-w-[600px] text-center ">
+        {/* Ícone animado */}
+        <div className="relative flex items-center justify-center w-25 h-25 rounded-full   ">
+          <span className="text-6xl animate-spin">🕓</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <p className="text-[rgb(var(--blue-700))] text-[1.8rem] xl:text-[2.3rem] font-semibold mb-4">
+          Bolão das Dezenas!
+        </p>
+        <p className="text-[1.6rem] xl:text-[2rem] font-extrabold text-[rgb(var(--blue-900))]  leading-snug">
+          Bem-vindo(a)
+        </p>
+        <h2 className="text-[rgb(var(--text-title))] text-[1.1rem] xl:text-[1.3rem] mb-4">
+          {user?.name}
+        </h2>
+
+        {/* Mensagem principal */}
+        <p className="text-[rgb(var(--blue-700))] text-[1.3rem] mb-2">
+          Seu cadastro foi concluído com sucesso 🎉
+        </p>
+        {/* Explicação */}
+        <p className="text-gray-600 leading-relaxed mb-10 text-base">
+          Agora é só aguardar um pouquinho. Nosso administrador está
+          configurando seu acesso e suas permissões.
+          <br />
+          <span className="font-semibold text-gray-800">
+            Assim que tudo estiver pronto, você poderá acessar o painel.
+          </span>
+        </p>
+        <div className="w-[100px]">
+          <SignInButton text="Sair" onClick={() => handleLogout()} />
         </div>
-      </main>
+        <p className="text-sm text-gray-400 mt-10">
+          © {new Date().getFullYear()} Bolão das Dezenas. Todos os direitos
+          reservados.
+        </p>
+      </div>
     </div>
   );
 }
