@@ -106,7 +106,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-roboto);
-  
+  user-select: none;
 }
 
 /* Aplica a todos os estados do autofill */
