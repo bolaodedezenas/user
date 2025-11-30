@@ -4,8 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 import Loading from '@/components/Loading';
 
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import Menu from "../../components/Menu";
 
 export default function SharedLayout({ children }) {
   useProtectedRoute();
@@ -13,10 +12,10 @@ export default function SharedLayout({ children }) {
   if (loading) return <Loading />;
 
   return (
-    <>
-      <Header />
-      <main className='flex-1'>{children}</main>
-      <Footer />
-    </>
+    <section className="p-1 sm:p-4 flex gap-5 h-screen bg-[rgb(var(--blue-50))] ">
+      <Menu />
+      <main className="flex-1 bg-[rgb(var(--blue-50))] overflow-x-hidden">{children}</main>
+      {/* <Footer /> */}
+    </section>
   );
 }

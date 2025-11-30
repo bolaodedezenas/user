@@ -62,7 +62,7 @@
   --white: 255, 255, 255;    /* Branco puro */
   --black: 0, 0, 0;  
   --zinc-200: 242, 242, 242;     /* Preto puro */
-  --zinc-300: 238, 238, 238; 
+
 
 
   /* --- Cores de Texto --- */
@@ -73,7 +73,7 @@
   --text-links: var(--blue-500); /* Parágrafos (cinza-azulado claro) */
 
   /* --- Fundo e Foreground --- */
-  --background: var(--blue-500);      /* Fundo principal */
+  --background: var(--blue-700);      /* Fundo principal */
   --background-secundary: var(--blue-800);  /* Fundo secundário */
 
   /* --- Cores da Marca (Brand) --- */

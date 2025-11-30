@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import PageLoading from "@/components/PageLoading";
 
-export default function winners() {
+export default function Users() {
 
   const [loading, setLoading] = useState(true);
   
@@ -15,7 +15,7 @@ export default function winners() {
 
   return (
     <section className='fle-1 h-full flex items-center justify-center bg-[rgb(var(--blue-50))]'>
-      <h2 className='text-[2rem]'>Ganhadores</h2>
+      <h2 className='text-[2rem]'>Apostas</h2>
     </section>
   );
 }

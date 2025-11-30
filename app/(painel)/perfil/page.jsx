@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+// components
+import Header from "@/components/Header";
 import PageLoading from "@/components/PageLoading";
 
-export default function winners() {
+export default function Perfil() {
 
   const [loading, setLoading] = useState(true);
   
@@ -14,8 +16,8 @@ export default function winners() {
   if (loading) return <PageLoading />;
 
   return (
-    <section className='fle-1 h-full flex items-center justify-center bg-[rgb(var(--blue-50))]'>
-      <h2 className='text-[2rem]'>Ganhadores</h2>
+    <section className="fle-1 h-full   bg-[rgb(var(--blue-50))]">
+      <Header></Header>
     </section>
   );
 }
