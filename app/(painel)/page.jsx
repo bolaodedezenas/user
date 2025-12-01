@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import PageLoading from "@/components/PageLoading";
+
 export default function Home() {
   const [loading, setLoading] = useState(true);
 

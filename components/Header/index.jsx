@@ -2,7 +2,10 @@
 
 export default function Header({ children }) {
   return (
-    <header className="flex items-center justify-center bg-[rgb(var(--blue-50))] p-4 sm:p-6 rounded-[35px] shadow-lg select-none">  
+    <header
+      className=" 
+    bg-white h-20 flex justify-center xss:justify-start  gap-4 items-center  p-2 sm:p-6 rounded-[10px] shadow-lg select-none"
+    >
       {children}
     </header>
   );

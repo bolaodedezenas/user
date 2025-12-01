@@ -46,6 +46,7 @@ export default function SignInForm() {
     }
     
     toast.success('Login realizado com sucesso!');
+    router.push('/');
   };
 
   // Login com Google
@@ -53,6 +54,7 @@ export default function SignInForm() {
     setLoading(true);
     const { user, error } = await handleLoginWithGoogle();
     setUser(user);
+    router.push("/");
     if (error) return setError('Erro ao entrar com Google.');
   };
 

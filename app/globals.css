@@ -13,6 +13,7 @@
 }
 
 @theme {
+  --breakpoint-xss: 593px;
   --breakpoint-xs: 465px;
   --breakpoint-xxs: 370px;
 }
@@ -92,7 +93,7 @@
   --icon-hover: var(--blue-600);     /* Ícone ao passar o mouse */
 
   /* --- Botões --- */
-  --btn: var(--blue-950);           /* Fundo do botão */
+  --btn: var(--blue-700);           /* Fundo do botão */
   --btn-hover: var(--blue-800);     /* Hover do botão */
   --btn-text: var(--white);    
   --btn-bg-secundary: var(--zinc-200);  

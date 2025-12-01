@@ -45,7 +45,7 @@ export default function InputUi({
         outline-0 
         bg-[rgb(var(--input-bg))] 
         cursor-pointer
-        ${className ? className : 'border-1 border-transparent'}
+        ${className}
       `}
       {...props} // permite id, checked, disabled, etc
     />

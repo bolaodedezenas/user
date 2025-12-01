@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db} from "@/libs/firebase/FirebaseConfig";
-import { doc, getDoc } from "firebase/firestore"; // <-- importa doc/getDoc
+import { doc, getDoc, updateDoc } from "firebase/firestore"; // <-- importa doc/getDoc
 import { loginWithGoogle, logout, loginWithEmail } from "@/libs/firebase/authService";
 
 const AuthContext = createContext();
@@ -36,13 +36,17 @@ export const AuthProvider = ({ children }) => {
           const docRef = doc(db, 'users', firebaseUser.uid);
           const snap = await getDoc(docRef);
 
-          if (snap.exists()) {
-            setUser(snap.data());
-            localStorage.setItem('Photo', JSON.stringify(snap.data().photoURL));
-          } else {
-            setUser(firebaseUser);
-            localStorage.setItem('Photo', JSON.stringify(firebaseUser.photoURL));
-          }
+         if (snap.exists()) {
+           setUser({ id: firebaseUser.uid, ...snap.data() });
+           localStorage.setItem("Photo", JSON.stringify(snap.data().photoURL));
+         } else {
+           setUser({
+             id: firebaseUser.uid,
+             ...firebaseUser,
+           });
+           localStorage.setItem("Photo", JSON.stringify(firebaseUser.photoURL));
+         }
+
 
           setTimeout(() => setLoading(false), 3000);
         }
@@ -85,10 +89,23 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     await logout();
   };
-  
+
+
+ 
 
   return (
-    <AuthContext.Provider value={{ user, loading, userToken, setUser, setLoading, handleLoginWithGoogle, handleLoginWithEmail,  handleLogout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        userToken,
+        setUser,
+        setLoading,
+        handleLoginWithGoogle,
+        handleLoginWithEmail,
+        handleLogout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

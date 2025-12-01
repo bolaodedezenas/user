@@ -17,31 +17,27 @@ import { IoArrowUndo } from "react-icons/io5";
 import { HiUserCircle } from "react-icons/hi";
 import { RiShieldUserFill } from "react-icons/ri";
 import { usePathname } from 'next/navigation';
-import { HiMenuAlt2 } from "react-icons/hi";
 import { IoMdArrowDropdown } from "react-icons/io";
 
 
 
 
-export default function Menu() {
+export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
   const { user, handleLogout } = useAuth();
- 
+
   const router = useRouter();
-  const pathname = usePathname(); 
-  const currentRoute = "/" + pathname.split('/')[1];
+  const pathname = usePathname();
+  const currentRoute = "/" + pathname.split("/")[1];
 
-  const [toggle, setToggle] = useState(true);
-  const [toggleUser, setToggleUser] = useState(false);
-
-
+ 
 
   return (
     <aside
-      className={`flex flex-col bg-white  h-full rounded-[20px] overflow-hidden shadow-2xl 
+      className={`absolute xss:static z-40 flex flex-col bg-white  h-full rounded-[20px] overflow-hidden shadow-2xl 
         ${
           toggle
             ? "max-w-[260px] min-w-[260px] sm:w-[260px]"
-            : "max-w-[70px] min-w-[70px]"
+            : "max-w-[0px] min-w-[0px] xss:min-w-[65px] "
         } transition-all duration-300 
       `}
     >
@@ -50,24 +46,14 @@ export default function Menu() {
           rounded-[20px]
         "
       >
-        <HiMenuAlt2
-          onClick={() => {
-            setToggle(!toggle);
-            toggle && setToggleUser(false);
-          }}
-          className={`absolute text-[2rem] left-5 top-6 text-white cursor-pointer hover:opacity-80   transition   duration-300 
-        `}
-        />
-        {user.photoURL ? (
+        {user?.photoURL ? (
           <Image
-            src={user.photoURL}
+            src={user?.photoURL || "/ball.png"}
             alt="logo"
-            width={toggle ? 100 : 45}
-            height={toggle ? 100 : 45}
+            width={100}
+            height={100}
             priority
-            className={` trasition duration-300 rounded-full ${
-              toggle ? "" : "absolute left-3 top-20"
-            }`}
+            className={` rounded-full `}
           />
         ) : (
           <HiUserCircle
@@ -100,25 +86,25 @@ export default function Menu() {
         >
           <li>
             <RiShieldUserFill className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
-            <p>{user.name.split(" ").slice(0, 2).join(" ")}</p>
+            <p>{user?.name.split(" ").slice(0, 2).join(" ")}</p>
           </li>
           <li>
             <MdEmail className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
-            <p>{user.email}</p>
+            <p>{user?.email}</p>
           </li>
           <li>
             <PiCityFill className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
             <p>
-              {(user.city && `${user.city} - ${user.state}`) || "Sem cidade"}
+              {(user?.city && `${user?.city} - ${user?.state}`) || "Sem cidade"}
             </p>
           </li>
           <li>
             <FaMapMarkerAlt className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
-            <p>{user.cep || "Sem cep"}</p>
+            <p>{user?.cep || "Sem cep"}</p>
           </li>
           <li>
             <FaPhone className="text-[1.2rem] text-[rgb(var(--blue-950))]" />
-            <p>{user.phone || "Sem telefone"}</p>
+            <p>{user?.phone || "Sem telefone"}</p>
           </li>
         </ol>
       </div>
@@ -135,10 +121,8 @@ export default function Menu() {
         "
         >
           <li
-            className={
-              currentRoute === "/home" ? "bg-[rgb(var(--blue-50))] " : ""
-            }
-            onClick={() => router.push("/home")}
+            className={currentRoute === "/" ? "bg-[rgb(var(--blue-50))] " : ""}
+            onClick={() => router.push("/")}
           >
             <HiHome className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
             <p>Home</p>

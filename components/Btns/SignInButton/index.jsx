@@ -1,20 +1,22 @@
 "user client";
 
 
-export default function SignInButton({ onClick, text }) {
+export default function SignInButton({ onClick, text, className }) {
   return (
     <button
       onClick={onClick}
-      className="
+      className={`
         text-[1.2rem] 
         text-white
         font-extrabold 
         px-4 py-3 
-        w-full 
+        w-full
         bg-[rgb(var(--btn))] hover:bg-[rgb(var(--btn-hover))]
         rounded-[5px]  
         transition duration-300 
-        cursor-pointer "
+        cursor-pointer 
+        ${className}
+      `}
     >
       {text}
     </button>

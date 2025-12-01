@@ -30,6 +30,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="pt-BR">
       <head>
@@ -39,9 +40,11 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} antialiased h-screen w-screen flex flex-col `}
+        className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} h-screen `}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <Toaster
           position="top-center"
           reverseOrder={false}

@@ -1,4 +1,4 @@
-import { auth, googleProvider, db } from './FirebaseConfig';
+import { auth, googleProvider, db, storage } from './FirebaseConfig';
 import {
   signInWithPopup,
   signOut,
@@ -8,7 +8,8 @@ import {
   confirmPasswordReset,
   sendEmailVerification,
 } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 
 export const loginWithGoogle = async () => {
@@ -173,3 +174,105 @@ export  async function  handleResetPassword(oobCode, password) {
 
 // verificaçao de email type da ation code {mode=resetPassword}
 //  https://www.bolaodedezenas.com.br/resetPassword?apiKey=AIzaSyCdUlILR--KjaR3npFKTJSQzRfiS36Ty2A&mode=resetPassword&oobCode=Ct6-5-HfYf70ash19Dhg1cT7md3czrpk-7LaCxIEBUcAAAGafgHcjQ&continueUrl=https://www.bolaodedezenas.com.br/resetPassword&lang=pt-BR
+
+
+
+// export async function updateUserData(userId, data, imageFile, setUser) {
+//   try {
+//     const userRef = doc(db, "users", userId);
+
+//     // Se tiver imagem, faz upload
+//     if (imageFile) {
+//       const imageRef = ref(storage, `users/${userId}/profile_${Date.now()}`);
+//       await uploadBytes(imageRef, imageFile);
+//       const imageUrl = await getDownloadURL(imageRef);
+
+//       data.photoURL = imageUrl; // adiciona a URL ao objeto que vai para Firestore
+//     }
+
+//     // Atualiza documento
+//     await updateDoc(userRef, data);
+
+//     // Atualiza UI
+//     if (setUser) {
+//       setUser((prev) => ({
+//         ...prev,
+//         ...data,
+//       }));
+//     }
+
+//     return { success: true };
+//   } catch (error) {
+//     return { success: false, error };
+//   }
+// }
+
+
+
+
+
+export async function updateUserData(userId, data, imageFile, setUser) {
+  try {
+    const userRef = doc(db, "users", userId);
+
+    // Se o usuário enviou imagem, envia para Cloudinary
+    if (imageFile) {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+      const imageUrl = await uploadProfileImage(
+        imageFile,
+        cloudName,
+        uploadPreset,
+        userId // ← importante para definir public_id
+      );
+
+      data.photoURL = imageUrl; // salva a URL recebida do Cloudinary
+    }
+
+    // Atualiza o documento no Firestore
+    await updateDoc(userRef, data);
+
+    // Atualiza o estado no front
+    if (setUser) {
+      setUser((prev) => ({ ...prev, ...data }));
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao atualizar usuário:", error);
+    return { success: false, error };
+  }
+}
+
+
+
+export async function uploadProfileImage(
+  file,
+  cloudName,
+  uploadPreset,
+  userId
+) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", uploadPreset);
+
+  // Define o public_id usando o ID do usuário
+  formData.append("public_id", `bolaodedezenas/dados/${userId}/avatar`);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  if (!data.secure_url) {
+    throw new Error("Erro ao enviar imagem para Cloudinary");
+  }
+
+  return data.secure_url;
+}
