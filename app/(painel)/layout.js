@@ -16,8 +16,8 @@ export default function SharedLayout({ children }) {
   if (loading) return <Loading />;
 
   return (
-    <section className="relative p-1 xxs:p-2 sm:p-2 lg:p-4 flex gap-2 sm:gap-2 lg:gap-4  bg-[rgb(var(--blue-50))] 
-       w-full min-h-svh
+    <section className="relative  flex gap-2 sm:gap-2 lg:gap-4  bg-[rgb(var(--blue-50))] 
+      flex-1  p-2
     "
     >
       <HiMenuAlt2

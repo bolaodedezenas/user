@@ -40,11 +40,10 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen `}
+        className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} flex flex-col h-[calc(100svh)] 
+         `}
       >
-        <AuthProvider>
-            {children}
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
         <Toaster
           position="top-center"
           reverseOrder={false}

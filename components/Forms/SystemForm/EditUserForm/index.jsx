@@ -189,9 +189,9 @@ export default function EditUserForm() {
   return (
     <form
       onSubmit={hendleSubmit}
-      className="h-full lg:h-auto bg-white p-4 2xl:p-14 flex flex-col   sm:gap-4  overflow-auto "
+      className="flex-1 bg-white  2xl:p-14 flex flex-col   sm:gap-4  overflow-auto  rounded-[10px] "
     >
-      <div className=" flex flex-wrap items-center justify-center  gap-5 2xl:gap-30  ">
+      <div className=" flex flex-wrap items-center justify-center  gap-5 2xl:gap-30 pt-3 ">
         <div
           className=" w-full  lg:h-68 
           2xl:w-[350px]  2xl:h-[350px] 
@@ -214,7 +214,7 @@ export default function EditUserForm() {
             <img
               src={photo ? URL.createObjectURL(photo) : user?.photoURL}
               alt="Photo Profile"
-              className={` w-30 h-30 sm:w-50 sm:h-50 lg:w-62 lg:h-62  2xl:w-[320px] 2xl:h-[320px]  trasition duration-300 rounded-full  object-fill
+              className={` w-28 h-28 sm:w-50 sm:h-50 lg:w-62 lg:h-62  2xl:w-[320px] 2xl:h-[320px]  trasition duration-300 rounded-full  object-fill
               `}
             />
           </div>
@@ -348,7 +348,7 @@ export default function EditUserForm() {
         </section>
       </div>
 
-      <div className="flex items-center justify-center 2xl:justify-start xl:ml-12 2xl:ml-23 ">
+      <div className="flex items-center justify-center 2xl:justify-start xl:ml-12 2xl:ml-23 pb-3.5 ">
         <div className="w-[160px]">
           <SignInButton text="Salvar" />
         </div>
