@@ -1,4 +1,4 @@
-import { auth, googleProvider, db, storage } from './FirebaseConfig';
+import { auth, googleProvider, db,} from './FirebaseConfig';
 import {
   signInWithPopup,
   signOut,
@@ -9,7 +9,6 @@ import {
   sendEmailVerification,
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 
 export const loginWithGoogle = async () => {
@@ -175,37 +174,6 @@ export  async function  handleResetPassword(oobCode, password) {
 // verificaçao de email type da ation code {mode=resetPassword}
 //  https://www.bolaodedezenas.com.br/resetPassword?apiKey=AIzaSyCdUlILR--KjaR3npFKTJSQzRfiS36Ty2A&mode=resetPassword&oobCode=Ct6-5-HfYf70ash19Dhg1cT7md3czrpk-7LaCxIEBUcAAAGafgHcjQ&continueUrl=https://www.bolaodedezenas.com.br/resetPassword&lang=pt-BR
 
-
-
-// export async function updateUserData(userId, data, imageFile, setUser) {
-//   try {
-//     const userRef = doc(db, "users", userId);
-
-//     // Se tiver imagem, faz upload
-//     if (imageFile) {
-//       const imageRef = ref(storage, `users/${userId}/profile_${Date.now()}`);
-//       await uploadBytes(imageRef, imageFile);
-//       const imageUrl = await getDownloadURL(imageRef);
-
-//       data.photoURL = imageUrl; // adiciona a URL ao objeto que vai para Firestore
-//     }
-
-//     // Atualiza documento
-//     await updateDoc(userRef, data);
-
-//     // Atualiza UI
-//     if (setUser) {
-//       setUser((prev) => ({
-//         ...prev,
-//         ...data,
-//       }));
-//     }
-
-//     return { success: true };
-//   } catch (error) {
-//     return { success: false, error };
-//   }
-// }
 
 
 

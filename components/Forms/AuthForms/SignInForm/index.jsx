@@ -1,9 +1,7 @@
 "user client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {loginWithEmail} from "@/libs/firebase/authService";
 // components
 import FormLayout from "@/components/Forms/FormLayout";
 import Label from "@/components/Label";
@@ -72,12 +70,10 @@ export default function SignInForm() {
             color='rgb(var(--icon))'
           />
         ) : (
-          <Image
+          <img
             src={perfil} // caminho da imagem
             alt='Foto de perfil'
-            width={50} // largura em px
-            height={50} // altura em px
-            className='rounded-full mb-1.5 mt-1.5'
+            className='rounded-full mb-1.5 mt-1.5 h-16 w-16'
           />
         )}
         <Title text='Acesso ao Painel' />

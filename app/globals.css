@@ -13,10 +13,11 @@
 }
 
 @theme {
-  --breakpoint-xss: 593px;
-  --breakpoint-xs: 465px;
+  /* Breakpoints mínimos */
   --breakpoint-xxs: 370px;
-  --breakpoint-xd: 950px;
+  --breakpoint-xs: 465px;
+  --breakpoint-xss: 593px;
+  --breakpoint-xd: 844px;
 }
 
 

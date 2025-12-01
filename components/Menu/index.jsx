@@ -1,9 +1,7 @@
-"use client";
 
-import { useState, useEffect } from "react";
+
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 // icons 
 import { MdEmail } from "react-icons/md";
 import { PiCityFill } from "react-icons/pi";
@@ -20,8 +18,6 @@ import { usePathname } from 'next/navigation';
 import { IoMdArrowDropdown } from "react-icons/io";
 
 
-
-
 export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
   const { user, handleLogout } = useAuth();
 
@@ -29,20 +25,18 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
   const pathname = usePathname();
   const currentRoute = "/" + pathname.split("/")[1];
 
- 
-
   return (
     <aside
-      className={`absolute top-1.5 left-2 xss:static z-40 flex flex-col bg-white   max-xss:min-h-[98svh] xss:min-h-full flex-1     rounded-[20px] overflow-hidden shadow-2xl 
+      className={`absolute top-2 left-2 xss:static z-40 flex flex-col bg-white   max-xss:min-h-[97vh] xss:min-h-full flex-1     rounded-[20px] overflow-hidden shadow-2xl 
         ${
           toggle
-            ? "max-w-[260px] min-w-[260px] sm:w-[260px]"
+            ? "max-w-[300px] min-w-[300px] sm:min-w-[260px]! xss:min-w-[65px] xss:max-w-[65px] "
             : "max-w-[0px] min-w-[0px] xss:min-w-[65px] "
         } transition-all duration-300 
       `}
     >
       <div
-        className="relative flex items-center justify-center h-[170px] w-[260px] bg-[rgb(var(--background))]
+        className="relative flex items-center justify-center h-[170px] w-[300px] sm:w-[260px] bg-[rgb(var(--background))]
           rounded-[20px]
         "
       >
@@ -63,7 +57,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
         )}
       </div>
       <div
-        className={`relative p-5 min-w-[300px] border-b-2 border-b-gray-300 overflow-hidden trasition duration-300
+        className={`relative p-5 min-w-[300px]  sm:min-w-[300px] border-b-2 border-b-gray-300 overflow-hidden trasition duration-300
           ${toggleUser ? "h-43" : "h-13"}
         `}
       >
@@ -71,8 +65,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
           <IoMdArrowDropdown
             onClick={() => setToggleUser(!toggleUser)}
             className={` absolute text-[2.5rem] text-zinc-400 
-            top-2.5 right-10  cursor-pointer hover:opacity-80   transition   duration-300
-                
+            top-2.5 right-5 sm:right-10 cursor-pointer hover:opacity-80   transition   duration-300
             ${toggleUser ? "rotate-180" : ""}
           `}
           />
@@ -80,7 +73,6 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
         <ol
           className={`flex flex-col gap-2 list-none text-[0.9rem] text-[rgb(var(--text))]
           [&>*]:flex [&>*]:gap-7 [&>*]:items-center  [&>*]:pl-1 
-      
         `}
         >
           <li>
@@ -109,7 +101,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
       </div>
       <nav
         className={`p-4  flex-1 border-b-2 border-b-gray-300  overflow-y-auto 
-         ${toggleUser ? "h-auto" : "w-[260px]"}
+         ${toggleUser ? "h-auto" : " w-[300px] sm:w-[260px]"}
         `}
       >
         <ul
@@ -121,7 +113,9 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
         >
           <li
             className={currentRoute === "/" ? "bg-[rgb(var(--blue-50))] " : ""}
-            onClick={() => router.push("/")}
+            onClick={() => {
+              router.push("/"), setToggle(false);
+            }}
           >
             <HiHome className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
             <p>Home</p>
@@ -130,7 +124,9 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
             className={
               currentRoute === "/dashboard" ? "bg-[rgb(var(--blue-50))] " : ""
             }
-            onClick={() => router.push("/dashboard")}
+            onClick={() => {
+              router.push("/dashboard"), setToggle(false);
+            }}
           >
             <TbLayoutDashboardFilled className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
             <p>Dasboard</p>
@@ -139,7 +135,9 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
             className={
               currentRoute === "/bets" ? "bg-[rgb(var(--blue-50))] " : ""
             }
-            onClick={() => router.push("/bets")}
+            onClick={() => {
+              router.push("/bets"), setToggle(false);
+            }}
           >
             <FaFileInvoiceDollar className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
             <p>Apostas</p>
@@ -148,7 +146,9 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
             className={
               currentRoute === "/winners" ? "bg-[rgb(var(--blue-50))] " : ""
             }
-            onClick={() => router.push("/winners")}
+            onClick={() => {
+              router.push("/winners"), setToggle(false);
+            }}
           >
             <FaTrophy className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
             <p>Ganhadores</p>
@@ -157,7 +157,9 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
             className={
               currentRoute === "/perfil" ? "bg-[rgb(var(--blue-50))] " : ""
             }
-            onClick={() => router.push("/perfil")}
+            onClick={() => {
+              router.push("/perfil"), setToggle(false);
+            }}
           >
             <FaUser className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
             <p>Perfil</p>

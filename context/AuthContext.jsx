@@ -2,12 +2,16 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db} from "@/libs/firebase/FirebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore"; // <-- importa doc/getDoc
+import { doc, getDoc} from "firebase/firestore"; // <-- importa doc/getDoc
 import { loginWithGoogle, logout, loginWithEmail } from "@/libs/firebase/authService";
+import { useRouter } from "next/navigation";
+
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const router = useRouter(); 
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
@@ -16,11 +20,12 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const unsubscribeAuth = auth.onAuthStateChanged(async (firebaseUser) => {
-
+        console.log(firebaseUser);
         if (!firebaseUser) {
           console.log('❌ Usuário não logado');
           setTimeout(() => setLoading(false), 3000);
           setUser(null);
+          router.replace("/login");
           return;
         }
 
@@ -46,8 +51,6 @@ export const AuthProvider = ({ children }) => {
            });
            localStorage.setItem("Photo", JSON.stringify(firebaseUser.photoURL));
          }
-
-
           setTimeout(() => setLoading(false), 3000);
         }
         
@@ -60,6 +63,7 @@ export const AuthProvider = ({ children }) => {
           setUserToken(newToken);
         } else {
           setUserToken(null);
+          router.replace("/login");
         }
       });
       

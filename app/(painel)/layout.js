@@ -4,13 +4,11 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Loading from '@/components/Loading';
 import Menu from '@/components/Menu';
-import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 
 import { HiMenuAlt2 } from "react-icons/hi";
 
 
 export default function SharedLayout({ children }) {
-  useProtectedRoute();
   const [toggle, setToggle] = useState(true);
   const [toggleUser, setToggleUser] = useState(false);
 
@@ -19,7 +17,7 @@ export default function SharedLayout({ children }) {
 
   return (
     <section className="relative p-1 xxs:p-2 sm:p-2 lg:p-4 flex gap-2 sm:gap-2 lg:gap-4  bg-[rgb(var(--blue-50))] 
-       w-full flex-1
+       w-full h-screen
     ">
       <HiMenuAlt2
         onClick={() => {

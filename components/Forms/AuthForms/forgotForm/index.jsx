@@ -89,68 +89,66 @@ export default function SignInForm() {
       <FormLayout>
         <form
           onSubmit={(e) => hendleSubmit(e)}
-          className='w-full flex flex-col items-center pt-2 pb-5'
+          className="w-full flex flex-col items-center pt-2 pb-5"
         >
           {perfil === null ? (
             <Icon
-              className='rounded-full '
-              name='account_circle'
+              className="rounded-full "
+              name="account_circle"
               size={50}
-              color='rgb(var(--icon))'
+              color="rgb(var(--icon))"
             />
           ) : (
-            <Image
+            <img
               src={perfil}
-              alt='Foto de perfil'
-              width={50}
-              height={50}
-              className='rounded-full mb-1.5 mt-1.5'
+              alt="Foto de perfil"
+              className="rounded-full mb-1.5 mt-1.5 h-16 w-16"
             />
           )}
-          <Title text='Recuperar Senha' />
-          <p className='pl-3 pr-3 text-[1rem] text-center text-[rgb(var(--text-paragraph))] font-normal'>
+          <Title text="Recuperar Senha" />
+          <p className="pl-3 pr-3 text-[1rem] text-center text-[rgb(var(--text-paragraph))] font-normal">
             Entre com seus dados abaixo:
           </p>
-          <div className='w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5  pr-5 mt-8 '>
+          <div className="w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5  pr-5 mt-8 ">
             <InputLayout>
-              <Label id='email'>Email *</Label>
+              <Label id="email">Email *</Label>
               <InputUi
-                id='email'
-                type='email'
-                placeholder='Email@example.com'
-                autocomplete='email'
-                name='email'
+                id="email"
+                type="email"
+                placeholder="Email@example.com"
+                autocomplete="email"
+                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </InputLayout>
           </div>
-          <p className='w-[190px] xxs:w-full text-[rgb(var(--text))] text-[0.9rem] text-center mb-4'>
+          <p className="w-[190px] xxs:w-full text-[rgb(var(--text))] text-[0.9rem] text-center mb-4">
             Lembrou sua senha?{" "}
             <span
-              className='text-[rgb(var(--text-links))] font-bold cursor-pointer hover:underline text-[1rem]'
-              onClick={() => router.replace('/login')}
+              className="text-[rgb(var(--text-links))] font-bold cursor-pointer hover:underline text-[1rem]"
+              onClick={() => router.replace("/login")}
             >
               Entrar
             </span>
           </p>
-          <div className='w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5  pr-5  '>
+          <div className="w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5  pr-5  ">
             <span
               className={` display: ${
-                time > 0 ? 'block' : 'hidden'
+                time > 0 ? "block" : "hidden"
               } font-semibold text-[rgb(var(--text))] text-[1.4rem] pb-1 text-center texte-[rgb(var(--text))]`}
             >
               {time}
             </span>
-            <SignInButton text='Enviar' />
+            <SignInButton text="Enviar" />
           </div>
-          <p className='w-[190px] xxs:w-full text-[rgb(var(--text))] text-[0.9rem] text-center mt-4'>
+          <p className="w-[190px] xxs:w-full text-[rgb(var(--text))] text-[0.9rem] text-center mt-4">
             Não tem uma conta?{" "}
             <span
-              className='text-[rgb(var(--text-links))] cursor-pointer hover:underline '
-              onClick={() => router.replace('/register')}
+              className="text-[rgb(var(--text-links))] cursor-pointer hover:underline "
+              onClick={() => router.replace("/register")}
             >
-             Cadastre-se agora
+              Cadastre-se agora
             </span>
           </p>
         </form>

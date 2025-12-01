@@ -12,7 +12,6 @@ import GoogleButton from '@/components/Btns/GoogleButton';
 import Title from '@/components/Title';
 import InputLayout from '@/components/InputLayout';
 //icons
-import Icon from '@/components/Icon';
 import { FiEyeOff, FiEye } from 'react-icons/fi';
 // hooks
 import { registerWithEmail } from '@/libs/firebase/authService';
