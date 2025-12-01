@@ -18,17 +18,24 @@ export default function SharedLayout({ children }) {
   if (loading) return <Loading />;
 
   return (
-    <section className="relative p-1 xxs:p-2 sm:p-2 lg:p-4 flex gap-2 sm:gap-2 h-full bg-[rgb(var(--blue-50))] ">
+    <section className="relative p-1 xxs:p-2 sm:p-2 lg:p-4 flex gap-2 sm:gap-2 lg:gap-4 h-full bg-[rgb(var(--blue-50))] ">
       <HiMenuAlt2
         onClick={() => {
           setToggle(!toggle);
           toggle && setToggleUser(false);
         }}
-        className={`absolute text-[2rem] left-6 top-6 ${ toggle ? "text-white" : 'text-black' } 
+        className={`absolute text-[2rem] left-6 lg:left-8.5 top-6 ${
+          toggle ? "text-white" : "text-black xss:text-white"
+        } 
         cursor-pointer hover:opacity-80   transition   duration-300 z-50
       `}
       />
-      <Menu toggle={toggle} setToggle={setToggle} toggleUser={toggleUser} setToggleUser={setToggleUser} />
+      <Menu
+        toggle={toggle}
+        setToggle={setToggle}
+        toggleUser={toggleUser}
+        setToggleUser={setToggleUser}
+      />
       <main className="w-full bg-[rgb(var(--blue-50))] overflow-auto ">
         {children}
       </main>

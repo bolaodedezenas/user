@@ -40,7 +40,8 @@ export default function EditUserForm() {
       setName(user.name);
       setEmail(user.email);
       setPhone(user.phone);
-      setCep(user.cep);
+      if (user.cep) setValidCep(true);
+      setCep(user.cep)
       setState(user.state);
       setCity(user.city);
     }
@@ -48,6 +49,7 @@ export default function EditUserForm() {
 
 
   async function buscarCEP(valor) {
+    console.log("buscando cep", valor);
     try {
       const somenteNumeros = valor.replace(/\D/g, "");
       if (somenteNumeros.length !== 8) {
@@ -67,10 +69,11 @@ export default function EditUserForm() {
         setCity("");
         return;
       }
-      toast.success("CEP encontrado com sucesso!");
+      
       setValidCep(true);
       setState(data.estado);
       setCity(data.localidade);
+      toast.success("CEP encontrado com sucesso!");
     } catch (err) {
       console.error("Erro ao buscar CEP:", err);
       setFocusInput("cep");
@@ -188,18 +191,12 @@ export default function EditUserForm() {
       onSubmit={hendleSubmit}
       className="h-[87vh] lg:h-auto bg-white p-4 2xl:p-14 flex flex-col gap-4  overflow-auto "
     >
-      <div className=" flex flex-wrap items-center  gap-5 2xl:gap-30 ">
+      <div className=" flex flex-wrap items-center justify-center  gap-5 2xl:gap-30  ">
         <div
-          className="relative w-full xxs:w-full xl:w-[250px] xl:h-[250px]  
+          className=" w-full  lg:h-80 
           2xl:w-[350px]  2xl:h-[350px] 
             flex items-center justify-center  "
         >
-          <label
-            htmlFor="imageUpload"
-            className="absolute top-0 left-0 text-[1.6rem] text-[rgb(var(--blue-950))] cursor-pointer"
-          >
-            <BiSolidEdit />
-          </label>
           <input
             id="imageUpload"
             type="file"
@@ -207,14 +204,21 @@ export default function EditUserForm() {
             className="hidden"
             onChange={(e) => setPhoto(e.target.files[0])}
           />
-          <img
-            src={photo ? URL.createObjectURL(photo) : user?.photoURL}
-            alt="Photo Profile"
-            priority
-            className={` w-30 sm:w-50 2xl:w-[350px] object-cover trasition duration-300 rounded-full `}
-          />
+          <div className="relative ">
+            <label
+              htmlFor="imageUpload"
+              className="absolute top-0 -left-4 text-[1.6rem] text-[rgb(var(--blue-950))] cursor-pointer"
+            >
+              <BiSolidEdit />
+            </label>
+            <img
+              src={photo ? URL.createObjectURL(photo) : user?.photoURL}
+              alt="Photo Profile"
+              className={` w-30 h-30 sm:w-50 sm:h-50 lg:w-70 lg:h-70  2xl:w-[320px] 2xl:h-[320px] object-cover trasition duration-300 rounded-full 
+              border border-zinc-200 shadow-md`}
+            />
+          </div>
         </div>
-
         <section
           className="flex sm:gap-2 lg:gap-10 justify-center flex-wrap flex-1 
           2xl:flex-col
