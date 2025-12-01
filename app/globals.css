@@ -16,8 +16,9 @@
   --breakpoint-xss: 593px;
   --breakpoint-xs: 465px;
   --breakpoint-xxs: 370px;
-  --breakpoint-xd: 845px;
+  --breakpoint-xd: 950px;
 }
+
 
 /* @media (prefers-color-scheme: dark) {
   :root {

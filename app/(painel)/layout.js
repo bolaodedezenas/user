@@ -18,7 +18,9 @@ export default function SharedLayout({ children }) {
   if (loading) return <Loading />;
 
   return (
-    <section className="relative p-1 xxs:p-2 sm:p-2 lg:p-4 flex gap-2 sm:gap-2 lg:gap-4 h-full bg-[rgb(var(--blue-50))] ">
+    <section className="relative p-1 xxs:p-2 sm:p-2 lg:p-4 flex gap-2 sm:gap-2 lg:gap-4  bg-[rgb(var(--blue-50))] 
+       w-full flex-1
+    ">
       <HiMenuAlt2
         onClick={() => {
           setToggle(!toggle);
@@ -36,9 +38,9 @@ export default function SharedLayout({ children }) {
         toggleUser={toggleUser}
         setToggleUser={setToggleUser}
       />
-      <main className="w-full bg-[rgb(var(--blue-50))] overflow-auto ">
+      <section className="flex-1 bg-[rgb(var(--blue-50))] overflow-auto ">
         {children}
-      </main>
+      </section>
       {/* <Footer /> */}
     </section>
   );

@@ -33,7 +33,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
 
   return (
     <aside
-      className={`absolute xss:static z-40 flex flex-col bg-white  h-full rounded-[20px] overflow-hidden shadow-2xl 
+      className={`absolute top-1.5 left-2 xss:static z-40 flex flex-col bg-white   max-xss:h-[98vh] xss:min-h-full flex-1     rounded-[20px] overflow-hidden shadow-2xl 
         ${
           toggle
             ? "max-w-[260px] min-w-[260px] sm:w-[260px]"
@@ -42,7 +42,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
       `}
     >
       <div
-        className="relative flex items-center justify-center h-[180px] w-[260px] bg-[rgb(var(--background))]
+        className="relative flex items-center justify-center h-[170px] w-[260px] bg-[rgb(var(--background))]
           rounded-[20px]
         "
       >

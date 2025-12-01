@@ -193,7 +193,7 @@ export default function EditUserForm() {
     >
       <div className=" flex flex-wrap items-center justify-center  gap-5 2xl:gap-30  ">
         <div
-          className=" w-full  lg:h-80 
+          className=" w-full  lg:h-68 
           2xl:w-[350px]  2xl:h-[350px] 
             flex items-center justify-center  "
         >
@@ -214,8 +214,8 @@ export default function EditUserForm() {
             <img
               src={photo ? URL.createObjectURL(photo) : user?.photoURL}
               alt="Photo Profile"
-              className={` w-30 h-30 sm:w-50 sm:h-50 lg:w-70 lg:h-70  2xl:w-[320px] 2xl:h-[320px]  trasition duration-300 rounded-full 
-              border border-zinc-200 shadow-md`}
+              className={` w-30 h-30 sm:w-50 sm:h-50 lg:w-62 lg:h-62  2xl:w-[320px] 2xl:h-[320px]  trasition duration-300 rounded-full 
+              `}
             />
           </div>
         </div>
