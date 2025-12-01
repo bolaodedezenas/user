@@ -17,8 +17,9 @@ export default function SharedLayout({ children }) {
 
   return (
     <section className="relative p-1 xxs:p-2 sm:p-2 lg:p-4 flex gap-2 sm:gap-2 lg:gap-4  bg-[rgb(var(--blue-50))] 
-       w-full h-screen
-    ">
+       w-full min-h-svh
+    "
+    >
       <HiMenuAlt2
         onClick={() => {
           setToggle(!toggle);
