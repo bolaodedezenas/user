@@ -27,7 +27,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
 
   return (
     <aside
-      className={`absolute top-2 left-2 xss:static z-40 flex flex-col bg-white   max-xss:min-h-[97vh] xss:min-h-full flex-1     rounded-[20px] overflow-hidden shadow-2xl 
+      className={`absolute top-2 left-2 xss:static z-40 flex flex-col bg-white   max-xss:min-h-[97vh] xss:min-h-[96.5svh]      flex-1     rounded-[20px] overflow-hidden shadow-2xl 
         ${
           toggle
             ? "max-w-[300px] min-w-[300px] sm:min-w-[260px]! xss:min-w-[65px] xss:max-w-[65px] "
