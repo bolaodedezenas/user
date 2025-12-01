@@ -214,7 +214,7 @@ export default function EditUserForm() {
             <img
               src={photo ? URL.createObjectURL(photo) : user?.photoURL}
               alt="Photo Profile"
-              className={` w-30 h-30 sm:w-50 sm:h-50 lg:w-70 lg:h-70  2xl:w-[320px] 2xl:h-[320px] object-cover trasition duration-300 rounded-full 
+              className={` w-30 h-30 sm:w-50 sm:h-50 lg:w-70 lg:h-70  2xl:w-[320px] 2xl:h-[320px]  trasition duration-300 rounded-full 
               border border-zinc-200 shadow-md`}
             />
           </div>

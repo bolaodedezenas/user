@@ -47,13 +47,12 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
         "
       >
         {user?.photoURL ? (
-          <Image
+          <img
             src={user?.photoURL || "/ball.png"}
             alt="logo"
             width={100}
             height={100}
-            priority
-            className={` rounded-full `}
+            className={` rounded-full w-30 h-30  trasition duration-300`}
           />
         ) : (
           <HiUserCircle
