@@ -23,9 +23,13 @@ export default function Perfil() {
   if (loading) return <PageLoading />;
 
   return (
-    <section className=" flex gap-2 lg:gap-4 flex-col  bg-[rgb(var(--blue-50))]">
+    <section
+      className=" flex gap-2 lg:gap-4 flex-col  bg-[rgb(var(--blue-50))]
+      
+    "
+    >
       <Header>
-        <FaUser className="text-[2rem] text-[rgb(var(--blue-950))] ml-8 " />
+        <FaUser className="text-[2.2rem] text-[rgb(var(--blue-950))] ml-14 xss:ml-4 " />
         <div>
           <Title
             text="Perfil"

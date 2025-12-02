@@ -189,13 +189,13 @@ export default function EditUserForm() {
   return (
     <form
       onSubmit={hendleSubmit}
-      className="flex-1 bg-white  2xl:p-14 flex flex-col   sm:gap-4  overflow-auto  rounded-[10px] "
+      className=" bg-white  2xl:p-14 flex flex-col items-center  overflow-auto  rounded-[10px] "
     >
-      <div className=" flex flex-wrap items-center justify-center  gap-5 2xl:gap-30 pt-3 ">
+      <div className=" flex flex-wrap  justify-center  gap-5 2xl:gap-15 pt-3 ">
         <div
           className=" w-full  lg:h-68 
-          2xl:w-[350px]  2xl:h-[350px] 
-            flex items-center justify-center  "
+          2xl:w-[270px]  2xl:h-[250px] 
+            flex items-center justify-center "
         >
           <input
             id="imageUpload"
@@ -207,21 +207,21 @@ export default function EditUserForm() {
           <div className="relative ">
             <label
               htmlFor="imageUpload"
-              className="absolute top-0 -left-4 text-[1.6rem] text-[rgb(var(--blue-950))] cursor-pointer"
+              className="absolute top-0 -left-5  text-[1.6rem] text-[rgb(var(--blue-950))] cursor-pointer"
             >
               <BiSolidEdit />
             </label>
             <img
               src={photo ? URL.createObjectURL(photo) : user?.photoURL}
               alt="Photo Profile"
-              className={` w-28 h-28 sm:w-50 sm:h-50 lg:w-62 lg:h-62  2xl:w-[320px] 2xl:h-[320px]  trasition duration-300 rounded-full  object-fill
+              className={` w-30 h-30 sm:w-30 sm:h-30 lg:w-62 lg:h-62  2xl:w-[230px] 2xl:h-[230px]  trasition duration-300 rounded-full  object-cover
               `}
             />
           </div>
         </div>
         <section
-          className="flex sm:gap-2 lg:gap-10 justify-center flex-wrap flex-1 
-          2xl:flex-col
+          className="flex xs:gap-2 sm:gap-5 lg:gap-2 justify-center flex-wrap  
+          2xl:flex-col xl:items-center overflow-auto  xd:h-auto 
          "
         >
           <section className="2xl:flex-col ">
@@ -250,7 +250,7 @@ export default function EditUserForm() {
                   required
                 />
               </InputLayout>
-              <InputLayout className={` max-w-[300px]`}>
+              <InputLayout className={`w-[260px] `}>
                 <Label id="email">Email *</Label>
                 <InputUi
                   id="email"
@@ -267,7 +267,7 @@ export default function EditUserForm() {
                   }
                 />
               </InputLayout>
-              <InputLayout className={` max-w-[300px]`}>
+              <InputLayout className={` w-[260px]`}>
                 <Label id="phone">Telefone</Label>
                 <InputUi
                   id="phone"
@@ -310,7 +310,7 @@ export default function EditUserForm() {
                   }
                 />
               </InputLayout>
-              <InputLayout className={` max-w-[300px]`}>
+              <InputLayout className={`w-[260px]`}>
                 <Label id="uf">Estado</Label>
                 <InputUi
                   id="uf"
@@ -327,7 +327,7 @@ export default function EditUserForm() {
                   }
                 />
               </InputLayout>
-              <InputLayout className={` max-w-[300px]`}>
+              <InputLayout className={` w-[260px]`}>
                 <Label id="city">Cidade</Label>
                 <InputUi
                   id="city"
@@ -345,13 +345,12 @@ export default function EditUserForm() {
               </InputLayout>
             </div>
           </section>
+          <div className="w-full flex items-center pt-2  justify-center  pb-3.5  ">
+            <div className="w-[160px] ">
+              <SignInButton text="Salvar" />
+            </div>
+          </div>
         </section>
-      </div>
-
-      <div className="flex items-center justify-center 2xl:justify-start xl:ml-12 2xl:ml-23 pb-3.5 ">
-        <div className="w-[160px]">
-          <SignInButton text="Salvar" />
-        </div>
       </div>
     </form>
   );
