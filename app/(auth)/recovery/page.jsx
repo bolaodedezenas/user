@@ -46,19 +46,19 @@ export default function Recovery() {
     if (!code) return router.replace('/not-found');
     
     // Se for verificação de email
-    if (modeType === 'verifyEmail') {
+    if (modeType === "verifyEmail" || modeType === "verifyAndChangeEmail") {
       applyActionCode(auth, code)
         .then(() => {
           setMessage({
-            title: 'Email verificado com sucesso!',
-            text: 'Agora vocé pode fazer login com seu email.',
+            title: "Email verificado com sucesso!",
+            text: "Agora vocé pode fazer login com seu email.",
           });
         })
         .catch((error) => {
           console.error(error);
           setMessage({
-            title: 'Erro ao verificar email!',
-            text: 'Link expirado ou inválido, solicite um novo link de verificação.',
+            title: "Erro ao verificar email!",
+            text: "Link expirado ou inválido, solicite um novo link de verificação.",
           });
         });
       setTimeout(() => router.replace(`/login`), 10000);
