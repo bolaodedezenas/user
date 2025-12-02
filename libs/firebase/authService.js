@@ -9,6 +9,7 @@ import {
   sendEmailVerification,
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp, getDoc, updateDoc } from 'firebase/firestore';
+import { verifyBeforeUpdateEmail } from "firebase/auth";
 
 
 export const loginWithGoogle = async () => {
@@ -168,14 +169,24 @@ export  async function  handleResetPassword(oobCode, password) {
   }
 };
 
+
+// Função externa para trocar email
+
+export async function atualizarEmailComVerificacao(novoEmail) {
+  try {
+    await verifyBeforeUpdateEmail(auth.currentUser, novoEmail);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.code || "unknown-error" };
+  }
+}
+
+
 // verificaçao de email type da ation code {mode=verifyEmail}
 // https://www.bolaodedezenas.com.br/resetPassword?mode=verifyEmail&oobCode=f86EpqWxQu42bpkUMfCokm0xAfPXuS4NPTK6xGBk1RcAAAGafgKlSA&apiKey=AIzaSyCdUlILR--KjaR3npFKTJSQzRfiS36Ty2A&lang=pt-BR
 
 // verificaçao de email type da ation code {mode=resetPassword}
 //  https://www.bolaodedezenas.com.br/resetPassword?apiKey=AIzaSyCdUlILR--KjaR3npFKTJSQzRfiS36Ty2A&mode=resetPassword&oobCode=Ct6-5-HfYf70ash19Dhg1cT7md3czrpk-7LaCxIEBUcAAAGafgHcjQ&continueUrl=https://www.bolaodedezenas.com.br/resetPassword&lang=pt-BR
-
-
-
 
 
 

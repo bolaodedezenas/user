@@ -7,8 +7,8 @@ import Label from "@/components/Label";
 import InputUi from "@/components/InputUi";
 import SignInButton from "@/components/Btns/SignInButton";
 import InputLayout from "@/components/InputLayout";
-import Image from "next/image";
 import Title from "@/components/Title";
+import ConfirmDialog from "@/components/ConfirmDialog";
 // hooks
 import { BiSolidEdit } from "react-icons/bi";
 
@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 // context
 import { useAuth } from "@/context/AuthContext";
 //services
-import { updateUserData } from "@/libs/firebase/authService";
+import { updateUserData, atualizarEmailComVerificacao } from "@/libs/firebase/authService";
 
 export default function EditUserForm() {
   const { user, setUser} = useAuth();
@@ -30,8 +30,10 @@ export default function EditUserForm() {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [validCep, setValidCep] = useState(false);
-
   const [focusInput, setFocusInput] = useState("");
+
+  const [open, setOpen] = useState(false);
+  const [confirmEmail, setConfirmEmail] = useState(false);
 
 
 
@@ -81,9 +83,41 @@ export default function EditUserForm() {
     }
   }
 
+
+  const handleupdateEmail = async () => {
+    const { success, error } = await atualizarEmailComVerificacao(email);
+    
+    if (!success) {
+      console.error(error);
+      if (error === "auth/requires-recent-login") {
+        toast.error("Para editar o email, É preciso refazer o login novamente. Saia da conta e entre novamente", {
+          duration: 10000,
+        });
+        setOpen(false);
+        return;
+      }
+      toast.error("Erro ao editar email, verifique e tente novamente.", {
+        duration: 5000,
+      });
+      setConfirmEmail(false);
+      return
+    }
+
+    setConfirmEmail(true);
+    setOpen(false);
+    hendleSubmit();
+    toast.success(
+      `Perfil atualizado!
+      Seus dados foram salvos corretamente.
+      Para concluir a troca de email, verifique sua caixa de entrada do novo endereço informado — enviamos um link de confirmação.
+      Após confirmar o email, sua conta passará a utilizar o novo endereço normalmente.`,
+      { duration: 5000 }
+    );
+  }
+
   const hendleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!validCep) {
       toast.error("CEP inválido, verifique e tente novamente.");
       setFocusInput("cep");
@@ -112,8 +146,14 @@ export default function EditUserForm() {
       toast.error(Error);
       return;
     }
-    //Cria usuário no Firebase
-    const { success } = await updateUserData(user.id, formData, photo, setUser); // trocar por editeuser //////////////////////
+
+    if (user.email !== email && !confirmEmail) {
+      setOpen(true);
+      return;
+    }
+
+    // Atualiza os dados
+    const { success } = await updateUserData(user.id, formData, photo, setUser); 
     //Tratar erro DO FIREBASE
     if (!success) {
       toast.error("Erro ao editar perfil, verifique e tente novamente.", {
@@ -352,6 +392,13 @@ export default function EditUserForm() {
           </div>
         </section>
       </div>
+      <ConfirmDialog
+        open={open}
+        title="⚠️ Atenção"
+        message="Você realmente deseja alterar seu email ? Por favor, confirme a ação."
+        onConfirm={handleupdateEmail}
+        onCancel={() => setOpen(false)}
+      />
     </form>
   );
 }

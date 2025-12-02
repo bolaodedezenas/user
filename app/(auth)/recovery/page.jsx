@@ -40,15 +40,18 @@ export default function Recovery() {
     setMode(modeType);
     setClose(pageCode);
 
-    if (!code) return router.replace('/not-found');
+    console.log(modeType);
+    console.log(code);
 
+    if (!code) return router.replace('/not-found');
+    
     // Se for verificação de email
     if (modeType === 'verifyEmail') {
       applyActionCode(auth, code)
         .then(() => {
           setMessage({
             title: 'Email verificado com sucesso!',
-            text: 'Agora vocé pode fazer login no app.',
+            text: 'Agora vocé pode fazer login com seu email.',
           });
         })
         .catch((error) => {
