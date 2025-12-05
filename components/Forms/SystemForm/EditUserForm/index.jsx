@@ -84,36 +84,70 @@ export default function EditUserForm() {
   }
 
 
+  const salvar = async (formData) => {
+    const { success } = await updateUserData(user.id, formData, photo, setUser);
+
+    if (!success) {
+      toast.error("Erro ao editar perfil, verifique e tente novamente.", {
+        duration: 5000,
+      });
+      return;
+    }
+
+    toast.success("Perfil editado com sucesso!", { duration: 5000 });
+    setFocusInput("");
+  };
+
+
+
   const handleupdateEmail = async () => {
     const { success, error } = await atualizarEmailComVerificacao(email);
-    
+
     if (!success) {
       console.error(error);
+
       if (error === "auth/requires-recent-login") {
-        toast.error("Para editar o email, É preciso refazer o login novamente. Saia da conta e entre novamente", {
-          duration: 10000,
-        });
+        toast.error(
+          "Para editar o email, é preciso refazer o login novamente. Saia da conta e entre novamente.",
+          { duration: 10000 }
+        );
         setOpen(false);
         return;
       }
+
       toast.error("Erro ao editar email, verifique e tente novamente.", {
         duration: 5000,
       });
       setConfirmEmail(false);
-      return
+      return;
     }
 
+    // Email enviado com sucesso
     setConfirmEmail(true);
     setOpen(false);
-    hendleSubmit();
+
     toast.success(
       `Perfil atualizado!
       Seus dados foram salvos corretamente.
       Para concluir a troca de email, verifique sua caixa de entrada do novo endereço informado — enviamos um link de confirmação.
       Após confirmar o email, sua conta passará a utilizar o novo endereço normalmente.`,
-      { duration: 5000 }
+      { duration: 8000 }
     );
-  }
+
+    // Agora salva o resto dos dados do perfil
+    const formData = {
+      name,
+      phone,
+      cep,
+      state,
+      city,
+      photoURL: "",
+    };
+
+    salvar(formData);
+  };
+
+
 
   const hendleSubmit = async (e) => {
     e.preventDefault();
@@ -134,38 +168,27 @@ export default function EditUserForm() {
       cep,
       state,
       city,
-      photoURL: '',
+      photoURL: "",
     };
 
-    // Validação com Zod
     const result = await editUserSchema.safeParseAsync(formData);
     if (!result.success) {
       const Error = result.error.issues[0].message;
-      console.log(result.error.issues[0].path);
       setFocusInput(result.error.issues[0].path[0]);
       toast.error(Error);
       return;
     }
 
+    // EMAIL MUDOU?
     if (user.email !== email && !confirmEmail) {
       setOpen(true);
       return;
     }
 
-    // Atualiza os dados
-    const { success } = await updateUserData(user.id, formData, photo, setUser); 
-    //Tratar erro DO FIREBASE
-    if (!success) {
-      toast.error("Erro ao editar perfil, verifique e tente novamente.", {
-        duration: 5000,
-      });
-      return
-    }
-
-    //Tratar sucesso
-    toast.success("Pefil  editado com sucesso!", { duration: 5000 });
-    setFocusInput("");
+    // Email não mudou → salva direto
+    salvar(formData);
   };
+
 
 
   const handlePhoneChange = (event) => {
@@ -247,7 +270,7 @@ export default function EditUserForm() {
           <div className="relative ">
             <label
               htmlFor="imageUpload"
-              className="absolute top-0 -left-5  text-[1.6rem] text-[rgb(var(--blue-950))] cursor-pointer"
+              className="absolute top-0 -left-5  text-[2rem] text-[rgb(var(--btn))] cursor-pointer"
             >
               <BiSolidEdit />
             </label>

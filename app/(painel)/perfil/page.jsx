@@ -29,7 +29,7 @@ export default function Perfil() {
     "
     >
       <Header>
-        <FaUser className="text-[2.2rem] text-[rgb(var(--blue-950))] ml-14 xss:ml-4 " />
+        <FaUser className="text-[2.2rem] text-[rgb(var(--btn))] ml-14 xss:ml-4 " />
         <div>
           <Title
             text="Perfil"

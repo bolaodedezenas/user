@@ -18,11 +18,11 @@ export default function SharedLayout({ children }) {
   return (
     <section
       className=" h-fit overflow-auto  relative  flex   gap-2 sm:gap-2 lg:gap-4  bg-[rgb(var(--blue-50))] 
-      flex-1  p-2 
+      flex-1  p-3
     "
     >
       <div
-        className={`absolute text-[2rem] left-4.5  top-2 h-14 w-12 flex items-center justify-center 
+        className={`absolute text-[2rem] left-3 xss:left-5  top-5 h-14 w-12 flex items-center justify-center 
           rounded-t-0 rounded-b-lg
           ${
             toggle

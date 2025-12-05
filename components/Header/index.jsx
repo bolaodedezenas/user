@@ -1,10 +1,12 @@
 
 
-export default function Header({ children }) {
+export default function Header({ children, className }) {
   return (
     <header
-      className=" 
-    bg-white h-20 flex  gap-4 items-center  p-2 sm:p-6 rounded-[10px] shadow-lg select-none"
+      className={`{
+     bg-white w-full  flex flex-wrap  gap-4 items-center   p-3  rounded-[10px] shadow-lg select-none
+       ${className}
+    `}
     >
       {children}
     </header>
