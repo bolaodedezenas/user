@@ -21,25 +21,16 @@ export default function SharedLayout({ children }) {
       flex-1  p-3
     "
     >
-      <div
-        className={`absolute text-[2rem] left-3 xss:left-5  top-5 h-14 w-12 flex items-center justify-center 
-          rounded-t-0 rounded-b-lg
-          ${
-            toggle
-              ? "text-white"
-              : "text-white bg-[rgb(var(--background))] xss:bg-transparent xss:text-white"
-          } 
+      <HiMenuAlt2
+        className={`absolute text-[2rem] left-6 xss:left-7  top-7  flex items-center justify-center 
+          rounded-t-0 rounded-b-lg  text-[rgb(var(--btn))]
           cursor-pointer hover:opacity-80   transition   duration-300 z-50
-      `}
-      >
-        <HiMenuAlt2
-          onClick={() => {
-            setToggle(!toggle);
-            toggle && setToggleUser(false);
-          }}
-        />
-      </div>
-
+        `}
+        onClick={() => {
+          setToggle(!toggle);
+          toggle && setToggleUser(false);
+        }}
+      />
       <Menu
         toggle={toggle}
         setToggle={setToggle}
