@@ -9,6 +9,7 @@ import Header from "@/components/Header";
 import Title from "@/components/Title";
 import Paragraph from "@/components/paragraph";
 import Select from "@/components/Select";
+import PoolCard from "@/components/Cards/PoolCard";
 //icons
 import { FaTrophy } from "react-icons/fa6";
 import { HiShoppingCart } from "react-icons/hi2";
@@ -66,6 +67,13 @@ export default function Pools() {
           </Box>
         </section>
       </Header>
+      <section className='p-4'>
+        <PoolCard
+          title="Bolão de segunda"
+          money="R$ 100.000,00"
+          time="05h / 50m / 49s"
+        />
+      </section>
     </section>
   );
 }
