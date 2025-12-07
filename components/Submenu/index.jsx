@@ -15,12 +15,12 @@ export default function Submenu() {
 
 
   return (
-    <nav>
+    <nav className="">
       <ul
-        className={` flex  gap-2 list-none text-[1rem] text-[rgb(var(--text))] 
+        className={` flex flex-wrap justify-center  gap-2 list-none text-[1rem] text-[rgb(var(--text))] 
         [&>*]:cursor-pointer
         [&>*]:rounded-[5px]  [&>*]:transition [&>*]:duration-300
-        [&>*]:flex [&>*]:gap-7 [&>*]:items-center [&>*]:pl-4 [&>*]:pr-4 [&>*]:py-2 
+        [&>*]:flex  [&>*]:items-center [&>*]:pl-2 [&>*]:pr-2 [&>*]:py-2 
       `}
       >
         <li

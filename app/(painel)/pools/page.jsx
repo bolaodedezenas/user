@@ -14,7 +14,7 @@ export default function Pools() {
   if (loading) return <PageLoading />;
 
   return (
-    <section className="fle-1 h-full flex justify-center items-center flex-col gap-4 text-[3rem]  ">
+    <section className="fle-1 h-full flex justify-center items-center  text-[2rem]  ">
       Apostar
     </section>
   );

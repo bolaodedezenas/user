@@ -1,6 +1,6 @@
 "use client";
 // styles personalizados
-import {Box} from '@/app/(painel)/pools/styles'
+import { Box, BoxLayout } from "@/app/(painel)/pools/styles";
 
 import { useEffect, useState } from "react";
 // components
@@ -70,39 +70,41 @@ export default function LayoutPools({ children }) {
           </Box>
         </section>
       </Header>
-      <section className="p-4  bg-white flex gap-5 rounded-[10px]">
-        <div>
+      <BoxLayout className="py-4 sm:p-4  bg-white flex flex-wrap justify-center  gap-5 rounded-[10px]">
+        <div className="flex justify-center">
           <PoolCard
             title="Bolão de segunda"
             money="R$ 100.000,00"
             time="05h / 50m / 49s"
           />
         </div>
-        <section className="flex-1 flex flex-col pl-5 pr-5">
-          <div className="border-b-2 border-zinc-300 flex-1  ">
-            <h3>Status do bolão</h3>
-            <div className='flex gap-10'>
-              <div>
-                <div className="flex items-center gap-5">
-                  <h4>Aberto</h4>
-                  <FaCircle />
+        <section className=" flex flex-col flex-wrap sm:pl-5 sm:pr-5  ">
+          <div className=" border-b-2 border-zinc-300 flex justify-center md:justify-start pb-4   ">
+            <div>
+              <h3 className="font-bold text-[1.2rem] max-xs:pl-4 ">
+                Status do bolão
+              </h3>
+              <div className="flex flex-wrap gap-5   ">
+                <div className="max-xs:pl-4  ">
+                  <div className="flex items-center gap-5 ">
+                    <h4 className="font-bold">Aberto</h4>
+                    <FaCircle className="text-green-500" />
+                  </div>
+                  <p>Aberto para realizações de apostas</p>
                 </div>
-                <p>Aberto para realizações de apostas</p>
-              </div>
-              <div>
-                <h4>Prazo</h4>
-                <p>10/12/2025 até 21:30 horas</p>
+                <div className="max-xs:pl-4 ">
+                  <h4 className="font-bold">Prazo</h4>
+                  <p>10/12/2025 até 21:30 horas</p>
+                </div>
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-center  pt-5 ">
+          <div className=" min-w-[290px]flex-1 flex items-center justify-center  pt-5  ">
             <Submenu />
           </div>
         </section>
-      </section>
-      <section className='h-full'>
-        {children}
-      </section>
+      </BoxLayout>
+      <section className="h-full">{children}</section>
     </section>
   );
 }
