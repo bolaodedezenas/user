@@ -34,7 +34,7 @@ export default function Select({
         onClick={() => setIsOpen(!isOpen)}
         onMouseEnter={() => setIsOpen(true)}
         className="cursor-pointer min-w-50 flex justify-between items-center  bg-white  text-[rgb(var(--text))] rounded-[5px] px-5 py-3    transition-all duration-300
-        shadow-[inset_0_2px_6px_rgba(0,0,0,0.25)]
+        shadow-[inset_0_2px_6px_rgba(0,0,0,0.25)] text-[1rem]
         "
       >
         <span>{selected ? selected.label : label}</span>
@@ -51,7 +51,7 @@ export default function Select({
             <li
               key={option.value}
               onClick={() => handleSelect(option)}
-              className="px-4 py-3 cursor-pointer hover:bg-[rgb(var(--blue-50))] transition-colors"
+              className="px-4 py-3 cursor-pointer hover:bg-[rgb(var(--blue-50))] transition-colors text-[0.9rem]"
             >
               {option.label}
             </li>

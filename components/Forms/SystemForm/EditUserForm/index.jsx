@@ -270,7 +270,7 @@ export default function EditUserForm() {
           <div className="relative ">
             <label
               htmlFor="imageUpload"
-              className="absolute top-0 -left-5  text-[2rem] text-[rgb(var(--btn))] cursor-pointer"
+              className="absolute top-0 -left-8  text-[2rem] text-[rgb(var(--btn))] cursor-pointer"
             >
               <BiSolidEdit />
             </label>

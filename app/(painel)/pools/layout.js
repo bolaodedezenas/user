@@ -15,6 +15,8 @@ import Submenu from "@/components/Submenu";
 import { FaTrophy } from "react-icons/fa6";
 import { HiShoppingCart } from "react-icons/hi2";
 import { FaCircle } from "react-icons/fa";
+//hooks
+import { useToggleStore } from "@/stores/toggleStore";
 
 
 
@@ -26,6 +28,7 @@ const options = [
 ];
 
 export default function LayoutPools({ children }) {
+  const { toggle, setToggle } = useToggleStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export default function LayoutPools({ children }) {
   if (loading) return <PageLoading />;
 
   return (
-    <section className="fle-1 h-full flex flex-col gap-4   bg-[rgb(var(--blue-50))]">
+    <section className=" fle-1 h-full flex flex-col gap-4   bg-[rgb(var(--blue-50))]">
       <Header>
         <section
           className={`relative 
@@ -70,7 +73,10 @@ export default function LayoutPools({ children }) {
           </Box>
         </section>
       </Header>
-      <BoxLayout className="py-4 sm:p-4  bg-white flex flex-wrap justify-center  gap-5 rounded-[10px]">
+      <BoxLayout
+        toggle={toggle}
+        className=" py-4 sm:p-4  bg-white flex flex-wrap justify-center  gap-5 rounded-[10px]"
+      >
         <div className="flex justify-center">
           <PoolCard
             title="Bolão de segunda"

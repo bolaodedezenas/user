@@ -16,9 +16,13 @@ import { HiUserCircle } from "react-icons/hi";
 import { RiShieldUserFill } from "react-icons/ri";
 import { usePathname } from 'next/navigation';
 import { IoMdArrowDropdown } from "react-icons/io";
+//stores
+import { useToggleStore } from "@/stores/toggleStore";
 
 
-export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
+export default function Menu({ toggleUser, setToggleUser }) {
+
+  const { toggle, setToggle } = useToggleStore();
   const { user, handleLogout } = useAuth();
 
   const router = useRouter();
@@ -27,7 +31,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
 
   return (
     <aside
-      className={`absolute top-0 bottom-2 left-0  xss:static z-40 flex flex-col bg-white   
+      className={`absolute top-0 bottom-2 left-0  xss:static z-50 flex flex-col bg-white   
           min-h-full  flex-1  overflow-hidden shadow-2xl 
           rounded-t-0 xss:rounded-[20px]
         ${
@@ -102,7 +106,8 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
       </div>
       <nav
         className={`p-4 pt-0  flex-1 border-b-2 border-b-gray-300  overflow-auto 
-         ${toggleUser ? "h-auto" : " min-w-[300px] sm:w-[260px]"}
+           min-w-[300px] sm:w-[260px]
+         ${toggleUser ? "h-auto" : ""}
         `}
       >
         <ul
@@ -115,7 +120,9 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
           <li
             className={currentRoute === "/" ? "bg-[rgb(var(--blue-50))] " : ""}
             onClick={() => {
-              router.push("/"), setToggle(false);
+              {
+                router.push("/"), setToggle(false), setToggleUser(false);
+              }
             }}
           >
             <HiHome className="text-[1.3rem] text-[rgb(var(--btn))]" />
@@ -126,7 +133,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
               currentRoute === "/dashboard" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              router.push("/dashboard"), setToggle(false);
+              {router.push("/dashboard"), setToggle(false), setToggleUser(false);}
             }}
           >
             <TbLayoutDashboardFilled className="text-[1.3rem] text-[rgb(var(--btn))]" />
@@ -137,7 +144,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
               currentRoute === "/bets" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              router.push("/bets"), setToggle(false);
+             { router.push("/bets"), setToggle(false), setToggleUser(false);};
             }}
           >
             <FaFileInvoiceDollar className="text-[1.3rem] text-[rgb(var(--btn))]" />
@@ -148,7 +155,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
               currentRoute === "/pools" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              router.push("/pools"), setToggle(false);
+              {router.push("/pools"), setToggle(false), setToggleUser(false);};
             }}
           >
             <FaTrophy className="text-[1.3rem] text-[rgb(var(--btn))]" />
@@ -159,7 +166,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
               currentRoute === "/perfil" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              router.push("/perfil"), setToggle(false);
+              {router.push("/perfil"), setToggle(false), setToggleUser(false)};
             }}
           >
             <FaUser className="text-[1.3rem] text-[rgb(var(--btn))]" />
