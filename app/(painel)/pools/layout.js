@@ -15,8 +15,17 @@ import Submenu from "@/components/Submenu";
 import { FaTrophy } from "react-icons/fa6";
 import { HiShoppingCart } from "react-icons/hi2";
 import { FaCircle } from "react-icons/fa";
+
+import { HiOutlineGlobeAlt } from "react-icons/hi2";
+
+
+
+
 //hooks
 import { useToggleStore } from "@/stores/toggleStore";
+// stores 
+import { useBetsStore } from "@/stores/useBetsStore";
+
 
 
 
@@ -30,6 +39,11 @@ const options = [
 export default function LayoutPools({ children }) {
   const { toggle, setToggle } = useToggleStore();
   const [loading, setLoading] = useState(true);
+
+  const { bets } = useBetsStore();
+  console.log(bets),
+
+
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 3000);
@@ -69,7 +83,12 @@ export default function LayoutPools({ children }) {
               options={options}
               onChange={() => console.log("change")}
             />
-            <HiShoppingCart className=" text-[2.5rem] text-[rgb(var(--blue-950))] cursor-pointer" />
+            <div className="relative flex flex-col items-center justify-center ">
+              <HiOutlineGlobeAlt className=" text-[4rem] text-[rgb(var(--btn))] cursor-pointer" />
+              <p className=" absolute text-white text-[1.3rem] font-bold    z-60 bg-[rgb(var(--btn),0.8)]  w-13 h-13 rounded-full flex items-center justify-center ">
+                {bets.length}
+              </p>
+            </div>
           </Box>
         </section>
       </Header>

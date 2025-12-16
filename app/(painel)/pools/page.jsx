@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+// stores
+import { useBetsStore } from "@/stores/useBetsStore";
 // components
 import Title from "@/components/Title";
 import Paragraph from "@/components/paragraph";
@@ -9,6 +11,10 @@ import Select from "@/components/Select";
 import Balls from "@/components/Balls";
 // json
 import  balls  from "@/components/Balls/balls";
+// lib
+import { generateBets } from "@/libs/bets/generateBets";
+// toast
+import toast from "react-hot-toast";
 
 
 const options = [
@@ -18,7 +24,18 @@ const options = [
 ];
 
 export default function Pools() {
-  
+  const { selectedBalls, setBall } = useBetsStore();
+  const [gamesCount, setGamesCount] = useState(1); // 👈 AQUI
+
+  const increaseGames = () => {
+    setGamesCount((prev) => prev === 100 ? 100 : prev + 1);
+    if (gamesCount === 100) return toast.error("Ops, você so pode gerar 100 jogos por vez", { duration: 3000 });
+  };
+
+  const decreaseGames = () => {
+    setGamesCount((prev) => (prev > 1 ? prev - 1 : 1));
+  };
+
 
   return (
     <section className="fle-1 min-h-full flex justify-center   text-[2rem] tb-1  ">
@@ -38,6 +55,7 @@ export default function Pools() {
             <div className="flex flex-wrap gap-6 items-center">
               <div className="flex gap-2 items-center ">
                 <div
+                  onClick={decreaseGames}
                   className="w-10 h-10 flex items-center justify-center rounded-[5px] bg-[rgb(var(--blue-50))] 
                  shadow-lg  cursor-pointer "
                 >
@@ -48,14 +66,22 @@ export default function Pools() {
                   text-[1.5rem] font-bold
                  "
                 >
-                  1
+                  {gamesCount}
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center rounded-[5px] bg-[rgb(var(--blue-50))] shadow-lg cursor-pointer ">
+                <div 
+                onClick={increaseGames}
+                className="w-10 h-10 flex items-center justify-center rounded-[5px] bg-[rgb(var(--blue-50))] shadow-lg cursor-pointer ">
                   +
                 </div>
               </div>
               <div>
-                <Button text="Gerar" className="h-10 flex items-center" />
+                <Button
+                  onClick={() => {generateBets(balls, gamesCount)
+                    setGamesCount(1)
+                  }}
+                  text="Gerar"
+                  className="h-10 flex items-center"
+                />
               </div>
             </div>
           </div>
@@ -81,26 +107,34 @@ export default function Pools() {
         </div>
         <div className="flex flex-wrap items-center gap-4 sm:gap-8  bg-[rgb(var(--blue-50))] rounded-[5px] px-5 py-3 ">
           <div className="flex gap-4 items-center justify-center">
-            <h3 className="font-bold">10</h3>
+            <h3 className="font-bold">{selectedBalls.length}</h3>
             <p className="text-[1.2rem] ">Dezenas</p>
           </div>
           <div className="flex-1 flex  gap-2 flex-wrap  min-w-[220px]   max-sm:justify-center ">
-            {balls.slice(0, 10).map((ball, index) => (
-              <Balls
-                key={index}
-                number={ball}
-                className="bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] w-[35px] h-[35px]"
-              />
-            ))}
+            {selectedBalls.length > 0 &&
+              selectedBalls.map((ball, index) => (
+                <Balls
+                  key={index}
+                  number={ball}
+                  className="bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] w-[35px] h-[35px]"
+                />
+              ))}
           </div>
         </div>
         <div className="flex justify-center ">
-          <div className=" flex  gap-2  flex-wrap  py-8   max-sm:justify-center md:w-[75%] ">
+          <div className=" flex  gap-2  flex-wrap  py-8   max-sm:justify-center md:w-[70%] ">
             {balls.map((ball, index) => (
               <Balls
+                onClick={() => setBall(ball)}
                 key={index}
                 number={ball}
-                className="bg-zinc-400  w-[35px] h-[35px] hover:bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] "
+                className={`  w-[35px] h-[35px] hover:bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] 
+                 ${
+                   selectedBalls.includes(ball)
+                     ? "bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] "
+                     : "bg-zinc-400"
+                 }
+                `}
               />
             ))}
           </div>
