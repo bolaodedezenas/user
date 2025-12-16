@@ -1,8 +1,9 @@
+import { Ball } from "./styles";
 
-
-export default function Balls({ number, className, onClick }) {
+export default function Balls({ number, className, onClick, $close }) {
   return (
-    <div
+    <Ball
+      $close={$close === "visible" ? true : false}
       onClick={onClick}
       className={`text-[1rem] text-white font-bold rounded-full  flex items-center justify-center
         cursor-pointer shadow-lg
@@ -10,6 +11,6 @@ export default function Balls({ number, className, onClick }) {
     `}
     >
       {number}
-    </div>
+    </Ball>
   );
 }

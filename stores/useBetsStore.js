@@ -53,6 +53,57 @@
 
 
 
+// import { create } from "zustand";
+// import toast from "react-hot-toast";
+
+// const MAX_BALLS = 10;
+
+// export const useBetsStore = create((set, get) => ({
+//   selectedBalls: [],
+//   bets: [],
+
+//   setBall: (ball) =>
+//     set((state) => {
+//       if (state.selectedBalls.includes(ball)) {
+//         toast.error(`A bola ${ball} já foi selecionada!`, { duration: 4000 });
+//         return state;
+//       }
+
+//       if (state.selectedBalls.length >= MAX_BALLS) {
+//         toast.error(`Você só pode escolher ${MAX_BALLS} dezenas`, {
+//           duration: 3000,
+//         });
+//         return state;
+//       }
+
+//       const updatedBalls = [...state.selectedBalls, ball];
+
+//       if (updatedBalls.length === MAX_BALLS) {
+//         toast.success("Jogo adicionado com sucesso!", { duration: 3000 });
+
+//         // usa a action explícita
+//         setTimeout(() => {
+//           get().addBet(updatedBalls);
+//           get().clearBalls();
+//         }, 1000);
+//       }
+
+//       return { selectedBalls: updatedBalls };
+//     }),
+
+//   // 👇 ACTION EXPLÍCITA
+//   addBet: (bet) =>
+//     set((state) => ({
+//       bets: [...state.bets, bet],
+//     })),
+
+//   clearBalls: () => set({ selectedBalls: [] }),
+//   clearBets: () => set({ bets: [] }),
+  
+// }));
+
+
+
 import { create } from "zustand";
 import toast from "react-hot-toast";
 
@@ -81,7 +132,6 @@ export const useBetsStore = create((set, get) => ({
       if (updatedBalls.length === MAX_BALLS) {
         toast.success("Jogo adicionado com sucesso!", { duration: 3000 });
 
-        // usa a action explícita
         setTimeout(() => {
           get().addBet(updatedBalls);
           get().clearBalls();
@@ -91,13 +141,33 @@ export const useBetsStore = create((set, get) => ({
       return { selectedBalls: updatedBalls };
     }),
 
-  // 👇 ACTION EXPLÍCITA
+  // ✅ adiciona um bet
   addBet: (bet) =>
     set((state) => ({
       bets: [...state.bets, bet],
     })),
 
+  // ❌ remove uma bola específica
+  removeBall: (ball) => {
+    set((state) => ({
+      selectedBalls: state.selectedBalls.filter(
+        (selected) => selected !== ball
+      ),
+    }));
+
+    toast.error(`A bola ${ball} foi removida!`, { duration: 4000, icon: "🟠" });
+  },
+
+  // ❌ remove um bet específico (por índice)
+  removeBet: (betIndex) => {
+    set((state) => ({
+      bets: state.bets.filter((_, index) => index !== betIndex),
+    })),
+
+    toast.error(`O jogo foi removido!`, { duration: 4000 , icon: '🟠'});
+  },
+
+
   clearBalls: () => set({ selectedBalls: [] }),
   clearBets: () => set({ bets: [] }),
-  
 }));

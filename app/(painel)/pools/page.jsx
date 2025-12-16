@@ -24,7 +24,7 @@ const options = [
 ];
 
 export default function Pools() {
-  const { selectedBalls, setBall } = useBetsStore();
+  const { selectedBalls, setBall, removeBall } = useBetsStore();
   const [gamesCount, setGamesCount] = useState(1); // 👈 AQUI
 
   const increaseGames = () => {
@@ -114,6 +114,8 @@ export default function Pools() {
             {selectedBalls.length > 0 &&
               selectedBalls.map((ball, index) => (
                 <Balls
+                  $close="visible"
+                  onClick={() => removeBall(ball)}
                   key={index}
                   number={ball}
                   className="bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] w-[35px] h-[35px]"

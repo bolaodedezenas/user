@@ -84,8 +84,13 @@ export default function LayoutPools({ children }) {
               onChange={() => console.log("change")}
             />
             <div className="relative flex flex-col items-center justify-center ">
-              <HiOutlineGlobeAlt className=" text-[4rem] text-[rgb(var(--btn))] cursor-pointer" />
-              <p className=" absolute text-white text-[1.3rem] font-bold    z-60 bg-[rgb(var(--btn),0.8)]  w-13 h-13 rounded-full flex items-center justify-center ">
+              <HiOutlineGlobeAlt
+                className={` text-[4rem] text-[rgb(var(--btn))]  ${
+                  bets.length > 0 ? "animate-spin" : ""
+                }
+              `}
+              />
+              <p className=" absolute text-white text-[1.3rem] font-bold  z-60 bg-[rgb(var(--btn),0.8)]  w-13 h-13 rounded-full flex items-center justify-center cursor-pointer">
                 {bets.length}
               </p>
             </div>
