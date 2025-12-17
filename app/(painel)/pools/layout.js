@@ -61,7 +61,7 @@ export default function LayoutPools({ children }) {
         >
           <div className=" flex items-center justify-between  flex-wrap gap-3  ml-12 xss:ml-2  ">
             <div className="flex gap-2 items-center ">
-              <FaTrophy className="text-[2.2rem] text-[rgb(var(--blue-950))]  " />
+              <FaTrophy className="text-[2.2rem] text-[rgb(var(--btn))]  " />
               <div>
                 <Title
                   text="Bolão"
@@ -85,12 +85,12 @@ export default function LayoutPools({ children }) {
             />
             <div className="relative flex flex-col items-center justify-center ">
               <HiOutlineGlobeAlt
-                className={` text-[4rem] text-[rgb(var(--btn))]  ${
+                className={` text-[3.5rem] text-[rgb(var(--btn))]  ${
                   bets.length > 0 ? "animate-spin" : ""
                 }
               `}
               />
-              <p className=" absolute text-white text-[1.3rem] font-bold  z-60 bg-[rgb(var(--btn),0.8)]  w-13 h-13 rounded-full flex items-center justify-center cursor-pointer">
+              <p className=" absolute text-white text-[1.1rem] font-bold  z-60 bg-[rgb(var(--btn),0.6)]  w-13 h-13 rounded-full flex items-center justify-center cursor-pointer">
                 {bets.length}
               </p>
             </div>

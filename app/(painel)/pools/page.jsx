@@ -68,16 +68,18 @@ export default function Pools() {
                 >
                   {gamesCount}
                 </div>
-                <div 
-                onClick={increaseGames}
-                className="w-10 h-10 flex items-center justify-center rounded-[5px] bg-[rgb(var(--blue-50))] shadow-lg cursor-pointer ">
+                <div
+                  onClick={increaseGames}
+                  className="w-10 h-10 flex items-center justify-center rounded-[5px] bg-[rgb(var(--blue-50))] shadow-lg cursor-pointer "
+                >
                   +
                 </div>
               </div>
               <div>
                 <Button
-                  onClick={() => {generateBets(balls, gamesCount)
-                    setGamesCount(1)
+                  onClick={() => {
+                    generateBets(balls, gamesCount);
+                    setGamesCount(1);
                   }}
                   text="Gerar"
                   className="h-10 flex items-center"
@@ -105,7 +107,7 @@ export default function Pools() {
             />
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-4 sm:gap-8  bg-[rgb(var(--blue-50))] rounded-[5px] px-5 py-3 ">
+        <div className="flex flex-wrap items-center gap-6 sm:gap-8  bg-[rgb(var(--blue-50))] rounded-[10px] px-5 py-3 ">
           <div className="flex gap-4 items-center justify-center">
             <h3 className="font-bold">{selectedBalls.length}</h3>
             <p className="text-[1.2rem] ">Dezenas</p>
@@ -124,7 +126,7 @@ export default function Pools() {
           </div>
         </div>
         <div className="flex justify-center ">
-          <div className=" flex  gap-2  flex-wrap  py-8   max-sm:justify-center md:w-[70%] ">
+          <div className=" flex  gap-2  flex-wrap  max-sm:justify-center md:w-[70%] p-4 max-h-[400px] overflow-auto   scrollbar-transparent ">
             {balls.map((ball, index) => (
               <Balls
                 onClick={() => setBall(ball)}
