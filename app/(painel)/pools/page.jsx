@@ -38,9 +38,9 @@ export default function Pools() {
 
 
   return (
-    <section className="fle-1 min-h-full flex justify-center   text-[2rem] tb-1  ">
-      <div className="py-3 px-0 sm:py-8 sm:px-6 bg-white rounded-[10px] shadow-lg w-full min-h-full">
-        <div className="flex flex-wrap border-b-2 border-zinc-300 justify-between pb-4 gap-4">
+    <section className="fle-1 min-h-full flex justify-center   text-[2rem]  ">
+      <div className="py-3 px-3 sm:py-8 sm:px-6 bg-white rounded-[10px] shadow-lg w-full min-h-full">
+        <div className="flex flex-wrap border-b-2 border-zinc-300 justify-between pb-3 gap-4">
           <div className="">
             <Title
               text="Escolha 10 Dezenas"
@@ -88,7 +88,7 @@ export default function Pools() {
             </div>
           </div>
         </div>
-        <div className="flex gap-4 flex-wrap-reverse justify-between py-4">
+        <div className="flex gap-4 flex-wrap-reverse justify-between py-3">
           <div>
             <Title
               text="Todas as Dezenas"
@@ -113,7 +113,7 @@ export default function Pools() {
           <h3 className="font-bold">{selectedBalls.length}</h3>
           <p className="text-[1.4rem] ">Dezenas</p>
         </div>
-        <div className="flex flex-wrap items-center justify-center  gap-0 sm:gap-8  bg-[rgb(var(--blue-50))] rounded-[10px] px-2 py-3 sm:py-4 sm:px-4  max-xss:h-26 min-h-10  ">
+        <div className="flex flex-wrap items-center justify-center  gap-0 sm:gap-8  bg-[rgb(var(--blue-50))] rounded-[10px] px-2 py-3 sm:py-4 sm:px-4  max-xss:h-26 min-h-18 ">
           <div
             className="  flex justify-center  gap-1.5 flex-wrap 
              max-xs:w-[230px]  w-full "

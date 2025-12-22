@@ -119,7 +119,7 @@ export default function LayoutPools({ children }) {
 
       <BoxLayout
         $toggle={toggle}
-        className="py-4 sm:p-4 bg-white flex flex-wrap justify-center gap-5 rounded-[10px]"
+        className="py-4 px-3 sm:p-4 bg-white flex flex-wrap justify-center gap-5 rounded-[10px]"
       >
         {/* CARD */}
         <div className="flex flex-col gap-5">

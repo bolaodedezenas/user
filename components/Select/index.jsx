@@ -59,7 +59,7 @@ export default function Select({
             <li
               key={option.id}
               onClick={() => handleSelect(option)}
-              className="px-4 py-3 cursor-pointer hover:bg-[rgb(var(--blue-50))] border-b border-gray-200 transition-colors text-[0.9rem]"
+              className="px-4 py-3 cursor-pointer hover:bg-[rgb(var(--blue-50))] border-b border-gray-200 transition-colors text-[0.9rem] text-center"
             >
               {option.name || option.contestNumber && `${option.contestNumber} - ${new Date(option.startAt).toLocaleDateString("pt-BR")} 📆`}
             </li>
