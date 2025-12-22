@@ -1,8 +1,11 @@
+
 "use client";
+
 // styles personalizados
 import { Box, BoxLayout } from "@/app/(painel)/pools/styles";
-
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+
 // components
 import PageLoading from "@/components/PageLoading";
 import Header from "@/components/Header";
@@ -11,129 +14,185 @@ import Paragraph from "@/components/paragraph";
 import Select from "@/components/Select";
 import PoolCard from "@/components/Cards/PoolCard";
 import Submenu from "@/components/Submenu";
-//icons
-import { FaTrophy } from "react-icons/fa6";
-import { HiShoppingCart } from "react-icons/hi2";
-import { FaCircle } from "react-icons/fa";
 
+// icons
+import { FaTrophy } from "react-icons/fa6";
+import { FaCircle } from "react-icons/fa";
 import { HiOutlineGlobeAlt } from "react-icons/hi2";
 
-
-
-
-//hooks
+// hooks / stores
 import { useToggleStore } from "@/stores/toggleStore";
-// stores 
 import { useBetsStore } from "@/stores/useBetsStore";
 
+// db    
+import { pools, contests } from "@/DB/DB_ememory";
+// hooks
+import { useCountTime } from "@/hooks/useCountTime";
+import { useFormatDateTime } from "@/hooks/useFormatDate";
 
-
-
-const options = [
-  { label: "Bolão de segunda", value: "1" },
-  { label: "Bolão de quarta", value: "2" },
-  { label: "Bolão de sexta", value: "3" },
-  { label: "Bolão de sabado", value: "4" },
-];
 
 export default function LayoutPools({ children }) {
-  const { toggle, setToggle } = useToggleStore();
+  const { toggle } = useToggleStore();
+  const { bets } = useBetsStore();
+
   const [loading, setLoading] = useState(true);
 
-  const { bets } = useBetsStore();
-  console.log(bets),
+  const [pool, setPool] = useState(pools[0]);
+  const [itemContest, setItemContest] = useState(null);
+
+// contest time
+ const countTime = useCountTime(itemContest?.startAt, itemContest?.status);
+ // date format
+ const { formatDate} = useFormatDateTime();
+ const { date, time } = formatDate(itemContest?.startAt);
 
 
+
+  // 🔹 Quando muda o bolão
+  const handleChangePool = (item) => {
+    setPool(item);
+    toast.success(`Você selecionou o  ${item.name}`, { duration: 4000 });
+    const firstContest = contests.find((contest) => contest.poolId === item.id);
+    setItemContest(firstContest || null);
+  };
+
+  // 🔹 Quando muda o concurso
+  const handleChangeContest = (item) => {
+    setItemContest(item);
+    toast.success(`Você mudou para o Concurso ${item.contestNumber}`, { duration: 4000 });
+  };
+
+  // 🔹 Garante concurso inicial ao carregar / trocar bolão
+  useEffect(() => {
+    const firstContest = contests.find((contest) => contest.poolId === pool.id);
+    setItemContest(firstContest || null);
+  }, [pool]);
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 3000);
+    const timer = setTimeout(() => setLoading(false), 3000);
+    return () => clearTimeout(timer);
   }, []);
 
   if (loading) return <PageLoading />;
 
   return (
-    <section className=" fle-1 h-full flex flex-col gap-4   bg-[rgb(var(--blue-50))]">
+    <section className="flex-1 h-full flex flex-col gap-4 bg-[rgb(var(--blue-50))]">
       <Header>
-        <section
-          className={`relative 
-          bg-white w-full  flex  flex-wrap  gap-4 items-center 
-          `}
-        >
-          <div className=" flex items-center justify-between  flex-wrap gap-3  ml-12 xss:ml-2  ">
-            <div className="flex gap-2 items-center ">
-              <FaTrophy className="text-[2.2rem] text-[rgb(var(--btn))]  " />
-              <div>
-                <Title
-                  text="Bolão"
-                  className={"text-zinc-700 font-semibold text-[0.9rem]  "}
-                />
-                <Paragraph
-                  text="Faça suas apostas a baixo."
-                  className={"text-zinc-500  text-[0.8rem] "}
-                />
-              </div>
+        <section className="relative bg-white w-full flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-3 ml-12 xss:ml-2">
+            <FaTrophy className="text-[2.2rem] text-[rgb(var(--btn))]" />
+            <div>
+              <Title
+                text="Bolão"
+                className="text-zinc-700 font-semibold text-[0.9rem]"
+              />
+              <Paragraph
+                text="Faça suas apostas a baixo."
+                className="text-zinc-500 text-[0.8rem]"
+              />
             </div>
           </div>
-          <Box
-            className={`flex-1 flex justify-end  items-center gap-8 
-            `}
-          >
+
+          <Box className="flex-1 flex justify-end items-center gap-8">
+            {/* SELECT BOLÕES */}
             <Select
-              label={options[0].label}
-              options={options}
-              onChange={() => console.log("change")}
+              label={pools[0].name}
+              value={pool} // ✅ CONTROLA O SELECT
+              options={pools}
+              onChange={handleChangePool}
+              className="px-5 py-3"
             />
-            <div className="relative flex flex-col items-center justify-center ">
+
+            <div className="relative flex items-center justify-center">
               <HiOutlineGlobeAlt
-                className={` text-[3.5rem] text-[rgb(var(--btn))]  ${
+                className={`text-[3.5rem] text-[rgb(var(--btn))] ${
                   bets.length > 0 ? "animate-spin" : ""
-                }
-              `}
+                }`}
               />
-              <p className=" absolute text-white text-[1.1rem] font-bold  z-60 bg-[rgb(var(--btn),0.6)]  w-13 h-13 rounded-full flex items-center justify-center cursor-pointer">
+              <p className="absolute text-white text-[1.1rem] font-bold bg-[rgb(var(--btn),0.6)] w-13 h-13 rounded-full flex items-center justify-center">
                 {bets.length}
               </p>
             </div>
           </Box>
         </section>
       </Header>
+
       <BoxLayout
-        toggle={toggle}
-        className=" py-4 sm:p-4  bg-white flex flex-wrap justify-center  gap-5 rounded-[10px]"
+        $toggle={toggle}
+        className="py-4 sm:p-4 bg-white flex flex-wrap justify-center gap-5 rounded-[10px]"
       >
-        <div className="flex justify-center">
+        {/* CARD */}
+        <div className="flex flex-col gap-5">
           <PoolCard
-            title="Bolão de segunda"
-            money="R$ 100.000,00"
-            time="05h / 50m / 49s"
+            title={pool.name}
+            color={pool.color}
+            money={itemContest?.prizeAmount}
+            time={countTime}
+            status={itemContest?.status}
           />
         </div>
-        <section className=" flex flex-col flex-wrap sm:pl-5 sm:pr-5  ">
-          <div className=" border-b-2 border-zinc-300 flex justify-center md:justify-start pb-4   ">
-            <div>
-              <h3 className="font-bold text-[1.2rem] max-xs:pl-4 ">
-                Status do bolão
-              </h3>
-              <div className="flex flex-wrap gap-5   ">
-                <div className="max-xs:pl-4  ">
-                  <div className="flex items-center gap-5 ">
-                    <h4 className="font-bold">Aberto</h4>
-                    <FaCircle className="text-green-500" />
-                  </div>
-                  <p>Aberto para realizações de apostas</p>
+
+        {/* INFO */}
+        <section className="flex flex-col sm:px-5">
+          <div className="border-b-2 border-zinc-300 pb-4">
+            <h3 className="font-bold text-[1.2rem]">Status do bolão</h3>
+
+            <div className="flex flex-wrap gap-5">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-bold">
+                    {itemContest?.status === "open"
+                      ? "Aberto"
+                      : itemContest?.status === "closed"
+                      ? "Fechado"
+                      : "Finalizado"}
+                  </h4>
+                  <FaCircle
+                    className={`${
+                      itemContest.status === "open"
+                        ? "text-green-500"
+                        : itemContest.status === "closed"
+                        ? "text-orange-400"
+                        : "text-red-500"
+                    } `}
+                  />
                 </div>
-                <div className="max-xs:pl-4 ">
-                  <h4 className="font-bold">Prazo</h4>
-                  <p>10/12/2025 até 21:30 horas</p>
-                </div>
+                <p>
+                  {itemContest?.status === "open"
+                    ? "Aberto para Realizações de Apostas"
+                    : itemContest?.status === "closed"
+                    ? "Apostas encerradas"
+                    : "Bolão finalizado"}
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-bold">Prazo</h4>
+                <p>{` ${date} até ${time} horas`}</p>
+              </div>
+
+              {/* SELECT CONCURSOS */}
+              <div>
+                <h4 className="font-bold">Concurso</h4>
+                <Select
+                  label={itemContest?.contestNumber}
+                  value={itemContest} // ✅ ESSENCIAL
+                  options={contests.filter(
+                    (contest) => contest.poolId === pool.id
+                  )}
+                  onChange={handleChangeContest}
+                  className="shadow-none"
+                />
               </div>
             </div>
           </div>
-          <div className=" min-w-[290px]flex-1 flex items-center justify-center  pt-5  ">
-            <Submenu />
+
+          <div className="flex-1 flex items-center justify-center pt-5">
+            <Submenu itemContest={itemContest} />
           </div>
         </section>
       </BoxLayout>
+
       <section className="h-full">{children}</section>
     </section>
   );

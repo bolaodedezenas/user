@@ -18,9 +18,9 @@ import toast from "react-hot-toast";
 
 
 const options = [
-  { label: "Todas as Dezenas", value: "1" },
-  { label: "Mais Sorteadas ", value: "2" },
-  { label: "Mais Atrasadas", value: "3" },
+  { name: "Todas as Dezenas"},
+  { name: "Mais Sorteadas "},
+  { name: "Mais Atrasadas"},
 ];
 
 export default function Pools() {
@@ -102,8 +102,10 @@ export default function Pools() {
           <div>
             <Select
               label={options[0].label}
+              value={options[0].label}
               options={options}
               onChange={() => console.log("change")}
+              className={` px-5 py-3 `}
             />
           </div>
         </div>
@@ -126,7 +128,7 @@ export default function Pools() {
           </div>
         </div>
         <div className="flex justify-center ">
-          <div className=" flex  gap-2  flex-wrap  max-sm:justify-center md:w-[70%] p-4 max-h-[400px] overflow-auto   scrollbar-transparent ">
+          <div className=" flex  gap-2  flex-wrap  max-sm:justify-center md:max-w-[890px] p-4 max-h-[400px] overflow-auto   scrollbar-transparent ">
             {balls.map((ball, index) => (
               <Balls
                 onClick={() => setBall(ball)}

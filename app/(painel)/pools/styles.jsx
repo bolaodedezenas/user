@@ -13,7 +13,7 @@ export const BoxLayout = styled.section`
   margin-top: 90px;
 
   @media (max-width: 861px) {
-    margin-top: ${(props) => (props.toggle ? "150px" : "90px")};
+    margin-top: ${(props) => (props.$toggle ? "150px" : "90px")};
   }
 
   @media (max-width: 621px) {

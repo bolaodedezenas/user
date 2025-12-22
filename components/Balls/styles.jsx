@@ -13,7 +13,6 @@ export const Ball = styled.div`
         right: -6px;
         font-size: 0.6rem;
         font-weight: bold;
-        z-index: 1;
       }
     `}
 `;
