@@ -15,4 +15,27 @@ export const Ball = styled.div`
         font-weight: bold;
       }
     `}
+
+  @keyframes bounceIn {
+    0% {
+      margin-top: -130px;
+    }
+    60% {
+      margin-top: -6px;
+    }
+    70% {
+      margin-top: -10px;
+    }
+    80% {
+      margin-top: -2px;
+    }
+    90% {
+      margin-top: -5px;
+    }
+    100% {
+      margin-top: 0;
+    }
+  }
+
+  animation: ${({ $anima }) => ($anima ? "bounceIn 1s ease-in forwards" : " ")};
 `;
