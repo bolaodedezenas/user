@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/libs/firebase/FirebaseConfig';
 import { applyActionCode } from 'firebase/auth';
@@ -70,26 +70,27 @@ export default function Recovery() {
 
   return (
     <div
-      className='
-      min-h-screen 
-      flex items-center justify-center flex-col
+      className="
+      scrollbar-transparent overflow-auto 
+      min-h-full 
+      flex items-center  justify-center
       bg-gradient-to-t from-[rgb(var(--background-secundary))] to-[rgb(var(--background))]
       p-4
-      '
+      "
     >
-      {mode === 'resetPassword' ? (
+      {mode === "resetPassword" ? (
         <ResetPasswordForm oobCode={oobCode} />
       ) : (
-        <div className=' p-5 w-full max-w-[650px] text-center  '>
-          {message.title === 'Erro ao verificar email!' ? (
-            <Icon name='Warning' size={100} color='red' />
+        <div className=" p-5 w-full max-w-[650px] text-center  ">
+          {message.title === "Erro ao verificar email!" ? (
+            <Icon name="Warning" size={100} color="red" />
           ) : (
-            <Icon name='Verified_User' size={100} color='white' />
+            <Icon name="Verified_User" size={100} color="white" />
           )}
-          <h3 className='text-[rgb(var(--white))] text-[2.8rem] '>
+          <h3 className="text-[rgb(var(--white))] text-[2.8rem] ">
             {message.title}
           </h3>
-          <p className='text-[rgb(var(--white))] text-[1.3rem] '>
+          <p className="text-[rgb(var(--white))] text-[1.3rem] ">
             {message.text}
           </p>
         </div>
@@ -97,3 +98,5 @@ export default function Recovery() {
     </div>
   );
 }
+
+

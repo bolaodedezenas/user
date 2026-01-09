@@ -20,16 +20,19 @@ export default function LoginPage() {
   if (loading) return  <Loading />;
 
   return (
-    <div className="
-      min-h-screen 
-      flex items-center justify-center flex-col
+    <div
+      className="
+      scrollbar-transparent overflow-auto 
+      min-h-full 
+      flex  flex-col items-center 
       bg-gradient-to-t from-[rgb(var(--background-secundary))] to-[rgb(var(--background))]
       p-4
-      sm:p-10
       "
     >
       <SignInForm />
-      <p className={`font-light text-[0.9rem] text-[rgb(var(--white))] mt-8`}>Tecnologia desenvolvida por Rixxer</p>
+      <p className={`font-light text-[0.9rem] text-[rgb(var(--white))] mt-8`}>
+        Tecnologia desenvolvida por Rixxer
+      </p>
     </div>
   );
 }

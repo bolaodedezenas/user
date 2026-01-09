@@ -1,5 +1,5 @@
 
-
+import {BoxPhoto} from './styles'
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from 'next/navigation';
 // icons 
@@ -16,9 +16,13 @@ import { HiUserCircle } from "react-icons/hi";
 import { RiShieldUserFill } from "react-icons/ri";
 import { usePathname } from 'next/navigation';
 import { IoMdArrowDropdown } from "react-icons/io";
+//stores
+import { useToggleStore } from "@/stores/toggleStore";
 
 
-export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
+export default function Menu({ toggleUser, setToggleUser }) {
+
+  const { toggle, setToggle } = useToggleStore();
   const { user, handleLogout } = useAuth();
 
   const router = useRouter();
@@ -27,7 +31,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
 
   return (
     <aside
-      className={`absolute top-0 bottom-2 left-0  xss:static z-40 flex flex-col bg-white   
+      className={`absolute top-0 bottom-2 left-0  xss:static z-50 flex flex-col bg-white   
           min-h-full  flex-1  overflow-hidden shadow-2xl 
           rounded-t-0 xss:rounded-[20px]
         ${
@@ -37,15 +41,17 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
         } transition-all duration-300 
       `}
     >
-      <div
-        className="relative flex items-center pl-18 lg:p-0  lg:justify-center h-[100px] lg:h-[170px]  max-w-[100%] min-w-[300px] sm:w-[260px] bg-[rgb(var(--background))] rounded-b-0  pr-5 
+      <BoxPhoto
+        className="flex items-center  justify-center   rounded-b-0
+          h-[170px] min-w-[260px] overflow-hidden 
+          
         "
       >
         {user?.photoURL ? (
           <img
             src={user?.photoURL || "/ball.png"}
             alt="logo"
-            className={`object-cover rounded-full w-18 h-18 lg:w-30 lg:h-30  trasition duration-300`}
+            className={`object-cover rounded-full w-30 h-30   trasition duration-300 `}
           />
         ) : (
           <HiUserCircle
@@ -54,7 +60,7 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
           `}
           />
         )}
-      </div>
+      </BoxPhoto>
       <div
         className={`relative p-5 min-w-[300px]  sm:min-w-[300px] border-b-2 border-b-gray-300 overflow-hidden trasition duration-300 
           ${toggleUser ? "h-45" : "h-13"}
@@ -75,32 +81,33 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
         `}
         >
           <li>
-            <RiShieldUserFill className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
+            <RiShieldUserFill className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>{user?.name.split(" ").slice(0, 2).join(" ")}</p>
           </li>
           <li>
-            <MdEmail className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
+            <MdEmail className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>{user?.email}</p>
           </li>
           <li>
-            <PiCityFill className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
+            <PiCityFill className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>
               {(user?.city && `${user?.city} - ${user?.state}`) || "Sem cidade"}
             </p>
           </li>
           <li>
-            <FaMapMarkerAlt className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
+            <FaMapMarkerAlt className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>{user?.cep || "Sem cep"}</p>
           </li>
           <li>
-            <FaPhone className="text-[1.2rem] text-[rgb(var(--blue-950))]" />
+            <FaPhone className="text-[1.2rem] text-[rgb(var(--btn))]" />
             <p>{user?.phone || "Sem telefone"}</p>
           </li>
         </ol>
       </div>
       <nav
         className={`p-4 pt-0  flex-1 border-b-2 border-b-gray-300  overflow-auto 
-         ${toggleUser ? "h-auto" : " min-w-[300px] sm:w-[260px]"}
+           min-w-[300px] sm:w-[260px]
+         ${toggleUser ? "h-auto" : ""}
         `}
       >
         <ul
@@ -113,10 +120,12 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
           <li
             className={currentRoute === "/" ? "bg-[rgb(var(--blue-50))] " : ""}
             onClick={() => {
-              router.push("/"), setToggle(false);
+              {
+                router.push("/"), setToggle(false), setToggleUser(false);
+              }
             }}
           >
-            <HiHome className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
+            <HiHome className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>Home</p>
           </li>
           <li
@@ -124,10 +133,10 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
               currentRoute === "/dashboard" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              router.push("/dashboard"), setToggle(false);
+              {router.push("/dashboard"), setToggle(false), setToggleUser(false);}
             }}
           >
-            <TbLayoutDashboardFilled className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
+            <TbLayoutDashboardFilled className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>Dasboard</p>
           </li>
           <li
@@ -135,36 +144,36 @@ export default function Menu({ toggle, setToggle, toggleUser, setToggleUser }) {
               currentRoute === "/bets" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              router.push("/bets"), setToggle(false);
+             { router.push("/bets"), setToggle(false), setToggleUser(false);};
             }}
           >
-            <FaFileInvoiceDollar className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
+            <FaFileInvoiceDollar className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>Apostas</p>
           </li>
           <li
             className={
-              currentRoute === "/winners" ? "bg-[rgb(var(--blue-50))] " : ""
+              currentRoute === "/pools" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              router.push("/winners"), setToggle(false);
+              {router.push("/pools"), setToggle(false), setToggleUser(false);};
             }}
           >
-            <FaTrophy className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
-            <p>Ganhadores</p>
+            <FaTrophy className="text-[1.3rem] text-[rgb(var(--btn))]" />
+            <p>Bolões</p>
           </li>
           <li
             className={
               currentRoute === "/perfil" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              router.push("/perfil"), setToggle(false);
+              {router.push("/perfil"), setToggle(false), setToggleUser(false)};
             }}
           >
-            <FaUser className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
+            <FaUser className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>Perfil</p>
           </li>
           <li onClick={() => handleLogout()}>
-            <IoArrowUndo className="text-[1.3rem] text-[rgb(var(--blue-950))]" />
+            <IoArrowUndo className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>Sair</p>
           </li>
         </ul>

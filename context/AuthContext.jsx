@@ -1,16 +1,140 @@
+// "use client";
+
+// import { createContext, useContext, useEffect, useState } from "react";
+// import { auth, db} from "@/libs/firebase/FirebaseConfig";
+// import { doc, getDoc, updateDoc } from "firebase/firestore"; // <-- importa doc/getDoc
+// import { loginWithGoogle, logout, loginWithEmail } from "@/libs/firebase/authService";
+// import { useRouter } from "next/navigation";
+
+
+// const AuthContext = createContext();
+
+// export const AuthProvider = ({ children }) => {
+//   const router = useRouter(); 
+
+//   const [user, setUser] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [userToken, setUserToken] = useState(null);
+
+//   useEffect(() => {
+//     setLoading(true);
+//     try {
+//       const unsubscribeAuth = auth.onAuthStateChanged(async (firebaseUser) => {
+//         console.log(firebaseUser);
+//         if (!firebaseUser) {
+//           console.log('❌ Usuário não logado');
+//           setTimeout(() => setLoading(false), 3000);
+//           setUser(null);
+//           router.replace("/login");
+//           return;
+//         }
+
+//         if (firebaseUser) {
+//           //Verifica se o e-mail foi confirmado
+//           if (!firebaseUser.emailVerified ) {
+//             console.log('❌ E-mail nao verificado');
+//             setUser(null);
+//             setTimeout(() => setLoading(false) , 3000);
+//             return;
+//           }
+
+//           const docRef = doc(db, 'users', firebaseUser.uid);
+//           const snap = await getDoc(docRef);
+
+//          if (snap.exists()) {
+//            setUser({ id: firebaseUser.uid, ...snap.data() });
+//            localStorage.setItem("Photo", JSON.stringify(snap.data().photoURL));
+//          } else {
+//            setUser({
+//              id: firebaseUser.uid,
+//              ...firebaseUser,
+//            });
+//            localStorage.setItem("Photo", JSON.stringify(firebaseUser.photoURL));
+//          }
+//           setTimeout(() => setLoading(false), 3000);
+//         }
+        
+//       });
+
+//       // verifica se o token mudou para atualizar o state do contexto 
+//       const unsubscribeToken = auth.onIdTokenChanged(async (user) => {
+//         if (user) {
+//           const newToken = await user.getIdToken();
+//           setUserToken(newToken);
+//         } else {
+//           setUserToken(null);
+//           router.replace("/login");
+//         }
+//       });
+      
+//       return () => {
+//         unsubscribeAuth();
+//         unsubscribeToken();
+//       };
+//     } catch (error) {
+//       console.error('Erro no useEffect:', error);
+//     }
+//   }, []);
+
+  
+//   const handleLoginWithGoogle = async () => {
+//     const { user, error } = await loginWithGoogle();
+//     if (error) return { error };
+//     return { user };
+//   };
+
+//   const handleLoginWithEmail = async (email, password) => {
+//     const { user, error } = await loginWithEmail(email, password);
+//     if (error) return { error };
+//     return { user };
+//   };
+
+//   const handleLogout = async () => {
+//     setLoading(true);
+//     await logout();
+//   };
+
+
+ 
+
+//   return (
+//     <AuthContext.Provider
+//       value={{
+//         user,
+//         loading,
+//         userToken,
+//         setUser,
+//         setLoading,
+//         handleLoginWithGoogle,
+//         handleLoginWithEmail,
+//         handleLogout,
+//       }}
+//     >
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+// export const useAuth = () => useContext(AuthContext);
+
+// /2222222222222
+
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { auth, db} from "@/libs/firebase/FirebaseConfig";
-import { doc, getDoc} from "firebase/firestore"; // <-- importa doc/getDoc
-import { loginWithGoogle, logout, loginWithEmail } from "@/libs/firebase/authService";
+import { auth, db } from "@/libs/firebase/FirebaseConfig";
+import { doc,  onSnapshot } from "firebase/firestore"; // <-- adiciona onSnapshot
+import {
+  loginWithGoogle,
+  logout,
+  loginWithEmail,
+} from "@/libs/firebase/authService";
 import { useRouter } from "next/navigation";
-
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const router = useRouter(); 
+  const router = useRouter();
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,44 +143,54 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     setLoading(true);
     try {
+      // Observa o estado de autenticação do Firebase
       const unsubscribeAuth = auth.onAuthStateChanged(async (firebaseUser) => {
         console.log(firebaseUser);
         if (!firebaseUser) {
-          console.log('❌ Usuário não logado');
-          setTimeout(() => setLoading(false), 3000);
+          console.log("❌ Usuário não logado");
           setUser(null);
+          setTimeout(() => setLoading(false), 3000);
           router.replace("/login");
           return;
         }
 
         if (firebaseUser) {
-          //Verifica se o e-mail foi confirmado
-          if (!firebaseUser.emailVerified ) {
-            console.log('❌ E-mail nao verificado');
+          // Verifica se o e-mail foi confirmado
+          if (!firebaseUser.emailVerified) {
+            console.log("❌ E-mail não verificado");
             setUser(null);
-            setTimeout(() => setLoading(false) , 3000);
+            setTimeout(() => setLoading(false), 3000);
             return;
           }
 
-          const docRef = doc(db, 'users', firebaseUser.uid);
-          const snap = await getDoc(docRef);
+          const docRef = doc(db, "users", firebaseUser.uid);
 
-         if (snap.exists()) {
-           setUser({ id: firebaseUser.uid, ...snap.data() });
-           localStorage.setItem("Photo", JSON.stringify(snap.data().photoURL));
-         } else {
-           setUser({
-             id: firebaseUser.uid,
-             ...firebaseUser,
-           });
-           localStorage.setItem("Photo", JSON.stringify(firebaseUser.photoURL));
-         }
-          setTimeout(() => setLoading(false), 3000);
+          // Adiciona listener em tempo real
+          const unsubscribeSnapshot = onSnapshot(docRef, (snap) => {
+            if (snap.exists()) {
+              setUser({ id: firebaseUser.uid, ...snap.data() });
+              localStorage.setItem(
+                "Photo",
+                JSON.stringify(snap.data().photoURL)
+              );
+            } else {
+              setUser({ id: firebaseUser.uid, ...firebaseUser });
+              localStorage.setItem(
+                "Photo",
+                JSON.stringify(firebaseUser.photoURL)
+              );
+            }
+            setTimeout(() => setLoading(false), 3000);
+          });
+
+          // Limpeza do snapshot
+          return () => {
+            unsubscribeSnapshot();
+          };
         }
-        
       });
 
-      // verifica se o token mudou para atualizar o state do contexto 
+      // Observa mudanças no token
       const unsubscribeToken = auth.onIdTokenChanged(async (user) => {
         if (user) {
           const newToken = await user.getIdToken();
@@ -66,16 +200,15 @@ export const AuthProvider = ({ children }) => {
           router.replace("/login");
         }
       });
-      
+
       return () => {
         unsubscribeAuth();
         unsubscribeToken();
       };
     } catch (error) {
-      console.error('Erro no useEffect:', error);
+      console.error("Erro no useEffect:", error);
     }
   }, []);
-
 
   const handleLoginWithGoogle = async () => {
     const { user, error } = await loginWithGoogle();
@@ -93,9 +226,6 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     await logout();
   };
-
-
- 
 
   return (
     <AuthContext.Provider
@@ -116,3 +246,6 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+
+
+

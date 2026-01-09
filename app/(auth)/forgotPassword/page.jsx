@@ -21,12 +21,13 @@ export default function RecoveryPage() {
    if (loading) return  <Loading />;
 
   return (
-    <div className="
-      min-h-screen 
-      flex items-center justify-center flex-col
+    <div
+      className="
+      scrollbar-transparent overflow-auto 
+      min-h-full 
+      flex items-center  justify-center
       bg-gradient-to-t from-[rgb(var(--background-secundary))] to-[rgb(var(--background))]
       p-4
-      sm:p-10
       "
     >
       <RecoveryForm />

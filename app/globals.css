@@ -16,12 +16,6 @@
 }
 
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
 
 /* CSS Variables generated from Kigen.design */
 :root {
@@ -119,21 +113,6 @@ input:-webkit-autofill:active {
   font-weight: normal;  
 }
 
-/* CENTRALIZAR TODOS OS TOASTS NO MEIO DA TELA */
-#react-hot-toast {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-
-  z-index: 999999 !important;
-  pointer-events: none !important; /* deixa clicar atrás se quiser */
-}
-
 
 ::-webkit-scrollbar {
   width: 5px;       /* largura da barra vertical */
@@ -144,6 +123,16 @@ input:-webkit-autofill:active {
   background: #f0f0f0; /* cor do fundo da barra */
 }
 
+/* scrollbar transparente */
+.scrollbar-transparent::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.scrollbar-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
 ::-webkit-scrollbar-thumb {
   background: #324F8E; /* cor do "polegar" */
   border-radius: 4px;
@@ -153,3 +142,7 @@ input:-webkit-autofill:active {
   background: #557EDA;
   cursor: pointer;
 }
+
+
+
+

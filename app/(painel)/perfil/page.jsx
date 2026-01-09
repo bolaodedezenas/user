@@ -24,12 +24,12 @@ export default function Perfil() {
 
   return (
     <section
-      className=" flex gap-2 lg:gap-4 flex-col  bg-[rgb(var(--blue-50))]
+      className="mt-22 max-xss:mt-19 flex gap-2 lg:gap-4 flex-col  bg-[rgb(var(--blue-50))]
       
     "
     >
       <Header>
-        <FaUser className="text-[2.2rem] text-[rgb(var(--blue-950))] ml-14 xss:ml-4 " />
+        <FaUser className="text-[2.2rem] text-[rgb(var(--btn))] ml-14 xss:ml-4 " />
         <div>
           <Title
             text="Perfil"
