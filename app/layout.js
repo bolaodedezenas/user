@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
-// components
 import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
@@ -16,8 +15,8 @@ const geistMono = Geist_Mono({
 
 const roboto = Roboto({
   variable: "--font-roboto",
-  weight: ["400", "700"], // pesos corretos
-  style: ["normal", "italic"], // estilos corretos
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
