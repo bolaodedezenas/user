@@ -22,8 +22,8 @@ const roboto = Roboto({
 });
 
 export const metadata = {
-  title: "Bolão de Dezenas - usuários",
-  description: "Bolão de Dezenas - Jogue e ganhe prêmios incríveis!",
+  title: "Vendedores",
+  description: "Bolão de Dezenas - Vendedores",
   icons: {
     icon: "/favicon.png",
   },
