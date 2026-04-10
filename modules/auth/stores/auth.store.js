@@ -1,0 +1,23 @@
+import { create } from "zustand";
+
+export const useAuthStore = create((set) => ({
+  user: undefined, // 🔥 undefined = carregando
+  loading: true,
+
+  setUser: (user) =>
+    set({
+      user,
+      loading: false,
+    }),
+
+  clearUser: () =>
+    set({
+      user: null,
+      loading: false,
+    }),
+
+  setLoading: (loading) =>
+    set({
+      loading,
+    }),
+}));

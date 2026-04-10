@@ -9,7 +9,7 @@ import Icon from '@/components/Icon';
 import { useAuth } from "@/context/AuthContext";
 // components
 import Loading from "@/components/Loading";
-import ResetPasswordForm from "@/components/Forms/AuthForms/ResetPasswordForm";
+import ResetPasswordForm from "@/modules/auth/components/ResetPasswordForm";
 
 export default function Recovery() {
   const { loading, setLoading } = useAuth(); // pega as funções do contexto

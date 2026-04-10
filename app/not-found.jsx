@@ -35,7 +35,7 @@ export default function NotFound() {
         </p>
         <div
           onClick={() => router.replace('/login')}
-          className='mt-8 inline-block px-8 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all shadow-lg'
+          className='mt-8 inline-block px-8 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all shadow-lg cursor-pointer select-none'
         >
           Voltar ao início
         </div>

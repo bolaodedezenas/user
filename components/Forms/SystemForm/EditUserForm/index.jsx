@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { editUserSchema } from "@/schemas/authSchemas";
 // components
 import Label from "@/components/Label";
-import InputUi from "@/components/InputUi";
+import InputUi from "@/components/Input";
 import SignInButton from "@/components/Btns/SignInButton";
 import InputLayout from "@/components/InputLayout";
 import Title from "@/components/Title";
@@ -15,12 +15,18 @@ import { BiSolidEdit } from "react-icons/bi";
 // toast
 import toast from "react-hot-toast";
 // context
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore  } from "@/modules/auth/stores/auth.store";
 //services
-import { updateUserData, atualizarEmailComVerificacao } from "@/libs/firebase/authService";
+import {
+  updateUserData,
+  atualizarEmailComVerificacao,
+} from "@/libs/firebase/authService";
 
 export default function EditUserForm() {
-  const { user, setUser} = useAuth();
+  const  { user, setUser } = useAuthStore((state) => ({
+    user: state.user,
+    setUser: state.setUser,
+  }));
 
   const [photo, setPhoto] = useState("");
   const [name, setName] = useState("");
@@ -35,20 +41,17 @@ export default function EditUserForm() {
   const [open, setOpen] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState(false);
 
-
-
   useEffect(() => {
     if (user) {
       setName(user.name);
       setEmail(user.email);
       setPhone(user.phone);
       if (user.cep) setValidCep(true);
-      setCep(user.cep)
+      setCep(user.cep);
       setState(user.state);
       setCity(user.city);
     }
   }, [user]);
-
 
   async function buscarCEP(valor) {
     console.log("buscando cep", valor);
@@ -60,7 +63,7 @@ export default function EditUserForm() {
         return;
       }
       const res = await fetch(
-        `https://viacep.com.br/ws/${somenteNumeros}/json/`
+        `https://viacep.com.br/ws/${somenteNumeros}/json/`,
       );
       const data = await res.json();
       if (data.erro) {
@@ -71,7 +74,7 @@ export default function EditUserForm() {
         setCity("");
         return;
       }
-      
+
       setValidCep(true);
       setState(data.estado);
       setCity(data.localidade);
@@ -82,7 +85,6 @@ export default function EditUserForm() {
       toast.error("Erro ao buscar CEP, verifique e tente novamente.");
     }
   }
-
 
   const salvar = async (formData) => {
     const { success } = await updateUserData(user.id, formData, photo, setUser);
@@ -98,8 +100,6 @@ export default function EditUserForm() {
     setFocusInput("");
   };
 
-
-
   const handleupdateEmail = async () => {
     const { success, error } = await atualizarEmailComVerificacao(email);
 
@@ -109,7 +109,7 @@ export default function EditUserForm() {
       if (error === "auth/requires-recent-login") {
         toast.error(
           "Para editar o email, é preciso refazer o login novamente. Saia da conta e entre novamente.",
-          { duration: 10000 }
+          { duration: 10000 },
         );
         setOpen(false);
         return;
@@ -131,7 +131,7 @@ export default function EditUserForm() {
       Seus dados foram salvos corretamente.
       Para concluir a troca de email, verifique sua caixa de entrada do novo endereço informado — enviamos um link de confirmação.
       Após confirmar o email, sua conta passará a utilizar o novo endereço normalmente.`,
-      { duration: 8000 }
+      { duration: 8000 },
     );
 
     // Agora salva o resto dos dados do perfil
@@ -146,8 +146,6 @@ export default function EditUserForm() {
 
     salvar(formData);
   };
-
-
 
   const hendleSubmit = async (e) => {
     e.preventDefault();
@@ -189,8 +187,6 @@ export default function EditUserForm() {
     salvar(formData);
   };
 
-
-
   const handlePhoneChange = (event) => {
     setFocusInput("");
     const { value } = event.target;
@@ -213,7 +209,7 @@ export default function EditUserForm() {
     } else {
       return `(${cleanedValue.slice(0, 2)})${cleanedValue.slice(
         2,
-        7
+        7,
       )}-${cleanedValue.slice(7, 11)}`;
     }
   }
@@ -321,7 +317,7 @@ export default function EditUserForm() {
                   placeholder="Email@example.com"
                   value={email}
                   onChange={(e) => {
-                    setEmail(e.target.value), setFocusInput("");
+                    (setEmail(e.target.value), setFocusInput(""));
                   }}
                   autocomplete="email"
                   required
@@ -381,7 +377,7 @@ export default function EditUserForm() {
                   placeholder="UF"
                   value={state}
                   onChange={(e) => {
-                    setState(e.target.value), setFocusInput("");
+                    (setState(e.target.value), setFocusInput(""));
                   }}
                   readOnly={validCep}
                   required
@@ -398,7 +394,7 @@ export default function EditUserForm() {
                   placeholder="Cidade"
                   value={city}
                   onChange={(e) => {
-                    setCity(e.target.value), setFocusInput("");
+                    (setCity(e.target.value), setFocusInput(""));
                   }}
                   readOnly={validCep}
                   className={

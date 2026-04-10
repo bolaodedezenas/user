@@ -1,22 +1,29 @@
 "use client";
 
-import { useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { use, useEffect } from "react";
+import { useAuthStore } from "@/modules/auth/stores/auth.store"; // pega as funções do contexto
 import { useRouter } from "next/navigation";
 // components
 import Loading from "@/components/Loading";
-import SignUpForm from "@/components/Forms/AuthForms/SignUpForm";
+import SignUpForm from "@/modules/auth/components/SignUpForm";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, loading } = useAuth(); // pega as funções do contexto
-
-   useEffect(() => {
+  const user =  useAuthStore((state) => state.user); // pega o usuário do contexto
+  const loading = useAuthStore((state) => state.loading); // pega o loading do contexto 
+  const setLoading = useAuthStore((state) => state.setLoading); // pega a função de setar o loading 
+  
+  useEffect(() => {
     if (user) {
       router.replace("/"); // usuário já logado vai para raiz
     }
   }, [user, router]);
-  if (loading) return  <Loading />;
+
+  // useEffect(() => {
+  //   setTimeout(() => setLoading(false), 3000);
+  // }, [router, setLoading]);
+
+  // if (loading) return  <Loading />;
 
   return (
     <div

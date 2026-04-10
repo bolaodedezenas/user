@@ -1,3 +1,4 @@
+"use client";
 import { Card } from "./styles";
 import { BsFillClockFill } from "react-icons/bs";
 import { FaSackDollar } from "react-icons/fa6";

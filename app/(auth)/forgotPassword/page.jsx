@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
-import RecoveryForm from "@/components/Forms/AuthForms/forgotForm";
+import RecoveryForm from "@/modules/auth/components/forgotForm";
 
 
 export default function RecoveryPage() {

@@ -34,7 +34,7 @@ import { useFormatDateTime } from "@/hooks/useFormatDate";
 export default function LayoutPools({ children }) {
   const { toggle } = useToggleStore();
   const { bets } = useBetsStore();
-
+ 
   const [loading, setLoading] = useState(true);
 
   const [pool, setPool] = useState(pools[0]);
@@ -42,7 +42,7 @@ export default function LayoutPools({ children }) {
 
 // contest time
  const countTime = useCountTime(itemContest?.startAt, itemContest?.status);
- // date format
+//  date format
  const { formatDate} = useFormatDateTime();
  const { date, time } = formatDate(itemContest?.startAt);
 
@@ -72,7 +72,7 @@ export default function LayoutPools({ children }) {
     const timer = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(timer);
   }, []);
-
+ 
   if (loading) return <PageLoading />;
 
   return (
@@ -150,7 +150,7 @@ export default function LayoutPools({ children }) {
                   <FaCircle
                     className={`${
                       itemContest.status === "open"
-                        ? "text-green-500"
+                        ? "text-green-500 animate-pulse"
                         : itemContest.status === "closed"
                         ? "text-orange-400"
                         : "text-red-500"

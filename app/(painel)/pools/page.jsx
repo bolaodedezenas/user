@@ -51,6 +51,7 @@ export default function Pools() {
               className={"text-zinc-500 "}
             />
           </div>
+
           <div className="flex flex-col gap-3 ">
             <div className="flex flex-wrap gap-6 items-center">
               <div className="flex gap-2 items-center ">
@@ -75,6 +76,7 @@ export default function Pools() {
                   +
                 </div>
               </div>
+              
               <div>
                 <Button
                   onClick={() => {
@@ -88,6 +90,7 @@ export default function Pools() {
             </div>
           </div>
         </div>
+
         <div className="flex gap-4 flex-wrap-reverse justify-between py-3">
           <div>
             <Title
@@ -109,10 +112,12 @@ export default function Pools() {
             />
           </div>
         </div>
+
         <div className="flex gap-3 items-center justify-center">
           <h3 className="font-bold">{selectedBalls.length}</h3>
           <p className="text-[1.4rem] ">Dezenas</p>
         </div>
+
         <div className="flex flex-wrap items-center justify-center  gap-0 sm:gap-8  bg-[rgb(var(--blue-50))] rounded-[10px] px-2 py-3 sm:py-4 sm:px-4  max-xss:h-26 min-h-18 ">
           <div
             className="  flex justify-center  gap-1.5 flex-wrap 
@@ -131,6 +136,7 @@ export default function Pools() {
               ))}
           </div>
         </div>
+
         <div className="flex justify-center ">
           <div className=" flex  gap-2  flex-wrap  max-sm:justify-center md:max-w-[890px] p-4 max-h-[340px] overflow-auto   scrollbar-transparent ">
             {balls.map((ball, index) => (
@@ -150,6 +156,7 @@ export default function Pools() {
             ))}
           </div>
         </div>
+
       </div>
     </section>
   );

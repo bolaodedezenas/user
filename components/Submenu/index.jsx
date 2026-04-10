@@ -8,7 +8,6 @@ import { usePathname } from 'next/navigation';
 export default function Submenu({ itemContest }) {
   const router = useRouter();
   const pathname = usePathname();
-  console.log(pathname);
   const currentRoute = pathname;
 
   useEffect(() => {
