@@ -1,70 +1,64 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { auth } from '@/libs/firebase/FirebaseConfig';
-import { applyActionCode } from 'firebase/auth';
-// icon 
-import Icon from '@/components/Icon';
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { supabase } from "@/libs/supabase/client";
+// icon
+import Icon from "@/components/Icon";
 
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from "@/modules/auth/stores/auth.store";
 // components
 import Loading from "@/components/Loading";
 import ResetPasswordForm from "@/modules/auth/components/ResetPasswordForm";
 
 export default function Recovery() {
-  const { loading, setLoading } = useAuth(); // pega as funções do contexto
+  const { loading, setLoading } = useAuthStore();
   const router = useRouter();
-  const [oobCode, setOobCode] = useState('');
-  const [mode, setMode] = useState('');
-  const [close, setClose] = useState('');
-  const [message, setMessage] = useState('');
+  const searchParams = useSearchParams();
+
+  const [mode, setMode] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    console.log(close);
-  }, [oobCode, mode, close]);
+    const handleRecovery = async () => {
+      setLoading(true);
 
-  useEffect(() => {
-    setLoading(true);
-    const query = new URLSearchParams(window.location.search);
-    const code = query.get('oobCode');
-    const modeType = query.get('mode');
-    const continueUrl = query.get('continueUrl');
+      // No Supabase, os params comuns são token_hash e type
+      const tokenHash = searchParams.get("token_hash");
+      const type = searchParams.get("type"); // 'signup', 'recovery', 'email_change'
 
-    // Decodifica a continueUrl (remove os %3F, %2F, etc.)
-    const decodedUrl = continueUrl ? decodeURIComponent(continueUrl) : '';
-    // Captura o número que vem depois de ?
-    const numMatch = decodedUrl.match(/\?(\d+)/);
-    const pageCode = numMatch ? numMatch[1] : null;
+      // Se for apenas uma recuperação de senha (o Supabase lida com o token via hash automaticamente)
+      if (type === "recovery") {
+        setMode("resetPassword");
+        setLoading(false);
+        return;
+      }
 
-    setOobCode(code);
-    setMode(modeType);
-    setClose(pageCode);
+      // Se for verificação de email (signup ou change)
+      if (tokenHash && (type === "signup" || type === "email_change")) {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: type,
+        });
 
-    console.log(modeType);
-    console.log(code);
-
-    if (!code) return router.replace('/not-found');
-    
-    // Se for verificação de email
-    if (modeType === "verifyEmail" || modeType === "verifyAndChangeEmail") {
-      applyActionCode(auth, code)
-        .then(() => {
+        if (!error) {
           setMessage({
             title: "Email verificado com sucesso!",
-            text: "Agora vocé pode fazer login com seu email.",
+            text: "Agora você pode acessar sua conta.",
           });
-        })
-        .catch((error) => {
-          console.error(error);
+          setTimeout(() => router.replace("/login"), 5000);
+        } else {
           setMessage({
             title: "Erro ao verificar email!",
-            text: "Link expirado ou inválido, solicite um novo link de verificação.",
+            text: "Link expirado ou inválido. Solicite um novo link.",
           });
-        });
-      setTimeout(() => router.replace(`/login`), 10000);
-    }
-    setLoading(false);
-  }, []);
+        }
+      }
+
+      setLoading(false);
+    };
+
+    handleRecovery();
+  }, [searchParams, router, setLoading]);
 
   if (loading) return <Loading />;
 
@@ -79,7 +73,7 @@ export default function Recovery() {
       "
     >
       {mode === "resetPassword" ? (
-        <ResetPasswordForm oobCode={oobCode} />
+        <ResetPasswordForm />
       ) : (
         <div className=" p-5 w-full max-w-[650px] text-center  ">
           {message.title === "Erro ao verificar email!" ? (
@@ -98,5 +92,3 @@ export default function Recovery() {
     </div>
   );
 }
-
-

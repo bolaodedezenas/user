@@ -13,20 +13,20 @@ import { FiEyeOff, FiEye } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 // toast
 import toast from "react-hot-toast";
-// context
-import { useAuth } from "@/context/AuthContext";
+// zustand store
+import { useAuthStore } from "@/modules/auth/stores/auth.store";
 // icons
 import Icon from "@/components/Icon";
-import { handleResetPassword } from "@/libs/firebase/authService";
+import { supabase } from "@/libs/supabase/client";
 
-export default function ResetPasswordForm({ oobCode }) {
+export default function ResetPasswordForm() {
   const router = useRouter();
-  const { setLoading } = useAuth();
+  const { setLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(true);
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
-  const hendleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // inicia loading
     try {
@@ -38,45 +38,36 @@ export default function ResetPasswordForm({ oobCode }) {
       const result = await resetPassordSchema.safeParseAsync(newPassword);
 
       if (!result.success) {
-        const Error = result.error.issues[0].message;
-        toast.error(Error);
+        const errorMessage = result.error.issues[0].message;
+        toast.error(errorMessage);
         return;
       }
 
-      const { status, message } = await handleResetPassword(oobCode, password);
-      // console.log(status, message);
-      if (!status) {
-        switch (message) {
-          case "Firebase: Error (auth/invalid-action-code).":
-            toast.error(
-              "O link é inválido, já foi usado ou expirou. Solicite um novo.",
-            );
-            break;
+      // No Supabase, a redefinição é feita atualizando o usuário logado via link de recuperação
+      const { error } = await supabase.auth.updateUser({ password });
 
-          case "auth/weak-password":
-            toast.error("Senha muito fraca.");
-            break;
-
-          default:
-            toast.error("Erro ao redefinir a senha.");
-        }
+      if (error) {
+        console.log(error.message);
+        toast.error("Erro! Não foi possível redefinir a senha. Tente novamente. ou solicite um novo link de recuperação.", { duration: 8000 });
         return;
       }
 
-      toast.success(message, { duration: 6000 });
+      toast.success("Senha redefinida com sucesso!", { duration: 6000 });
       setTimeout(() => {
         router.replace("/login");
-        setTimeout(() => setLoading(false), 2000);
       }, 1000);
     } catch (error) {
+      console.log(error);
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <FormLayout>
       <form
-        onSubmit={(e) => hendleSubmit(e)}
+        onSubmit={handleSubmit}
         className="w-full flex flex-col items-center pt-5 pb-10"
       >
         <Icon
@@ -106,7 +97,7 @@ export default function ResetPasswordForm({ oobCode }) {
                   e.stopPropagation();
                   setShowPassword(false);
                 }}
-                className="text-[rgb(var(--icon-secundary))] hover:text-[rgb(var(--icon-hover))] text-[1.2rem] cursor-pointer position: absolute right-4"
+                className="text-[rgb(var(--icon-secundary))] hover:text-[rgb(var(--icon-hover))] text-[1.2rem] cursor-pointer absolute right-4"
               />
             ) : (
               <FiEye
@@ -114,7 +105,7 @@ export default function ResetPasswordForm({ oobCode }) {
                   e.stopPropagation();
                   setShowPassword(true);
                 }}
-                className="text-[rgb(var(--icon-secundary))] hover:text-[rgb(var(--icon-hover))] text-[1.2rem] cursor-pointer position: absolute right-4"
+                className="text-[rgb(var(--icon-secundary))] hover:text-[rgb(var(--icon-hover))] text-[1.2rem] cursor-pointer absolute right-4"
               />
             )}
           </InputLayout>
@@ -132,6 +123,15 @@ export default function ResetPasswordForm({ oobCode }) {
           <div className="pt-5">
             <SignInButton text="Redefinir Senha" />
           </div>
+          <p className="w-[190px] xxs:w-full text-[rgb(var(--text))] text-[0.9rem] text-center mt-4">
+            Lembrou sua senha?{" "}
+            <span
+              className="text-[rgb(var(--text-links))] font-bold cursor-pointer hover:underline text-[1rem]"
+              onClick={() => router.replace("/login")}
+            >
+              Entrar
+            </span>
+          </p>
         </div>
       </form>
     </FormLayout>

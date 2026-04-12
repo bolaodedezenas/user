@@ -1,4 +1,3 @@
-
 "use client";
 
 // styles personalizados
@@ -14,6 +13,7 @@ import Paragraph from "@/components/paragraph";
 import Select from "@/components/Select";
 import PoolCard from "@/components/Cards/PoolCard";
 import Submenu from "@/components/Submenu";
+import Cart from "@/components/Cart";
 
 // icons
 import { FaTrophy } from "react-icons/fa6";
@@ -24,29 +24,27 @@ import { HiOutlineGlobeAlt } from "react-icons/hi2";
 import { useToggleStore } from "@/stores/toggleStore";
 import { useBetsStore } from "@/stores/useBetsStore";
 
-// db    
+// db
 import { pools, contests } from "@/DB/DB_ememory";
 // hooks
 import { useCountTime } from "@/hooks/useCountTime";
 import { useFormatDateTime } from "@/hooks/useFormatDate";
 
-
 export default function LayoutPools({ children }) {
   const { toggle } = useToggleStore();
-  const { bets } = useBetsStore();
- 
+  const { tickets, setActiveContest, setActivePool } = useBetsStore();
+  // console.log(bets);
+
   const [loading, setLoading] = useState(true);
 
   const [pool, setPool] = useState(pools[0]);
   const [itemContest, setItemContest] = useState(null);
 
-// contest time
- const countTime = useCountTime(itemContest?.startAt, itemContest?.status);
-//  date format
- const { formatDate} = useFormatDateTime();
- const { date, time } = formatDate(itemContest?.startAt);
-
-
+  // contest time
+  const countTime = useCountTime(itemContest?.startAt, itemContest?.status);
+  //  date format
+  const { formatDate } = useFormatDateTime();
+  const { date, time } = formatDate(itemContest?.startAt);
 
   // 🔹 Quando muda o bolão
   const handleChangePool = (item) => {
@@ -59,7 +57,9 @@ export default function LayoutPools({ children }) {
   // 🔹 Quando muda o concurso
   const handleChangeContest = (item) => {
     setItemContest(item);
-    toast.success(`Você mudou para o Concurso ${item.contestNumber}`, { duration: 4000 });
+    toast.success(`Você mudou para o Concurso ${item.contestNumber}`, {
+      duration: 4000,
+    });
   };
 
   // 🔹 Garante concurso inicial ao carregar / trocar bolão
@@ -69,10 +69,22 @@ export default function LayoutPools({ children }) {
   }, [pool]);
 
   useEffect(() => {
+    if (itemContest) {
+      setActiveContest(itemContest);
+    }
+  }, [itemContest, setActiveContest]);
+
+  useEffect(() => {
+    if (pool) {
+      setActivePool(pool);
+    }
+  }, [pool, setActivePool]);
+
+  useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(timer);
   }, []);
- 
+
   if (loading) return <PageLoading />;
 
   return (
@@ -102,17 +114,6 @@ export default function LayoutPools({ children }) {
               onChange={handleChangePool}
               className="px-5 py-3"
             />
-
-            <div className="relative flex items-center justify-center">
-              <HiOutlineGlobeAlt
-                className={`text-[3.5rem] text-[rgb(var(--btn))] ${
-                  bets.length > 0 ? "animate-spin" : ""
-                }`}
-              />
-              <p className="absolute text-white text-[1.1rem] font-bold bg-[rgb(var(--btn),0.6)] w-13 h-13 rounded-full flex items-center justify-center">
-                {bets.length}
-              </p>
-            </div>
           </Box>
         </section>
       </Header>
@@ -144,16 +145,16 @@ export default function LayoutPools({ children }) {
                     {itemContest?.status === "open"
                       ? "Aberto"
                       : itemContest?.status === "closed"
-                      ? "Fechado"
-                      : "Finalizado"}
+                        ? "Fechado"
+                        : "Finalizado"}
                   </h4>
                   <FaCircle
                     className={`${
                       itemContest.status === "open"
                         ? "text-green-500 animate-pulse"
                         : itemContest.status === "closed"
-                        ? "text-orange-400"
-                        : "text-red-500"
+                          ? "text-orange-400"
+                          : "text-red-500"
                     } `}
                   />
                 </div>
@@ -161,8 +162,8 @@ export default function LayoutPools({ children }) {
                   {itemContest?.status === "open"
                     ? "Aberto para Realizações de Apostas"
                     : itemContest?.status === "closed"
-                    ? "Apostas encerradas"
-                    : "Bolão finalizado"}
+                      ? "Apostas encerradas"
+                      : "Bolão finalizado"}
                 </p>
               </div>
 
@@ -178,7 +179,7 @@ export default function LayoutPools({ children }) {
                   label={itemContest?.contestNumber}
                   value={itemContest} // ✅ ESSENCIAL
                   options={contests.filter(
-                    (contest) => contest.poolId === pool.id
+                    (contest) => contest.poolId === pool.id,
                   )}
                   onChange={handleChangeContest}
                   className="shadow-none"
@@ -194,6 +195,7 @@ export default function LayoutPools({ children }) {
       </BoxLayout>
 
       <section className="h-full">{children}</section>
+      <Cart />
     </section>
   );
 }

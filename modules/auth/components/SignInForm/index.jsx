@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 // components
 import FormLayout from "@/components/Forms/FormLayout";
@@ -29,10 +28,16 @@ export default function SignInForm() {
   const [password, setPassword] = useState("");
   const [visiblePassword, setVisiblePassword] = useState(true);
 
-  // pegar foto do localStorage (client-safe)
-  useState(() => {
-    const photo = localStorage.getItem("Photo");
-    if (photo) setPerfil(JSON.parse(photo));
+  // Carrega a foto do localStorage após o componente montar para evitar erros de hidratação
+  useEffect(() => {
+    try {
+      const photo = localStorage.getItem("Photo");
+      if (photo) {
+        setPerfil(JSON.parse(photo));
+      }
+    } catch (error) {
+      console.error("Erro ao ler foto do localStorage:", error);
+    }
   }, []);
 
   const handleSubmit = async (e) => {
@@ -50,7 +55,6 @@ export default function SignInForm() {
       toast.success("Login realizado com sucesso!");
       router.push("/");
     } catch (error) {
-      
       console.log(error);
       if (error.message?.includes("Invalid login credentials")) {
         return toast.error("Email ou senha incorretos.");
@@ -129,7 +133,7 @@ export default function SignInForm() {
               autoComplete="current-password"
             />
 
-            { visiblePassword ? (
+            {visiblePassword ? (
               <FiEyeOff
                 onClick={(e) => {
                   e.stopPropagation();

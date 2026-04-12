@@ -76,7 +76,7 @@ export default function Pools() {
                   +
                 </div>
               </div>
-              
+
               <div>
                 <Button
                   onClick={() => {
@@ -131,32 +131,31 @@ export default function Pools() {
                   onClick={() => removeBall(ball)}
                   key={index}
                   number={ball}
-                  className="bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] w-[35px] h-[35px]"
+                  className="  bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] w-[35px] h-[35px] text-[1rem]  "
                 />
               ))}
           </div>
         </div>
 
-        <div className="flex justify-center ">
-          <div className=" flex  gap-2  flex-wrap  max-sm:justify-center md:max-w-[890px] p-4 max-h-[340px] overflow-auto   scrollbar-transparent ">
+        <div className="flex justify-center pt-10">
+          <div className=" flex  gap-2  flex-wrap  max-sm:justify-center md:max-w-[950px] p-4 max-h-[340px] overflow-auto   scrollbar-transparent ">
             {balls.map((ball, index) => (
               <Balls
                 $anima={false}
                 onClick={() => setBall(ball)}
                 key={index}
                 number={ball}
-                className={`  w-[35px] h-[35px] hover:bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] 
+                className={` w-[38px] h-[38px]  hover:bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))]
                  ${
                    selectedBalls.includes(ball)
                      ? "bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] "
                      : "bg-zinc-400"
                  }
-                `}
+                text-[1rem]`}
               />
             ))}
           </div>
         </div>
-
       </div>
     </section>
   );

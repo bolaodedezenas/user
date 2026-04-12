@@ -52,7 +52,7 @@ export default function Menu({ toggleUser, setToggleUser }) {
       >
         {user?.avatar_url  !== "" ? (
           <img
-            src={user.avatar_url || "/ball.png"}
+            src={user?.avatar_url || "/ball.png"}
             alt="logo"
             className={`object-cover rounded-full w-30 h-30   trasition duration-300 `}
           />

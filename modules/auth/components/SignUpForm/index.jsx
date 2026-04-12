@@ -62,8 +62,14 @@ export default function SignUpForm() {
     }
 
     const result = await register(formData);
-
-    if (result.error) return toast.error(result.error.message, { duration: 8000 });
+    if (result.error){ 
+      if (result.error.message === "User already registered" ) {
+       toast.error(" Ops!, esse e-mail ja possui uma conta!", { duration: 8000 });
+        return;
+      }
+      toast.error(result.error.message, { duration: 8000 });
+      return;
+    };
 
     setName("");
     setEmail("");

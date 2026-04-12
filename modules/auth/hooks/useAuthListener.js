@@ -15,13 +15,12 @@ export const useAuthListener = () => {
     const loadUser = async () => {
       const { data } = await supabase.auth.getUser();
 
-      if (!data?.user) return setTimeout(() => setLoading(false), 3000); 
+      if (!data?.user) return  setLoading(false)  
 
       //  busca perfil do usuário ou cria se não existir (primeiro login)
       const profile = await getUserProfileRepository(data.user.id);
       if (profile) setUser(profile.data);
-
-       setTimeout(() => setLoading(false), 3000);
+      setLoading(false) 
     };
 
     loadUser();
