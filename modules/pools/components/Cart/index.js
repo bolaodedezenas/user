@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useBetsStore } from "@/stores/useBetsStore";
+import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
 import Ball from "@/components/Balls";
 import {
   FaEdit,
@@ -25,7 +25,9 @@ export default function Cart() {
 
   // Função para deletar um bilhete inteiro
   const handleDeleteTicket = (contest_id) => {
-    const newTickets = tickets.filter((ticket) => ticket.contest_id !== contest_id);
+    const newTickets = tickets.filter(
+      (ticket) => ticket.contest_id !== contest_id,
+    );
     setTickets(newTickets);
     toast.success("Bilhete removido!");
   };

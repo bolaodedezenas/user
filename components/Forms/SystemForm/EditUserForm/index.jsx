@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { editUserSchema } from "@/schemas/authSchemas";
+import { editUserSchema } from "@/modules/auth/schemas/authSchemas";
 // components
 import Label from "@/components/Label";
 import InputUi from "@/components/Input";
@@ -15,7 +15,7 @@ import { BiSolidEdit } from "react-icons/bi";
 // toast
 import toast from "react-hot-toast";
 // context
-import { useAuthStore  } from "@/modules/auth/stores/auth.store";
+import { useAuthStore } from "@/modules/auth/stores/auth.store";
 //services
 import {
   updateUserData,
@@ -23,7 +23,7 @@ import {
 } from "@/libs/firebase/authService";
 
 export default function EditUserForm() {
-  const  { user, setUser } = useAuthStore((state) => ({
+  const { user, setUser } = useAuthStore((state) => ({
     user: state.user,
     setUser: state.setUser,
   }));

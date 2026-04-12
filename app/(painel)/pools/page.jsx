@@ -2,40 +2,43 @@
 
 import { useState } from "react";
 // stores
-import { useBetsStore } from "@/stores/useBetsStore";
+import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
 // components
 import Title from "@/components/Title";
 import Paragraph from "@/components/paragraph";
 import Button from "@/components/Btns/Button";
-import Select from "@/components/Select";
+import Select from "@/modules/pools/components/Select";
 import Balls from "@/components/Balls";
 // json
-import  balls  from "@/components/Balls/balls";
+import balls from "@/components/Balls/balls";
 // lib
-import { generateBets } from "@/libs/bets/generateBets";
+import { generateBets } from "@/modules/pools/utils/generateBets";
 // toast
 import toast from "react-hot-toast";
 
-
 const options = [
-  { name: "Todas as Dezenas"},
-  { name: "Mais Sorteadas "},
-  { name: "Mais Atrasadas"},
+  { name: "Todas as Dezenas" },
+  { name: "Mais Sorteadas " },
+  { name: "Mais Atrasadas" },
 ];
 
 export default function Pools() {
   const { selectedBalls, setBall, removeBall } = useBetsStore();
-  const [gamesCount, setGamesCount] = useState(1); // 👈 AQUI
+  const [gamesCount, setGamesCount] = useState(1);
 
-  const increaseGames = () => {
-    setGamesCount((prev) => prev === 100 ? 100 : prev + 1);
-    if (gamesCount === 100) return toast.error("Ops, você so pode gerar 100 jogos por vez", { duration: 3000 });
+  const handleIncrementGamesCount = () => {
+    if (gamesCount >= 100) {
+      toast.error("Ops, você só pode gerar 100 jogos por vez", {
+        duration: 3000,
+      });
+      return;
+    }
+    setGamesCount((prev) => prev + 1);
   };
 
-  const decreaseGames = () => {
+  const handleDecrementGamesCount = () => {
     setGamesCount((prev) => (prev > 1 ? prev - 1 : 1));
   };
-
 
   return (
     <section className="fle-1 min-h-full flex justify-center   text-[2rem]  ">
@@ -56,7 +59,7 @@ export default function Pools() {
             <div className="flex flex-wrap gap-6 items-center">
               <div className="flex gap-2 items-center ">
                 <div
-                  onClick={decreaseGames}
+                  onClick={handleDecrementGamesCount}
                   className="w-10 h-10 flex items-center justify-center rounded-[5px] bg-[rgb(var(--blue-50))] 
                  shadow-lg  cursor-pointer "
                 >
@@ -70,7 +73,7 @@ export default function Pools() {
                   {gamesCount}
                 </div>
                 <div
-                  onClick={increaseGames}
+                  onClick={handleIncrementGamesCount}
                   className="w-10 h-10 flex items-center justify-center rounded-[5px] bg-[rgb(var(--blue-50))] shadow-lg cursor-pointer "
                 >
                   +

@@ -10,48 +10,55 @@ import PageLoading from "@/components/PageLoading";
 import Header from "@/components/Header";
 import Title from "@/components/Title";
 import Paragraph from "@/components/paragraph";
-import Select from "@/components/Select";
-import PoolCard from "@/components/Cards/PoolCard";
-import Submenu from "@/components/Submenu";
-import Cart from "@/components/Cart";
+import Select from "@/modules/pools/components/Select";
+import PoolCard from "@/modules/pools/components/PoolCard";
+import Submenu from "@/modules/pools/components/Submenu";
+import Cart from "@/modules/pools/components/Cart";
 
 // icons
 import { FaTrophy } from "react-icons/fa6";
 import { FaCircle } from "react-icons/fa";
-import { HiOutlineGlobeAlt } from "react-icons/hi2";
 
 // hooks / stores
 import { useToggleStore } from "@/stores/toggleStore";
-import { useBetsStore } from "@/stores/useBetsStore";
+import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
 
-// db
-import { pools, contests } from "@/DB/DB_ememory";
 // hooks
-import { useCountTime } from "@/hooks/useCountTime";
+import { useCountTime } from "@/modules/pools/utils/countTime";
 import { useFormatDateTime } from "@/hooks/useFormatDate";
+import { usePools } from "@/modules/pools/hooks/usePools";
+import { usePoolsStore } from "@/modules/pools/stores/usePoolsStore";
+import { useContests } from "@/modules/pools/hooks/useContests";
 
 export default function LayoutPools({ children }) {
   const { toggle } = useToggleStore();
-  const { tickets, setActiveContest, setActivePool } = useBetsStore();
+  const {setActiveContest, setActivePool } = useBetsStore();
   // console.log(bets);
 
-  const [loading, setLoading] = useState(true);
+  usePools(); // Dispara a busca inicial se necessário
+  const { pools, isLoading: isLoadingPools } = usePoolsStore();
+  const [initialLoading, setInitialLoading] = useState(true);
 
-  const [pool, setPool] = useState(pools[0]);
+  // console.log(pools[0]);
+
+  const [pool, setPool] = useState(null);
+
+  // 🔹 Hook que busca concursos automaticamente quando o 'pool' muda
+  const { contests, isLoading: isLoadingContests } = useContests(pool?.id);
+  console.log(contests);
   const [itemContest, setItemContest] = useState(null);
 
-  // contest time
-  const countTime = useCountTime(itemContest?.startAt, itemContest?.status);
   //  date format
   const { formatDate } = useFormatDateTime();
-  const { date, time } = formatDate(itemContest?.startAt);
+  const { date, time } = formatDate(itemContest?.starts_at);
+
+  // contest time
+  const countTime = useCountTime(itemContest?.starts_at, itemContest?.status);
 
   // 🔹 Quando muda o bolão
   const handleChangePool = (item) => {
     setPool(item);
     toast.success(`Você selecionou o  ${item.name}`, { duration: 4000 });
-    const firstContest = contests.find((contest) => contest.poolId === item.id);
-    setItemContest(firstContest || null);
   };
 
   // 🔹 Quando muda o concurso
@@ -62,11 +69,22 @@ export default function LayoutPools({ children }) {
     });
   };
 
-  // 🔹 Garante concurso inicial ao carregar / trocar bolão
+  // 🔹 Define o concurso inicial assim que a lista de concursos carregar para o pool selecionado
   useEffect(() => {
-    const firstContest = contests.find((contest) => contest.poolId === pool.id);
-    setItemContest(firstContest || null);
-  }, [pool]);
+    if (contests.length > 0) {
+      // Define o concurso mais recente como ativo por padrão
+      setItemContest(contests[0]);
+    } else {
+      setItemContest(null);
+    }
+  }, [contests]);
+
+  // 🔹 Define o primeiro bolão quando a lista carregar do Supabase
+  useEffect(() => {
+    if (pools.length > 0 && !pool) {
+      setPool(pools[0]);
+    }
+  }, [pools, pool]);
 
   useEffect(() => {
     if (itemContest) {
@@ -81,11 +99,11 @@ export default function LayoutPools({ children }) {
   }, [pool, setActivePool]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 3000);
+    const timer = setTimeout(() => setInitialLoading(false), 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) return <PageLoading />;
+  if (initialLoading || isLoadingPools) return <PageLoading />;
 
   return (
     <section className="flex-1 h-full flex flex-col gap-4 bg-[rgb(var(--blue-50))]">
@@ -108,8 +126,8 @@ export default function LayoutPools({ children }) {
           <Box className="flex-1 flex justify-end items-center gap-8">
             {/* SELECT BOLÕES */}
             <Select
-              label={pools[0].name}
-              value={pool} // ✅ CONTROLA O SELECT
+              label={pool?.title || "Selecione um Bolão"}
+              value={pool} // sincroniza o valor selecionado com o primeiro bolão da lista
               options={pools}
               onChange={handleChangePool}
               className="px-5 py-3"
@@ -124,13 +142,15 @@ export default function LayoutPools({ children }) {
       >
         {/* CARD */}
         <div className="flex flex-col gap-5">
-          <PoolCard
-            title={pool.name}
-            color={pool.color}
-            money={itemContest?.prizeAmount}
-            time={countTime}
-            status={itemContest?.status}
-          />
+          {pool && (
+            <PoolCard
+              title={pool?.title}
+              color={pool?.color}
+              money={itemContest?.total_prize}
+              time={countTime}
+              status={itemContest?.status}
+            />
+          )}
         </div>
 
         {/* INFO */}
@@ -176,11 +196,9 @@ export default function LayoutPools({ children }) {
               <div>
                 <h4 className="font-bold">Concurso</h4>
                 <Select
-                  label={itemContest?.contestNumber}
+                  label={itemContest?.contest_number}
                   value={itemContest} // ✅ ESSENCIAL
-                  options={contests.filter(
-                    (contest) => contest.poolId === pool.id,
-                  )}
+                  options={contests}
                   onChange={handleChangeContest}
                   className="shadow-none"
                 />

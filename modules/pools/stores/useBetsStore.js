@@ -18,6 +18,7 @@ export const useBetsStore = create((set, get) => ({
   // ✅ Sincroniza o bolão atual do layout com o store
   setActivePool: (pool) => set({ activePool: pool }),
 
+  // ✅ Adiciona   bolas ao jogo atual, com validações e feedbacks
   setBall: (ball) =>
     set((state) => {
       if (state.selectedBalls.includes(ball)) {
@@ -58,7 +59,7 @@ export const useBetsStore = create((set, get) => ({
       );
 
       const newTickets = [...state.tickets];
-      const unitValue = 2.5; // Valor unitário fixo
+      const unitValue = 5; // Valor unitário fixo
 
       if (existingTicketIndex > -1) {
         // Adiciona jogo ao bilhete existente
@@ -115,12 +116,12 @@ export const useBetsStore = create((set, get) => ({
   },
 
   // ❌ remove um bilhete específico (por índice)
-  removeTicket: (ticketIndex) => {
-    set((state) => ({
-      tickets: state.tickets.filter((_, index) => index !== ticketIndex),
-    }));
-    toast.error(`O bilhete foi removido!`, { duration: 4000, icon: "🟠" });
-  },
+  // removeTicket: (ticketIndex) => {
+  //   set((state) => ({
+  //     tickets: state.tickets.filter((_, index) => index !== ticketIndex),
+  //   }));
+  //   toast.error(`O bilhete foi removido!`, { duration: 4000, icon: "🟠" });
+  // },
 
   clearBalls: () => set({ selectedBalls: [] }),
   clearTickets: () => set({ tickets: [] }),

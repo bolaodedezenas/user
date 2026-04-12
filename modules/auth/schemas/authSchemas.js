@@ -47,6 +47,7 @@ export const stateField = z
   .transform((s) => s.toUpperCase())
   .optional();
 
+
 // Termos
 export const termsField = z
 .boolean()
@@ -56,27 +57,26 @@ export const termsField = z
 
 
 
+export const eddressField = z.object({
+  cep: z.string().regex(/^\d{2}\.\d{3}-\d{3}$/, "CEP inválido. Formato esperado: 12.345-678"),
+  state: stateField,
+  city: cityField,
+})
+  
+
 // Schema de Cadastro
 export const registerSchema = z.object({
   name: nameField,
   email: emailField,
   password: passwordField,
   phone: phoneField,
-  // cep: z.string().regex(/^\d{2}\.\d{3}-\d{3}$/, "CEP inválido. Formato esperado: 12.345-678"),
-  // state: stateField,
-  // city: cityField,
   terms: termsField,
-  // photoURL: z.string().url("URL inválida").optional().or(z.literal("")),
-  // permissions: z.array(z.string()).optional(),
-  // status: z.string()
 });
 
  // Schema de reset de senha
 export const resetPassordSchema = z.object({
   password: passwordField,
 });
-
-
 
 
 // Schema de Cadastro

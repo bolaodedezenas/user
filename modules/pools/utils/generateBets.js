@@ -1,4 +1,4 @@
-import { useBetsStore } from "@/stores/useBetsStore";
+import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
 import toast from "react-hot-toast";
 
 const MAX_BALLS = 10;
@@ -28,8 +28,10 @@ export function generateBets(numbersArray, gamesCount = 1) {
 
   toast.success(
     `${gamesCount} ${
-      gamesCount > 1 ? " jogos adicionados com sucesso! " : " jogo adicionado com sucesso! "
+      gamesCount > 1
+        ? " jogos adicionados com sucesso! "
+        : " jogo adicionado com sucesso! "
     } `,
-    { duration: 3000 }
+    { duration: 3000 },
   );
 }

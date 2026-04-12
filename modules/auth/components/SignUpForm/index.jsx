@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 // schemas
-import { registerSchema } from "@/schemas/authSchemas";
+import { registerSchema } from "@/modules/auth/schemas/authSchemas";
 // components
 import FormLayout from "@/components/Forms/FormLayout";
 import Label from "@/components/Label";
@@ -21,8 +21,7 @@ import { useAuthStore } from "@/modules/auth/stores/auth.store";
 // hooks
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 // utils
-import {formatPhoneNumber} from "@/utils/formatPhoneNumber";
-
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 
 export default function SignUpForm() {
   const { loginWithGoogle, register } = useAuth();
@@ -39,7 +38,6 @@ export default function SignUpForm() {
   const [terms, setTerms] = useState(false);
   const [focusInput, setFocusInput] = useState("");
 
- 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== passwordConfirm) {
@@ -62,14 +60,16 @@ export default function SignUpForm() {
     }
 
     const result = await register(formData);
-    if (result.error){ 
-      if (result.error.message === "User already registered" ) {
-       toast.error(" Ops!, esse e-mail ja possui uma conta!", { duration: 8000 });
+    if (result.error) {
+      if (result.error.message === "User already registered") {
+        toast.error(" Ops!, esse e-mail ja possui uma conta!", {
+          duration: 8000,
+        });
         return;
       }
       toast.error(result.error.message, { duration: 8000 });
       return;
-    };
+    }
 
     setName("");
     setEmail("");
@@ -87,12 +87,11 @@ export default function SignUpForm() {
     }, 5000);
   };
 
-
   // Login com Google
   const onGoogleLogin = async () => {
     setLoading(true);
     const { user, error } = await loginWithGoogle();
-    if (error) return  toast.error(error.message, { duration: 8000 });
+    if (error) return toast.error(error.message, { duration: 8000 });
     if (user) router.replace("/");
   };
 
@@ -102,7 +101,6 @@ export default function SignUpForm() {
     const formattedPhone = formatPhoneNumber(value);
     setPhone(formattedPhone);
   };
-
 
   return (
     <FormLayout>
@@ -309,4 +307,3 @@ export default function SignUpForm() {
     </FormLayout>
   );
 }
-

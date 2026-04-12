@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { resetPassordSchema } from "@/schemas/authSchemas";
+import { resetPassordSchema } from "@/modules/auth/schemas/authSchemas";
 // components
 import FormLayout from "@/components/Forms/FormLayout";
 import Label from "@/components/Label";
@@ -48,7 +48,10 @@ export default function ResetPasswordForm() {
 
       if (error) {
         console.log(error.message);
-        toast.error("Erro! Não foi possível redefinir a senha. Tente novamente. ou solicite um novo link de recuperação.", { duration: 8000 });
+        toast.error(
+          "Erro! Não foi possível redefinir a senha. Tente novamente. ou solicite um novo link de recuperação.",
+          { duration: 8000 },
+        );
         return;
       }
 

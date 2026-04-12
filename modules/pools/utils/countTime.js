@@ -2,15 +2,19 @@
 
 import { useEffect, useState } from "react";
 
-export function useCountTime(startAt, status) {
+export function useCountTime(starts_at, status) {
   const [text, setText] = useState("");
 
   useEffect(() => {
-    if (!startAt) return;
+    if (!starts_at) return;
 
     const updateTime = () => {
+      // ✅ Converte a string ISO do Supabase para milissegundos
+      const targetDate = new Date(starts_at).getTime();
+      if (isNaN(targetDate)) return;
+
       const now = Date.now();
-      const diff = startAt - now;
+      const diff = targetDate - now;
 
       // Sorteio iniciado
       if (status === "closed") {
@@ -32,7 +36,7 @@ export function useCountTime(startAt, status) {
       // Cálculo regressivo
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor(
-        (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
       );
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -44,8 +48,8 @@ export function useCountTime(startAt, status) {
         setText(
           `${String(hours).padStart(2, "0")}h / ${String(minutes).padStart(
             2,
-            "0"
-          )}m / ${String(seconds).padStart(2, "0")}s`
+            "0",
+          )}m / ${String(seconds).padStart(2, "0")}s`,
         );
       }
     };
@@ -54,7 +58,7 @@ export function useCountTime(startAt, status) {
     const interval = setInterval(updateTime, 1000);
 
     return () => clearInterval(interval);
-  }, [startAt, status]);
+  }, [starts_at, status]);
 
   return text;
 }
