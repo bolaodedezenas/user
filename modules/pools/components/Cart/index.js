@@ -12,37 +12,35 @@ import {
 } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
-
+import { useCheckout } from "../../hooks/useCheckout";
 import toast from "react-hot-toast";
 
 export default function Cart() {
-  const { tickets, setTickets } = useBetsStore();
-  const [editingPath, setEditingPath] = useState(null); // { contest_id, betIndex }
+  const { tickets, setTickets, removeTicket } = useBetsStore();
+  const [editingPath, setEditingPath] = useState(null); // { pool_id, contest_id, betIndex }
   const [isOpen, setIsOpen] = useState(false);
   const [tempBet, setTempBet] = useState([]);
 
-  // console.log(tickets);
+  const { handleCheckout, isPending } = useCheckout();
+
+  console.log(tickets);
 
   // Função para deletar um bilhete inteiro
-  const handleDeleteTicket = (contest_id) => {
-    const newTickets = tickets.filter(
-      (ticket) => ticket.contest_id !== contest_id,
-    );
-    setTickets(newTickets);
-    toast.success("Bilhete removido!");
+  const handleDeleteTicket = (pool_id, contest_id) => {
+    removeTicket(pool_id, contest_id);
   };
 
   // Função para deletar um jogo individual
-  const handleDeleteGame = (contest_id, betIndex) => {
+  const handleDeleteGame = (pool_id, contest_id, betIndex) => {
     const newTickets = tickets
       .map((ticket) => {
-        if (ticket.contest_id === contest_id) {
+        if (ticket.pool_id === pool_id && ticket.contest_id === contest_id) {
           const updatedBets = ticket.bets.filter((_, i) => i !== betIndex);
           return {
             ...ticket,
             bets: updatedBets,
             total_bets: updatedBets.length,
-            total_value: updatedBets.length * ticket.unit_value,
+            total_value: updatedBets.length * ticket.bet_price,
           };
         }
         return ticket;
@@ -58,13 +56,13 @@ export default function Cart() {
   }
 
   // Iniciar modo de edição
-  const handleEdit = (contest_id, betIndex, balls) => {
-    setEditingPath({ contest_id, betIndex });
+  const handleEdit = (pool_id, contest_id, betIndex, balls) => {
+    setEditingPath({ pool_id, contest_id, betIndex });
     setTempBet([...balls]);
   };
 
   // Salvar as alterações
-  const handleSave = (contest_id, betIndex) => {
+  const handleSave = (pool_id, contest_id, betIndex) => {
     // Validação: Verifica se todos os campos estão preenchidos e se são exatamente 10 dezenas
     const isValid = tempBet.every((num) => num && num.trim() !== "");
 
@@ -74,7 +72,7 @@ export default function Cart() {
     }
 
     const newTickets = tickets.map((ticket) => {
-      if (ticket.contest_id === contest_id) {
+      if (ticket.pool_id === pool_id && ticket.contest_id === contest_id) {
         const newBets = ticket.bets.map((b, i) =>
           i === betIndex ? { ...b, numbers: tempBet } : b,
         );
@@ -137,7 +135,7 @@ export default function Cart() {
       {/* PAINEL DO CARRINHO */}
       <div
         className={`rounded-2xl fixed top-[1.5%] right-3 h-[97%] bg-white shadow-2xl z-[60] overflow-hidden
-         transition-transform duration-300 ease-in-out w-full max-w-[295px] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-[115%]"}`}
+         transition-transform duration-300 ease-in-out w-full max-w-[320px] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-[115%]"}`}
       >
         {/* HEADER DO PAINEL */}
         <div className="flex items-center justify-between p-5 border-b border-zinc-100 bg-zinc-50">
@@ -166,24 +164,27 @@ export default function Cart() {
           {tickets.map((ticket, tIdx) => (
             <div
               key={tIdx}
-              className="flex flex-col gap-2 mb-6 p-3  rounded-2xl border border-zinc-300/60 shadow"
+              className={`flex flex-col gap-2 mb-6 p-3  
+              rounded-2xl border border-zinc-300/60 shadow`}
             >
               {/* Cabeçalho do Bilhete por Concurso */}
               <div className="flex justify-between items-start px-1 mb-1">
-                <span className="text-[0.8rem] font-black text-zinc-500 uppercase tracking-widest leading-tight">
-                  <span className=" text-[rgb(var(--btn))]">
+                <span className="text-[1rem] text-black font-black  uppercase tracking-widest leading-tight">
+                  <span>
                     {ticket.pool_name}
                   </span>
                   <br />
-                  <span className="text-[0.6rem] text-zinc-400">
-                    Concurso #{ticket.contest_id}
+                  <span className="text-[0.8rem] text-zinc-500">
+                    Concurso: #{ticket.contest_number}
                   </span>
                 </span>
                 <button
-                  onClick={() => handleDeleteTicket(ticket.contest_id)}
+                  onClick={() =>
+                    handleDeleteTicket(ticket.pool_id, ticket.contest_id)
+                  }
                   className="text-red-500 p-1 hover:bg-red-50 rounded cursor-pointer transition-colors"
                 >
-                  <MdDeleteForever size={18} title="Excluir Bilhete Inteiro" />
+                  <MdDeleteForever size={25} title="Excluir Bilhete Inteiro" />
                 </button>
               </div>
 
@@ -191,6 +192,7 @@ export default function Cart() {
               <div className="flex flex-col gap-3">
                 {ticket.bets.map((bet, betIdx) => {
                   const isEditing =
+                    editingPath?.pool_id === ticket.pool_id &&
                     editingPath?.contest_id === ticket.contest_id &&
                     editingPath?.betIndex === betIdx;
 
@@ -201,11 +203,11 @@ export default function Cart() {
                     >
                       <div className="flex justify-between items-start border-b border-zinc-100 pb-2">
                         <div className="flex flex-col">
-                          <span className="text-xs font-black text-zinc-500 tracking-widest uppercase">
+                          <span className="text-xs pb-1 font-black text-zinc-500 tracking-widest uppercase">
                             JOGO {betIdx + 1}
                           </span>
-                          <span className="text-[10px] font-bold text-[rgb(var(--btn))]">
-                            {ticket.unit_value.toLocaleString("pt-BR", {
+                          <span className="text-[1rem] font-bold text-black">
+                            {ticket.bet_price.toLocaleString("pt-BR", {
                               style: "currency",
                               currency: "BRL",
                             })}
@@ -217,17 +219,21 @@ export default function Cart() {
                             <>
                               <button
                                 onClick={() =>
-                                  handleSave(ticket.contest_id, betIdx)
+                                  handleSave(
+                                    ticket.pool_id,
+                                    ticket.contest_id,
+                                    betIdx,
+                                  )
                                 }
                                 className="text-green-600 hover:scale-110 transition-all cursor-pointer"
                               >
-                                <FaCheck size={18} />
+                                <FaCheck size={20} />
                               </button>
                               <button
                                 onClick={handleCancel}
                                 className="text-zinc-400 hover:text-zinc-600 cursor-pointer"
                               >
-                                <FaWindowClose size={18} />
+                                <FaWindowClose size={20} />
                               </button>
                             </>
                           ) : (
@@ -235,6 +241,7 @@ export default function Cart() {
                               <button
                                 onClick={() =>
                                   handleEdit(
+                                    ticket.pool_id,
                                     ticket.contest_id,
                                     betIdx,
                                     bet.numbers,
@@ -242,15 +249,19 @@ export default function Cart() {
                                 }
                                 className="text-blue-500 hover:scale-110 transition-all cursor-pointer"
                               >
-                                <FaEdit size={18} />
+                                <FaEdit size={20} />
                               </button>
                               <button
                                 onClick={() =>
-                                  handleDeleteGame(ticket.contest_id, betIdx)
+                                  handleDeleteGame(
+                                    ticket.pool_id,
+                                    ticket.contest_id,
+                                    betIdx,
+                                  )
                                 }
                                 className="text-red-400 hover:scale-110 transition-all cursor-pointer"
                               >
-                                <MdDeleteForever size={20} />
+                                <MdDeleteForever size={23} />
                               </button>
                             </>
                           )}
@@ -289,7 +300,7 @@ export default function Cart() {
                 <span className="text-[0.9rem] font-bold text-zinc-500 uppercase">
                   Subtotal Bilhete
                 </span>
-                <span className="text-xs font-black text-zinc-700">
+                <span className="text-[1rem] font-black text-zinc-800">
                   {ticket.total_value.toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL",
@@ -313,9 +324,17 @@ export default function Cart() {
               })}
             </span>
           </div>
-          <button className="w-full bg-[rgb(var(--btn))] text-white font-bold py-4 rounded-xl shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase text-xs tracking-wider">
-            Finalizar {totalGamesCount}{" "}
-            {totalGamesCount === 1 ? "Aposta" : "Apostas"}
+          <button
+            onClick={handleCheckout}
+            disabled={isPending}
+            className="w-full bg-[rgb(var(--btn))] text-white font-bold py-4 rounded-xl shadow-lg hover:brightness-110 
+            transition-all flex items-center justify-center gap-2 cursor-pointer uppercase text-xs tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isPending ? (
+              "Enviando..."
+            ) : (
+              `Finalizar ${totalGamesCount} ${totalGamesCount === 1 ? "Aposta" : "Apostas"}`
+            )}
           </button>
         </div>
       </div>

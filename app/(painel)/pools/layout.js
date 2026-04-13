@@ -45,7 +45,7 @@ export default function LayoutPools({ children }) {
 
   // 🔹 Hook que busca concursos automaticamente quando o 'pool' muda
   const { contests, isLoading: isLoadingContests } = useContests(pool?.id);
-  console.log(contests);
+  // console.log(contests);
   const [itemContest, setItemContest] = useState(null);
 
   //  date format
@@ -126,7 +126,7 @@ export default function LayoutPools({ children }) {
           <Box className="flex-1 flex justify-end items-center gap-8">
             {/* SELECT BOLÕES */}
             <Select
-              label={pool?.title || "Selecione um Bolão"}
+              label={pool?.name || "Selecione um Bolão"}
               value={pool} // sincroniza o valor selecionado com o primeiro bolão da lista
               options={pools}
               onChange={handleChangePool}
@@ -144,7 +144,7 @@ export default function LayoutPools({ children }) {
         <div className="flex flex-col gap-5">
           {pool && (
             <PoolCard
-              title={pool?.title}
+              name={pool?.name}
               color={pool?.color}
               money={itemContest?.total_prize}
               time={countTime}

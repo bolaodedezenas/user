@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
+import { useAuthStore } from "../../auth/stores/auth.store";
 
 const MAX_BALLS = 10;
 
@@ -9,13 +10,13 @@ export const useBetsStore = create((set, get) => ({
   activeContest: null,
   activePool: null,
 
-  // ✅ Define a lista completa de apostas (usado para edição/exclusão no Cart)
+  // ✅ Atualiza o estado global de bilhetes (usado na edição/exclusão e checkout)
   setTickets: (newTickets) => set({ tickets: newTickets }),
 
-  // ✅ Sincroniza o concurso atual do layout com o store
+  // ✅ Define qual concurso está visualmente selecionado no cabeçalho
   setActiveContest: (contest) => set({ activeContest: contest }),
 
-  // ✅ Sincroniza o bolão atual do layout com o store
+  // ✅ Define qual bolão está visualmente selecionado no cabeçalho
   setActivePool: (pool) => set({ activePool: pool }),
 
   // ✅ Adiciona   bolas ao jogo atual, com validações e feedbacks
@@ -47,10 +48,10 @@ export const useBetsStore = create((set, get) => ({
       return { selectedBalls: updatedBalls };
     }),
 
-  // ✅ adiciona um jogo ao bilhete do concurso ativo
+  // ✅  Adiciona um jogo ao bilhete
   addBet: (gameNumbers) => {
     const { activeContest, activePool } = get();
-    if (!activeContest || !activePool) return;
+    if (!activeContest || !activePool) return ;
 
     set((state) => {
       // Busca se já existe um bilhete para este bolão e concurso específicos
@@ -59,9 +60,10 @@ export const useBetsStore = create((set, get) => ({
       );
 
       const newTickets = [...state.tickets];
-      const unitValue = 5; // Valor unitário fixo
-
+      
+      // verifica se já existe um bilhete para o bolão e concurso atuais, e add  o bet no bilhete
       if (existingTicketIndex > -1) {
+        console.log(existingTicketIndex);
         // Adiciona jogo ao bilhete existente
         const ticket = newTickets[existingTicketIndex];
         const updatedBets = [
@@ -77,20 +79,24 @@ export const useBetsStore = create((set, get) => ({
           ...ticket,
           bets: updatedBets,
           total_bets: updatedBets.length,
-          total_value: updatedBets.length * unitValue,
+          total_value: updatedBets.length * activeContest.bet_price,
         };
       } else {
+        // Caso contrário, cria um novo bilhete para este bolão e concurso
         // Cria um novo bilhete estruturado para a tabela do banco
         newTickets.push({
-          user_id: null, // Será preenchido ao finalizar/salvar
+          user_id: useAuthStore.getState().user.id, 
+          customer_id: null,
+          contest_id: activeContest.id,
+          contest_number: activeContest.contest_number,
           pool_id: activePool.id,
           pool_name: activePool.name,
-          contest_id: activeContest.id,
-          unit_value: unitValue,
-          total_value: unitValue,
-          total_bets: 1,
+          total_bets: 1, // ✅ Correção: Inicia com 1, não 0
+          bet_price: activeContest.bet_price,
+          total_value: activeContest.bet_price,
           status: "pending",
           created_at: new Date().toISOString(),
+          color: activePool.color,// nao envia para o banco, apenas para controle visual
           bets: [
             {
               numbers: gameNumbers,
@@ -115,13 +121,15 @@ export const useBetsStore = create((set, get) => ({
     toast.error(`A bola ${ball} foi removida!`, { duration: 4000, icon: "🟠" });
   },
 
-  // ❌ remove um bilhete específico (por índice)
-  // removeTicket: (ticketIndex) => {
-  //   set((state) => ({
-  //     tickets: state.tickets.filter((_, index) => index !== ticketIndex),
-  //   }));
-  //   toast.error(`O bilhete foi removido!`, { duration: 4000, icon: "🟠" });
-  // },
+  // ❌ remove um bilhete específico (por pool_id e contest_id)
+  removeTicket: (pool_id, contest_id) => {
+    set((state) => ({
+      tickets: state.tickets.filter(
+        (t) => !(t.pool_id === pool_id && t.contest_id === contest_id),
+      ),
+    }));
+    toast.error(`O bilhete foi removido!`, { duration: 4000, icon: "🟠" });
+  },
 
   clearBalls: () => set({ selectedBalls: [] }),
   clearTickets: () => set({ tickets: [] }),

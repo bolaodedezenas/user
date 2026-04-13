@@ -44,7 +44,7 @@ export default function Select({
         shadow-[inset_0_2px_6px_rgba(0,0,0,0.25)] text-[1rem] ${className}`}
       >
         {/* || selected.contestNumber */}
-        <span>{selected ? selected.title || `${selected.contest_number} ` : label}</span>
+        <span>{selected ? selected.name || `${selected.contest_number} ` : label}</span>
         <FiChevronDown
           className={`transition-transform duration-300 ml-2 text-[1.5rem] ${
             isOpen ? "rotate-180" : "rotate-0"
@@ -60,7 +60,7 @@ export default function Select({
               onClick={() => handleSelect(option)}
               className="px-4 py-3 cursor-pointer hover:bg-[rgb(var(--blue-50))] border-b border-gray-200 transition-colors text-[0.9rem] text-center"
             >
-              {option.title ||
+              {option.name ||
                 (option.contest_number &&
                   `${option.contest_number} - ${new Date(option.starts_at).toLocaleDateString("pt-BR")} 📆`)}
             </li>

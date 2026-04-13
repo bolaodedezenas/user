@@ -4,7 +4,7 @@ import { BsFillClockFill } from "react-icons/bs";
 import { FaSackDollar } from "react-icons/fa6";
 
 
-export default function PoolCard({title, color, money, time, status}) {
+export default function PoolCard({name, color, money, time, status}) {
   return (
     <Card
       color={color}
@@ -15,7 +15,7 @@ export default function PoolCard({title, color, money, time, status}) {
           <FaSackDollar className="text-[4rem] pl-1 " />
         </div>
         <div className="flex-1  text-center">
-          <h3 className="text-[1.4rem] pb-1">{title}</h3>
+          <h3 className="text-[1.4rem] pb-1">{name}</h3>
           <p className="text-[0.8rem]">Prêmio estimado</p>
           <p className="text-[1.2rem]">{money?.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
         </div>
