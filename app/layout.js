@@ -1,8 +1,8 @@
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
-import { Toaster } from "react-hot-toast";
 
+import { Toaster } from "react-hot-toast";
+ 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -29,7 +29,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-
   return (
     <html lang="pt-BR">
       <head>
@@ -42,12 +41,11 @@ export default function RootLayout({ children }) {
         className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} flex flex-col h-[calc(100svh)] 
          `}
       >
-        <AuthProvider>{children}</AuthProvider>
+         {children} 
         <Toaster
           position="top-center"
           reverseOrder={false}
           gutter={8}
-          containerClassName=""
           toastOptions={{
             style: {
               fontSize: "1rem",

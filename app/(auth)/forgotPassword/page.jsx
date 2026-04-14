@@ -1,24 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useEffect } from "react";
+import { useAuthStore } from "@/modules/auth/stores/auth.store";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
-import RecoveryForm from "@/components/Forms/AuthForms/forgotForm";
-
+import RecoveryForm from "@/modules/auth/components/forgotForm";
 
 export default function RecoveryPage() {
   const router = useRouter();
-  const { user, loading,} = useAuth(); // pega as 
+  const { user, loading, setLoading } = useAuthStore();
 
-   useEffect(() => {
+  useEffect(() => {
     if (user) {
       router.replace("/"); // usuário já logado vai para raiz
     }
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000); // simula carregamento por 3 segundos
   }, [user, router]);
-
-
-   if (loading) return  <Loading />;
 
   return (
     <div
@@ -30,6 +29,7 @@ export default function RecoveryPage() {
       p-4
       "
     >
+      {loading && <Loading />}
       <RecoveryForm />
     </div>
   );

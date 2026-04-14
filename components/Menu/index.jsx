@@ -1,6 +1,6 @@
 
 import {BoxPhoto} from './styles'
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useRouter } from 'next/navigation';
 // icons 
 import { MdEmail } from "react-icons/md";
@@ -18,12 +18,15 @@ import { usePathname } from 'next/navigation';
 import { IoMdArrowDropdown } from "react-icons/io";
 //stores
 import { useToggleStore } from "@/stores/toggleStore";
+import { useAuthStore } from "@/modules/auth/stores/auth.store";
 
 
 export default function Menu({ toggleUser, setToggleUser }) {
 
+  const user = useAuthStore((state) => state.user);
+  // console.log(user.avatar_url);
   const { toggle, setToggle } = useToggleStore();
-  const { user, handleLogout } = useAuth();
+  const { logout } = useAuth();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -47,16 +50,16 @@ export default function Menu({ toggleUser, setToggleUser }) {
           
         "
       >
-        {user?.photoURL ? (
+        {user?.avatar_url  !== "" ? (
           <img
-            src={user?.photoURL || "/ball.png"}
+            src={user?.avatar_url || "/ball.png"}
             alt="logo"
             className={`object-cover rounded-full w-30 h-30   trasition duration-300 `}
           />
         ) : (
           <HiUserCircle
-            className={`text-white trasition duration-300
-              ${toggle ? "text-[9rem]" : "absolute left-3 text-[2.8rem]"}
+            className={`text-[rgb(var(--btn))] trasition duration-300
+              ${toggle ? "text-[9rem]" : "absolute left-5.5 text-[2.8rem]"}
           `}
           />
         )}
@@ -82,7 +85,7 @@ export default function Menu({ toggleUser, setToggleUser }) {
         >
           <li>
             <RiShieldUserFill className="text-[1.3rem] text-[rgb(var(--btn))]" />
-            <p>{user?.name.split(" ").slice(0, 2).join(" ")}</p>
+            <p>{user?.name?.split(" ").slice(0, 2).join(" ")}</p>
           </li>
           <li>
             <MdEmail className="text-[1.3rem] text-[rgb(var(--btn))]" />
@@ -121,7 +124,7 @@ export default function Menu({ toggleUser, setToggleUser }) {
             className={currentRoute === "/" ? "bg-[rgb(var(--blue-50))] " : ""}
             onClick={() => {
               {
-                router.push("/"), setToggle(false), setToggleUser(false);
+                (router.push("/"), setToggle(false), setToggleUser(false));
               }
             }}
           >
@@ -133,7 +136,11 @@ export default function Menu({ toggleUser, setToggleUser }) {
               currentRoute === "/dashboard" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              {router.push("/dashboard"), setToggle(false), setToggleUser(false);}
+              {
+                (router.push("/dashboard"),
+                  setToggle(false),
+                  setToggleUser(false));
+              }
             }}
           >
             <TbLayoutDashboardFilled className="text-[1.3rem] text-[rgb(var(--btn))]" />
@@ -144,7 +151,9 @@ export default function Menu({ toggleUser, setToggleUser }) {
               currentRoute === "/bets" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-             { router.push("/bets"), setToggle(false), setToggleUser(false);};
+              {
+                (router.push("/bets"), setToggle(false), setToggleUser(false));
+              }
             }}
           >
             <FaFileInvoiceDollar className="text-[1.3rem] text-[rgb(var(--btn))]" />
@@ -155,7 +164,9 @@ export default function Menu({ toggleUser, setToggleUser }) {
               currentRoute === "/pools" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              {router.push("/pools"), setToggle(false), setToggleUser(false);};
+              {
+                (router.push("/pools"), setToggle(false), setToggleUser(false));
+              }
             }}
           >
             <FaTrophy className="text-[1.3rem] text-[rgb(var(--btn))]" />
@@ -166,13 +177,22 @@ export default function Menu({ toggleUser, setToggleUser }) {
               currentRoute === "/perfil" ? "bg-[rgb(var(--blue-50))] " : ""
             }
             onClick={() => {
-              {router.push("/perfil"), setToggle(false), setToggleUser(false)};
+              {
+                (router.push("/perfil"),
+                  setToggle(false),
+                  setToggleUser(false));
+              }
             }}
           >
             <FaUser className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>Perfil</p>
           </li>
-          <li onClick={() => handleLogout()}>
+          <li
+            onClick={() => {
+              logout();
+              router.push("/login");
+            }}
+          >
             <IoArrowUndo className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>Sair</p>
           </li>

@@ -36,6 +36,7 @@ export const pools = [
 
 // ===== Helpers de data =====
 
+
 const daysFromNow = (days, hour = 21, minute = 0) => {
   const date = new Date();
   date.setDate(date.getDate() + days);

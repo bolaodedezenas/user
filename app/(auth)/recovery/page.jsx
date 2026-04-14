@@ -1,96 +1,113 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { auth } from '@/libs/firebase/FirebaseConfig';
-import { applyActionCode } from 'firebase/auth';
-// icon 
-import Icon from '@/components/Icon';
 
-import { useAuth } from "@/context/AuthContext";
+export const dynamic = "force-dynamic";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/libs/supabase/client";
+
+// icon
+import Icon from "@/components/Icon";
+
+// store
+import { useAuthStore } from "@/modules/auth/stores/auth.store";
+
 // components
 import Loading from "@/components/Loading";
-import ResetPasswordForm from "@/components/Forms/AuthForms/ResetPasswordForm";
+import ResetPasswordForm from "@/modules/auth/components/ResetPasswordForm";
 
 export default function Recovery() {
-  const { loading, setLoading } = useAuth(); // pega as funções do contexto
+  const { loading, setLoading } = useAuthStore();
   const router = useRouter();
-  const [oobCode, setOobCode] = useState('');
-  const [mode, setMode] = useState('');
-  const [close, setClose] = useState('');
-  const [message, setMessage] = useState('');
 
+  const [mode, setMode] = useState("");
+  const [message, setMessage] = useState({
+    title: "",
+    text: "",
+  });
+  const [searchParams, setSearchParams] = useState(null);
+
+  // ✅ pega os params da URL (client only - seguro pro build)
   useEffect(() => {
-    console.log(close);
-  }, [oobCode, mode, close]);
-
-  useEffect(() => {
-    setLoading(true);
-    const query = new URLSearchParams(window.location.search);
-    const code = query.get('oobCode');
-    const modeType = query.get('mode');
-    const continueUrl = query.get('continueUrl');
-
-    // Decodifica a continueUrl (remove os %3F, %2F, etc.)
-    const decodedUrl = continueUrl ? decodeURIComponent(continueUrl) : '';
-    // Captura o número que vem depois de ?
-    const numMatch = decodedUrl.match(/\?(\d+)/);
-    const pageCode = numMatch ? numMatch[1] : null;
-
-    setOobCode(code);
-    setMode(modeType);
-    setClose(pageCode);
-
-    console.log(modeType);
-    console.log(code);
-
-    if (!code) return router.replace('/not-found');
-    
-    // Se for verificação de email
-    if (modeType === "verifyEmail" || modeType === "verifyAndChangeEmail") {
-      applyActionCode(auth, code)
-        .then(() => {
-          setMessage({
-            title: "Email verificado com sucesso!",
-            text: "Agora vocé pode fazer login com seu email.",
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-          setMessage({
-            title: "Erro ao verificar email!",
-            text: "Link expirado ou inválido, solicite um novo link de verificação.",
-          });
-        });
-      setTimeout(() => router.replace(`/login`), 10000);
-    }
-    setLoading(false);
+    const params = new URLSearchParams(window.location.search);
+    setSearchParams(params);
   }, []);
 
-  if (loading) return <Loading />;
+  // ✅ lógica de recovery
+  useEffect(() => {
+    if (!searchParams) return;
+
+    const handleRecovery = async () => {
+      setLoading(true);
+
+      const tokenHash = searchParams.get("token_hash");
+      const type = searchParams.get("type");
+
+      // 🔐 recuperação de senha
+      if (type === "recovery") {
+        setMode("resetPassword");
+        setLoading(false);
+        return;
+      }
+
+      // 📧 verificação de email
+      if (tokenHash && (type === "signup" || type === "email_change")) {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: type,
+        });
+
+        if (!error) {
+          setMessage({
+            title: "Email verificado com sucesso!",
+            text: "Agora você pode acessar sua conta.",
+          });
+
+          setTimeout(() => {
+            router.replace("/login");
+          }, 4000);
+        } else {
+          setMessage({
+            title: "Erro ao verificar email!",
+            text: "Link expirado ou inválido. Solicite um novo link.",
+          });
+        }
+      }
+
+      setLoading(false);
+    };
+
+    handleRecovery();
+  }, [searchParams, router, setLoading]);
+
+  // ⏳ loading global
+  if (loading || !searchParams) return <Loading />;
 
   return (
     <div
       className="
-      scrollbar-transparent overflow-auto 
-      min-h-full 
-      flex items-center  justify-center
-      bg-gradient-to-t from-[rgb(var(--background-secundary))] to-[rgb(var(--background))]
-      p-4
+        scrollbar-transparent overflow-auto 
+        min-h-full 
+        flex items-center justify-center
+        bg-gradient-to-t from-[rgb(var(--background-secundary))] to-[rgb(var(--background))]
+        p-4
       "
     >
       {mode === "resetPassword" ? (
-        <ResetPasswordForm oobCode={oobCode} />
+        <ResetPasswordForm />
       ) : (
-        <div className=" p-5 w-full max-w-[650px] text-center  ">
+        <div className="p-5 w-full max-w-[650px] text-center">
           {message.title === "Erro ao verificar email!" ? (
             <Icon name="Warning" size={100} color="red" />
           ) : (
             <Icon name="Verified_User" size={100} color="white" />
           )}
-          <h3 className="text-[rgb(var(--white))] text-[2.8rem] ">
+
+          <h3 className="text-[rgb(var(--white))] text-[2.5rem] font-bold">
             {message.title}
           </h3>
-          <p className="text-[rgb(var(--white))] text-[1.3rem] ">
+
+          <p className="text-[rgb(var(--white))] text-[1.2rem] mt-2">
             {message.text}
           </p>
         </div>
@@ -98,5 +115,3 @@ export default function Recovery() {
     </div>
   );
 }
-
-
