@@ -23,7 +23,7 @@ export default function Cart() {
 
   const { handleCheckout, isPending } = useCheckout();
 
-  console.log(tickets);
+  // console.log(tickets);
 
   // Função para deletar um bilhete inteiro
   const handleDeleteTicket = (pool_id, contest_id) => {

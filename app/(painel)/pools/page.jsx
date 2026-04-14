@@ -17,9 +17,9 @@ import { generateBets } from "@/modules/pools/utils/generateBets";
 import toast from "react-hot-toast";
 
 const options = [
-  { name: "Todas as Dezenas" },
-  { name: "Mais Sorteadas " },
-  { name: "Mais Atrasadas" },
+  { name: "Todas as Dezenas", id: 1 },
+  { name: "Mais Sorteadas " , id: 2 },
+  { name: "Mais Atrasadas", id: 3 },
 ];
 
 export default function Pools() {

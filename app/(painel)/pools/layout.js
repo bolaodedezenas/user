@@ -2,7 +2,7 @@
 
 // styles personalizados
 import { Box, BoxLayout } from "@/app/(painel)/pools/styles";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
 
 // components
@@ -44,7 +44,7 @@ export default function LayoutPools({ children }) {
   const [pool, setPool] = useState(null);
 
   // 🔹 Hook que busca concursos automaticamente quando o 'pool' muda
-  const { contests, isLoading: isLoadingContests } = useContests(pool?.id);
+  const { contests, isLoading: isLoadingContests, searchContestByNumber } = useContests(pool?.id);
   // console.log(contests);
   const [itemContest, setItemContest] = useState(null);
 
@@ -64,10 +64,19 @@ export default function LayoutPools({ children }) {
   // 🔹 Quando muda o concurso
   const handleChangeContest = (item) => {
     setItemContest(item);
-    toast.success(`Você mudou para o Concurso ${item.contestNumber}`, {
+    toast.success(`Você mudou para o Concurso: ${item.contest_number}`, {
       duration: 4000,
     });
   };
+
+  // 🔹 Quando busca um concurso específico pelo número
+  const handleSearchContest = useCallback(async (number) => {
+    const contest = await searchContestByNumber(pool?.id, number);
+    
+    if (contest) {
+      setItemContest(contest);
+    }
+  }, [pool?.id, searchContestByNumber]);
 
   // 🔹 Define o concurso inicial assim que a lista de concursos carregar para o pool selecionado
   useEffect(() => {
@@ -170,9 +179,9 @@ export default function LayoutPools({ children }) {
                   </h4>
                   <FaCircle
                     className={`${
-                      itemContest.status === "open"
+                      itemContest?.status === "open"
                         ? "text-green-500 animate-pulse"
-                        : itemContest.status === "closed"
+                        : itemContest?.status === "closed"
                           ? "text-orange-400"
                           : "text-red-500"
                     } `}
@@ -199,6 +208,9 @@ export default function LayoutPools({ children }) {
                   label={itemContest?.contest_number}
                   value={itemContest} // ✅ ESSENCIAL
                   options={contests}
+                  isLoading={isLoadingContests}
+                  showSearch={true}
+                  onSearch={handleSearchContest}
                   onChange={handleChangeContest}
                   className="shadow-none"
                 />
