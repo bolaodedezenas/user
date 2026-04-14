@@ -31,13 +31,13 @@ export default function Submenu({ itemContest }) {
               ? itemContest?.status === "finished"
                 ? `bg-red-500 text-white cursor-none!`
                 : itemContest?.status === "closed"
-                ? `bg-orange-400 text-white cursor-none!`
-                : `bg-[rgb(var(--btn))] text-white `
+                  ? `bg-orange-400 text-white cursor-none!`
+                  : `bg-[rgb(var(--btn))] text-white `
               : itemContest?.status === "finished"
-              ? `bg-red-500 text-white cursor-none!`
-              : itemContest?.status === "closed"
-              ? `bg-orange-400 text-white cursor-none!`
-              : ` hover:bg-[rgb(var(--blue-50))] `
+                ? `bg-red-500 text-white cursor-none!`
+                : itemContest?.status === "closed"
+                  ? `bg-orange-400 text-white cursor-none!`
+                  : ` hover:bg-[rgb(var(--blue-50))] `
           }
           onClick={() => {
             itemContest?.status === "finished" ||
@@ -50,9 +50,21 @@ export default function Submenu({ itemContest }) {
             {itemContest?.status === "finished"
               ? "Finalizado"
               : itemContest?.status === "closed"
-              ? "Encerrado"
-              : "Apostar"}
+                ? "Encerrado"
+                : "Apostar"}
           </p>
+        </li>
+        <li
+          className={
+            currentRoute === "/pools/myBets"
+              ? "bg-[rgb(var(--btn))] text-white "
+              : " hover:bg-[rgb(var(--blue-50))] "
+          }
+          onClick={() => {
+            router.push("/pools/myBets");
+          }}
+        >
+          <p>Meus Bolões</p>
         </li>
         <li
           className={

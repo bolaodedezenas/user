@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // stores
 import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
 // components
@@ -9,6 +9,7 @@ import Paragraph from "@/components/paragraph";
 import Button from "@/components/Btns/Button";
 import Select from "@/modules/pools/components/Select";
 import Balls from "@/components/Balls";
+import PageLoading from "@/components/PageLoading";
 // json
 import balls from "@/components/Balls/balls";
 // lib
@@ -26,6 +27,12 @@ export default function Pools() {
   const { selectedBalls, setBall, removeBall } = useBetsStore();
   const [gamesCount, setGamesCount] = useState(1);
 
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 3000);
+  }, []);
+
   const handleIncrementGamesCount = () => {
     if (gamesCount >= 100) {
       toast.error("Ops, você só pode gerar 100 jogos por vez", {
@@ -39,6 +46,9 @@ export default function Pools() {
   const handleDecrementGamesCount = () => {
     setGamesCount((prev) => (prev > 1 ? prev - 1 : 1));
   };
+
+  if (loading) return <PageLoading />;
+  
 
   return (
     <section className="fle-1 min-h-full flex justify-center   text-[2rem]  ">
