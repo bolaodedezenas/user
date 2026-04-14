@@ -6,7 +6,6 @@ import Header from "@/components/Header";
 import Title from "@/components/Title";
 import Paragraph from "@/components/paragraph";
 import PageLoading from "@/components/PageLoading";
-import EditUserForm from "@/components/Forms/SystemForm/EditUserForm";
 
 // icons
 import { FaUser } from "react-icons/fa";
@@ -41,7 +40,6 @@ export default function Perfil() {
           />
         </div>
       </Header>
-      <EditUserForm />
     </section>
   );
 }
