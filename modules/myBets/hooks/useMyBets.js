@@ -4,8 +4,8 @@ import { getMyTicketsService } from "../services/myBetsService";
 import { useAuthStore } from "@/modules/auth/stores/auth.store";
 
 export function useMyTickets(poolId, contestId) {
-  const { setMyTickets, setLoading, setError, myTickets, isLoading, error } =
-    useMyBetsStore();
+  const { setMyTickets, setLoading, setError, myTickets, isLoading, error } = useMyBetsStore();
+
   const user = useAuthStore((state) => state.user);
 
   useEffect(() => {

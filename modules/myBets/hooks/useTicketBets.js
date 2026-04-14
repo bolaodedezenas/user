@@ -5,21 +5,21 @@ import { myBetsService } from "../services/myBetsService";
 
 export function useTicketBets(ticketId) {
   
-  const [data, setData] = useState([]);
+  const [bets, setBets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!ticketId) {
-      setData([]);
+      setBets([]);
       return;
     }
 
     const fetchBets = async () => {
       try {
         setIsLoading(true);
-        const bets = await myBetsService.getTicketBets(ticketId);
-        setData(bets);
+        const getBets = await myBetsService.getTicketBets(ticketId);
+        setBets(getBets);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -30,5 +30,5 @@ export function useTicketBets(ticketId) {
     fetchBets();
   }, [ticketId]);
 
-  return { data, isLoading, error };
+  return { bets, isLoading, error };
 }

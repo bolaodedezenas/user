@@ -28,7 +28,6 @@ export default function MyBets() {
   const [statusFilter, setStatusFilter] = useState(statusOptions[0]);
   const [selectedTicket, setSelectedTicket] = useState(null);
 
-  console.log(selectedTicket?.id);
 
   // Filtro local para busca e status
   const filteredTickets = myTickets.filter((ticket) => {
@@ -117,7 +116,7 @@ export default function MyBets() {
       <Ticket
         isOpen={!!selectedTicket}
         onClose={() => setSelectedTicket(null)}
-        ticket={selectedTicket} // Passar o objeto completo, não apenas o ID
+        ticket={selectedTicket} // Passar o objeto completo, não apenas o ID 
         poolName={activePool?.name}
         contestNumber={activeContest?.contest_number}
       />

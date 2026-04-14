@@ -7,8 +7,8 @@ import { useTicketBets } from "../../hooks/useTicketBets";
 import Balls from "@/components/Balls";
 
 export default function Ticket({ isOpen, onClose, ticket, poolName, contestNumber }) {
-  const { data: bets, isLoading, error } = useTicketBets(ticket?.id);
-
+  const { bets } = useTicketBets(ticket?.id);
+  
   if (!isOpen || !ticket) return null;
 
   const handleDownload = () => {
@@ -86,27 +86,26 @@ export default function Ticket({ isOpen, onClose, ticket, poolName, contestNumbe
               <h3 className="text-[0.65rem] font-black text-zinc-400 uppercase mb-4 tracking-[0.2em]">
                 Seus Jogos
               </h3>
-                <div className="flex flex-col gap-3">
-                  {bets?.map((bet, idx) => (
-                      <div
-                        key={bet.id}
-                        className="flex items-center justify-between py-2 border-b border-zinc-200 last:border-0"
-                      >
-                        {/* <span className="text-[0.7rem] font-bold text-zinc-400">Jogo #{idx + 1}</span> */}
-                        <div className="flex flex-wrap justify-end gap-1  ">
-                          {bet.numbers.map((num) => (
-                            <Balls
-                              key={num}
-                              number={num}
-                              size="sm"
-                              className="w-7 h-7 text-[0.7rem] bg-zinc-400  "
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    ),
-                  )}
-                </div>
+              <div className="flex flex-col gap-3">
+                {bets?.map((bet) => (
+                  <div
+                    key={bet.id}
+                    className="flex items-center justify-between py-2 border-b border-zinc-200 last:border-0"
+                  >
+                    {/* <span className="text-[0.7rem] font-bold text-zinc-400">Jogo #{idx + 1}</span> */}
+                    <div className="flex flex-wrap justify-end gap-1  ">
+                      {bet.numbers.map((num) => (
+                        <Balls
+                          key={num}
+                          number={num}
+                          size="sm"
+                          className="w-7 h-7 text-[0.7rem] bg-zinc-400  "
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* TOTAL */}
