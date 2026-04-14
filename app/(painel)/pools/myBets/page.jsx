@@ -10,8 +10,9 @@ import Select from "@/modules/pools/components/Select";
 import { FaSearch, FaReceipt } from "react-icons/fa";
 // stores / hooks
 import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
-import { useMyBets } from "@/modules/myBets/hooks/useMyBets";
+import { useMyTickets } from "@/modules/myBets/hooks/useMyBets";
 import TicketCard from "@/modules/myBets/components//TicketCard";
+import Ticket from "@/modules/myBets/components/Ticket";
 
 const statusOptions = [
   { name: "Todos", id: "all" },
@@ -21,10 +22,13 @@ const statusOptions = [
 
 export default function MyBets() {
   const { activePool, activeContest } = useBetsStore();
-  const { myTickets, isLoading } = useMyBets(activePool?.id, activeContest?.id);
+  const { myTickets, isLoading } = useMyTickets(activePool?.id, activeContest?.id);
 
   const [searchNumber, setSearchNumber] = useState("");
   const [statusFilter, setStatusFilter] = useState(statusOptions[0]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+
+  console.log(selectedTicket?.id);
 
   // Filtro local para busca e status
   const filteredTickets = myTickets.filter((ticket) => {
@@ -95,6 +99,7 @@ export default function MyBets() {
                 ticket={ticket}
                 poolName={activePool?.name}
                 contestNumber={activeContest?.contest_number}
+                onView={() => setSelectedTicket(ticket)}
               />
             ))
           ) : (
@@ -107,6 +112,15 @@ export default function MyBets() {
           )}
         </div>
       </div>
+
+      {/* MODAL DO BILHETE */}
+      <Ticket
+        isOpen={!!selectedTicket}
+        onClose={() => setSelectedTicket(null)}
+        ticket={selectedTicket} // Passar o objeto completo, não apenas o ID
+        poolName={activePool?.name}
+        contestNumber={activeContest?.contest_number}
+      />
     </section>
   );
 }

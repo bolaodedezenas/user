@@ -12,6 +12,18 @@ export const fetchMyTickets = async (userId, poolId, contestId) => {
   if (error) {
     throw new Error(error.message);
   }
-
   return data;
 };
+
+export const myBetsRepository = {
+  async getBetsByTicketId(ticketId) {
+    const { data, error } = await supabase
+      .from("bets")
+      .select("*")
+      .eq("ticket_id", ticketId);
+
+    if (error) throw error;
+    return data;
+  },
+};
+

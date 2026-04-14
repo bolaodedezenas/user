@@ -2,7 +2,7 @@
 import { MdPayment, MdHourglassEmpty } from "react-icons/md";
 import { AiOutlineExport } from "react-icons/ai";
 
-export default function TicketCard({ ticket, poolName, contestNumber }) {
+export default function TicketCard({ ticket, poolName, contestNumber, onView }) {
   return (
     <div className="bg-white border border-zinc-200 rounded-xl overflow-hidden hover:shadow-md transition-all group border-l-10 border-l-[rgb(var(--btn))] flex flex-col w-full">
       {/* HEADER */}
@@ -85,7 +85,10 @@ export default function TicketCard({ ticket, poolName, contestNumber }) {
 
         {/* Coluna 6 */}
         <div className="flex-1 flex justify-end">
-          <button className="w-10 h-10 flex items-center justify-center bg-zinc-100 rounded-lg text-zinc-600 group-hover:bg-[rgb(var(--blue-50))] group-hover:text-[rgb(var(--btn))] transition-all cursor-pointer border border-zinc-100">
+          <button 
+            onClick={onView}
+            className="w-10 h-10 flex items-center justify-center bg-zinc-100 rounded-lg text-zinc-600 group-hover:bg-[rgb(var(--blue-50))] group-hover:text-[rgb(var(--btn))] transition-all cursor-pointer border border-zinc-100"
+          >
             <AiOutlineExport size={20} />
           </button>
         </div>
