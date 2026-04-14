@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/libs/supabase/client";
 // icon
@@ -66,32 +66,34 @@ export default function Recovery() {
   if (loading) return <Loading />;
 
   return (
-    <div
-      className="
-      scrollbar-transparent overflow-auto 
-      min-h-full 
-      flex items-center  justify-center
-      bg-gradient-to-t from-[rgb(var(--background-secundary))] to-[rgb(var(--background))]
-      p-4
-      "
-    >
-      {mode === "resetPassword" ? (
-        <ResetPasswordForm />
-      ) : (
-        <div className=" p-5 w-full max-w-[650px] text-center  ">
-          {message.title === "Erro ao verificar email!" ? (
-            <Icon name="Warning" size={100} color="red" />
-          ) : (
-            <Icon name="Verified_User" size={100} color="white" />
-          )}
-          <h3 className="text-[rgb(var(--white))] text-[2.8rem] ">
-            {message.title}
-          </h3>
-          <p className="text-[rgb(var(--white))] text-[1.3rem] ">
-            {message.text}
-          </p>
-        </div>
-      )}
-    </div>
+    <Suspense fallback={<Loading />}>
+      <div
+        className="
+        scrollbar-transparent overflow-auto 
+        min-h-full 
+        flex items-center  justify-center
+        bg-gradient-to-t from-[rgb(var(--background-secundary))] to-[rgb(var(--background))]
+        p-4
+        "
+      >
+        {mode === "resetPassword" ? (
+          <ResetPasswordForm />
+        ) : (
+          <div className=" p-5 w-full max-w-[650px] text-center  ">
+            {message.title === "Erro ao verificar email!" ? (
+              <Icon name="Warning" size={100} color="red" />
+            ) : (
+              <Icon name="Verified_User" size={100} color="white" />
+            )}
+            <h3 className="text-[rgb(var(--white))] text-[2.8rem] ">
+              {message.title}
+            </h3>
+            <p className="text-[rgb(var(--white))] text-[1.3rem] ">
+              {message.text}
+            </p>
+          </div>
+        )}
+      </div>
+    </Suspense>
   );
 }
