@@ -10,11 +10,12 @@ export const signInWithGoogleRepository = async () => {
   return supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "https://user-black-seven.vercel.app/", // 🔹 depois muda pra produção
+      // redirectTo: "https://user-black-seven.vercel.app/", // 🔹 depois muda pra produção
+      redirectTo: "http://localhost:5174/", // 🔹 para desenvolvimento
     },
   });
 };
-
+ 
 // Logout
 export const signOutRepository = () => supabase.auth.signOut();
 

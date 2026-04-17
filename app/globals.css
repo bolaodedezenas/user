@@ -128,13 +128,19 @@ input:-webkit-autofill:active {
   background: transparent;
 }
 
+.scrollbar-transparent::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
 .scrollbar-transparent::-webkit-scrollbar-track {
   background: transparent;
 }
 
 
+/*  scrollbar azul */
+
 ::-webkit-scrollbar-thumb {
-  background: #324F8E; /* cor do "polegar" */
+  background: #324F8E;
   border-radius: 4px;
 }
 
