@@ -90,7 +90,7 @@ export default function MyBets() {
         </div>
 
         {/* LISTAGEM COM ROLAGEM */}
-        <div className="flex flex-wrap   gap-4 border border-zinc-300 rounded-lg p-5 overflow-y-auto max-h-[422px] scrollbar-thin">
+        <div className="flex flex-wrap  justify-center  gap-4 border border-zinc-300 rounded-lg p-5 overflow-y-auto max-h-[422px] scrollbar-thin">
           {filteredTickets.length > 0 ? (
             filteredTickets.map((ticket) => (
               <TicketCard
@@ -102,7 +102,7 @@ export default function MyBets() {
               />
             ))
           ) : (
-            <div className="col-span-full py-20 text-center flex flex-col items-center gap-3">
+            <div className="col-span-full py-20 text-center flex flex-col items-center   gap-3">
               <FaReceipt className="text-5xl text-zinc-200" />
               <span className="text-zinc-400 italic">
                 Nenhum bilhete encontrado para estes filtros.

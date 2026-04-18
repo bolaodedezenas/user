@@ -64,7 +64,7 @@ export default function Submenu({ itemContest }) {
             router.push("/pools/myBets");
           }}
         >
-          <p>Meus Bolões</p>
+          <p>Meus Jogos</p>
         </li>
         <li
           className={

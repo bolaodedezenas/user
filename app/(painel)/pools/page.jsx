@@ -51,7 +51,7 @@ export default function Pools() {
   
 
   return (
-    <section className="fle-1 min-h-full flex justify-center   text-[2rem]  ">
+    <section className="fle-1 min-h-full flex justify-center ">
       <div className="py-3 px-3 sm:py-8 sm:px-6 bg-white rounded-[10px] shadow-lg w-full min-h-full">
         <div className="flex flex-wrap border-b-2 border-zinc-300 justify-between pb-3 gap-4">
           <div className="">
@@ -127,7 +127,13 @@ export default function Pools() {
         </div>
 
         <div className="flex gap-3 items-center justify-center">
-          <h3 className="font-bold">{selectedBalls.length}</h3>
+          <h3 className="font-bold text-3xl ">
+            {selectedBalls.length === 0
+              ? "0"
+              : selectedBalls.length < 10
+              ? `0${selectedBalls.length}`
+              : selectedBalls.length}
+          </h3>
           <p className="text-[1.4rem] ">Dezenas</p>
         </div>
 
