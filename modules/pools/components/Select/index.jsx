@@ -71,7 +71,7 @@ export default function Select({
         shadow-[inset_0_2px_6px_rgba(0,0,0,0.25)] text-[1rem] ${className}`}
       >
         <span>
-          {selected ? selected.name || `${selected.contest_number} ` : label}
+          {selected ? selected.name || `${selected.contest_number} - ${new Date( selected.starts_at).toLocaleDateString("pt-BR")} `  : label}
         </span>
         <FiChevronDown
           className={`transition-transform duration-300 ml-2 text-[1.5rem] ${

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 // components
 import PageLoading from "@/components/PageLoading";
@@ -12,33 +12,37 @@ import Table from "@/components/Table";
 import StatusBadge from "@/modules/bets/components/StatusBadge";
 import CardList from "@/modules/bets/components/CardList";
 import ViewToggle from "@/components/ViewToggle";
-
-// hooks  
+import Pagination from "@/components/Pagination";
+import { useDebounce } from "@/hooks/useDebounce";
+// hooks
 import { usePools } from "@/modules/pools/hooks/usePools";
+import { useContests } from "@/modules/pools/hooks/useContests";
+import { useTickets } from "@/modules/bets/hooks/useTickets";
 // stores
 import { usePoolsStore } from "@/modules/pools/stores/usePoolsStore";
-// icons 
-import { FaFileInvoiceDollar } from "react-icons/fa";
-import { FaWhatsapp } from "react-icons/fa";
+// icons
+import { FaFileInvoiceDollar, FaWhatsapp, FaReceipt } from "react-icons/fa";
 import { AiOutlineExport } from "react-icons/ai";
 // toast
 import toast from "react-hot-toast";
 
-
-export default function Users() {
-
-  // Tabela header 
+export default function Bets() {
+  // Tabela header
   const headers = [
-    { label: "#", key: "id", flex: 0.4 },
-    { label: "Apostador", key: "nome", flex: 1},
+    { label: "# Bilhete", key: "id", flex: 0.8 },
+    { label: "Apostador", key: "nome", flex: 1.5 },
     { label: "Telefone", key: "telefone", flex: 1 },
     { label: "Endereço", key: "endereco", flex: 1 },
     { label: "Jogos", key: "jogos", flex: 0.8 },
-    { label: "Status", key: "status", flex: 1, render: (value) => <StatusBadge status={value} />},
+    { label: "Valor", key: "valor", flex: 0.8 },
+    {
+      label: "Status",
+      key: "status",
+      flex: 1,
+      render: (value) => <StatusBadge status={value} />,
+    },
     { label: "Ações", key: "acoes", flex: 0.4, center: true },
   ];
-
- 
 
   // Ações para cada linha da tabela
   const actions = [
@@ -63,153 +67,176 @@ export default function Users() {
     },
   ];
 
-  // Dados da tabela (Exemplo Estático, Substituir pela API)
-  const data = [
-    {
-      id: 1,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pago",
-    },
-    {
-      id: 2,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pendente",
-    },
-    {
-      id: 3,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pago",
-    },
-    {
-      id: 4,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pendente",
-    },
-    {
-      id:5,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pago",
-    },
-    {
-      id: 6,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pendente",
-    },
-    {
-      id: 7,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pago",
-    },
-    {
-      id: 8,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pendente",
-    },
-    {
-      id: 9,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pago",
-    },
-    {
-      id: 10,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pendente",
-    },
-    {
-      id: 11,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pago",
-    },
-    {
-      id: 12,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pendente",
-    },
-    {
-      id: 13,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pago",
-    },
-    {
-      id: 14,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pendente",
-    },
-    {
-      id: 15,
-      nome: "Manoel Fernando",
-      telefone: "(74)93505-0160",
-      endereco: "Trindade-PE",
-      jogos: 10,
-      status: "Pago",
-    },
-  ];
+  usePools();
+  const { pools } = usePoolsStore(); // Busca os concursos no store
+  const [pool, setPool] = useState(null); // pool selecionado
+  const [contest, setContest] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 600); // 🔹 Debounce de 600ms
+  const [activeRemoteSearchTerm, setActiveRemoteSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [remoteEmpty, setRemoteEmpty] = useState(false);
 
-  usePools();// Busca os concursos
-  const { pools } = usePoolsStore();// Busca os concursos no store
-  console.log(pools);
-  const [pool, setPool] = useState(null);// pool selecionado
 
-  const [loading, setLoading] = useState(true);
+  // 🔹 Hook que busca concursos automaticamente quando o 'pool' muda
+  const { contests, isLoading: isLoadingContests } = useContests(pool?.id);
+
+  const itemsPerPage = 8;
+
+  // 🔹 Hook que busca os tickets de forma real no banco (paginação e busca)
+  const {
+    tickets,
+    totalCount,
+    isLoading: isLoadingTickets,
+  } = useTickets(contest?.id, currentPage, itemsPerPage, activeRemoteSearchTerm);
+
+  // 🔹 Busca Local: Filtra instantaneamente o que já está na memória (Store)
+  const localFilteredTickets = tickets.filter((t) => {
+    if (!searchTerm) return true;
+    return t.id?.toString().includes(searchTerm);
+  });
+
+
+
+  // 🔹 Lógica Híbrida: Monitora o termo digitado
+  useEffect(() => {
+    // 💡 Sempre que houver alteração no que foi digitado em relação à última busca processada,
+    // resetamos o estado de erro e removemos o toast anterior imediatamente.
+    if (searchTerm !== activeRemoteSearchTerm) {
+      setRemoteEmpty(false);
+      toast.dismiss("search-not-found");
+    }
+
+    if (!searchTerm) {
+      setActiveRemoteSearchTerm("");
+      setRemoteEmpty(false);
+      return;
+    }
+
+    // 🔥 se encontrou local → cancela remoto e limpa erro
+    if (localFilteredTickets.length > 0) {
+      if (activeRemoteSearchTerm !== "") {
+        setActiveRemoteSearchTerm("");
+      }
+      setRemoteEmpty(false);
+      return;
+    }
+
+    // 🔥 dispara busca remota
+    if (
+      debouncedSearchTerm &&
+      contest?.id &&
+      debouncedSearchTerm !== activeRemoteSearchTerm
+    ) {
+      setRemoteEmpty(false); // ✅ Garante que o estado vazio anterior não dispare o toast
+      setActiveRemoteSearchTerm(debouncedSearchTerm);
+    }
+  }, [
+    debouncedSearchTerm,
+    searchTerm,
+    localFilteredTickets.length,
+    activeRemoteSearchTerm,
+    contest?.id,
+  ]);
+
+  useEffect(() => {
+    if (!isLoadingTickets && activeRemoteSearchTerm) {
+      setRemoteEmpty(totalCount === 0);
+    }
+  }, [isLoadingTickets, totalCount, activeRemoteSearchTerm]);
+
+
+  // 🔹 Toast amigável para quando nem o banco encontra nada
+ useEffect(() => {
+   // 🔥 se o usuário mudou o termo → ignora tudo
+   if (searchTerm !== activeRemoteSearchTerm) return;
+
+   // 🔥 se tem resultado local → nunca mostra erro
+   if (localFilteredTickets.length > 0) return;
+
+   if (remoteEmpty && activeRemoteSearchTerm && !isLoadingTickets) {
+     toast.error(
+       `Bilhete "${activeRemoteSearchTerm}" não encontrado. Verifique o bolão e o concurso selecionados.`,
+       { duration: 6000, id: "search-not-found", icon: "🔍" },
+     );
+   }
+ }, [
+   remoteEmpty,
+   activeRemoteSearchTerm,
+   searchTerm,
+   localFilteredTickets.length,
+   isLoadingTickets,
+ ]);
+
+
+
+
   const [view, setView] = useState(true); // vizualizar  o modo card ou tabela
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleChangePool = (item) => {
     setPool(item);
+    setContest(null); // Reseta o concurso ao mudar o bolão
+    setSearchTerm(""); // Limpa busca ao mudar bolão
+    setCurrentPage(1); // Reseta para a primeira página
     toast.success(`Você selecionou o  ${item.name}`, { duration: 4000 });
+    setActiveRemoteSearchTerm("");
+    setRemoteEmpty(false);
   };
-  
+
+  const handleChangeContest = (item) => {
+    setContest(item);
+    setCurrentPage(1); // Reseta para a primeira página
+    toast.success(`Você selecionou o  ${item.contest_number}`, { duration: 4000 });
+    setActiveRemoteSearchTerm("");
+    setRemoteEmpty(false);
+  };
+
+  // ✅ Handler para permitir apenas números no campo de busca desta página
+  const handleSearchChange = (value) => {
+    const numericValue = value.replace(/\D/g, "");
+    setSearchTerm(numericValue);
+  };
+
+  // Resetar página ao pesquisar
   useEffect(() => {
-    setTimeout(() => setLoading(false) , 3000);
-  }, []);
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    // Garante que o concurso selecionado pertença ao bolão atual
+    if (contests.length > 0) {
+      const isSamePool = contests[0].pool_id === pool?.id;
+      if (isSamePool && (!contest || contest.pool_id !== pool?.id)) {
+        setContest(contests[0]);
+      }
+    } else if (!isLoadingContests) {
+      setContest(null);
+    }
+  }, [contests, contest, pool, isLoadingContests]);
+
+  useEffect(() => {
+    if (pools.length > 0 && !pool) {
+      setPool(pools[0]);
+    }
+  }, [pools, pool]);
+
+  useEffect(() => {
+     setTimeout(() => {
+       setLoading(false);
+     }, 500);
+  }, [view]);
 
   if (loading) return <PageLoading />;
 
   return (
-    <section className="fle-1 h-full flex flex-col  bg-[rgb(var(--blue-50))]">
-      <section className=" w-full flex flex-wrap items-center justify-between bg-white shadow-md rounded-lg p-4 gap-6">
+    <section className="flex-1 h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
+      <section className=" w-full flex flex-wrap items-center justify-between bg-white shadow-md rounded-lg p-4 gap-4">
         <div className="flex flex-wrap items-center gap-3 pl-8   ">
           <FaFileInvoiceDollar className="text-[3rem] text-[rgb(var(--btn))]" />
           <div className="flex flex-col">
@@ -225,12 +252,17 @@ export default function Users() {
         </div>
 
         <div className="flex flex-wrap items-center gap-4 justify-center">
-          <ViewToggle value={view} onChange={() =>  setView(!view)} />
+          <ViewToggle
+            value={view}
+            onChange={() => {
+              (setView(!view), setLoading(true));
+            }}
+          />
 
           <SearchInput
-            value=""
-            onChange={() => {}}
-            placeholder="Pesquisar..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder=" N° do Bilhete "
             className="w-38"
           />
           <Select
@@ -240,15 +272,59 @@ export default function Users() {
             onChange={handleChangePool}
             className="px-5 py-3"
           />
+          {/* NOVO: Select de Concursos */}
+          <Select
+            label={contest ? ` ${contest.contest_number} ` : "..."}
+            value={contest}
+            options={contests}
+            isLoading={isLoadingContests}
+            onChange={handleChangeContest}
+            className="px-5 py-3"
+          />
         </div>
       </section>
-      <div className=" bg-white shadow-md rounded-lg mt-3    p-4 py-6 h-[calc(100%)]   ">
-        { view ? (
-          <Table headers={headers} data={data} actions={actions} />
+
+      <div className="flex-1 flex flex-col bg-white shadow-lx rounded-lg mt-3 overflow-hidden">
+        {isLoadingTickets ? (
+          <div className="flex flex-col justify-center items-center h-full gap-4 text-zinc-400">
+            <PageLoading />
+          </div>
+        ) : localFilteredTickets.length > 0 ? (
+          <>
+            {view ? (
+              <section className="flex-1 flex flex-col overflow-hidden min-h-0">
+                <Table
+                  headers={headers}
+                  data={localFilteredTickets}
+                  actions={actions}
+                />
+              </section>
+            ) : (
+              <section className="flex gap-8 flex-wrap  justify-center  max-h-[calc(100vh-200px)] py-8 px-5 overflow-auto  ">
+                <CardList
+                  headers={headers}
+                  data={localFilteredTickets}
+                  actions={actions}
+                />
+              </section>
+            )}
+          </>
         ) : (
-          <CardList headers={headers} data={data} actions={actions} />
+          <div className="flex flex-col justify-center items-center h-full gap-3 text-zinc-400">
+            <FaReceipt className="text-5xl text-zinc-200" />
+            <Paragraph
+              text="Nenhuma aposta encontrada para este concurso."
+              className="text-zinc-500 font-medium text-center"
+            />
+          </div>
         )}
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={totalCount}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+      />
     </section>
   );
 }

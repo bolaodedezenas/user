@@ -18,7 +18,13 @@ export function useContests(poolId) {
   } = useContestsStore();
 
   useEffect(() => {
-    if (!poolId) return;
+    if (!poolId) {
+      setContests([]);
+      return;
+    }
+
+    // Limpa a lista atual ao trocar de bolão para evitar inconsistência visual
+    setContests([]);
 
     const fetchContests = async () => {
       try {
@@ -27,6 +33,8 @@ export function useContests(poolId) {
         setContests(data || []);
       } catch (err) {
         setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 

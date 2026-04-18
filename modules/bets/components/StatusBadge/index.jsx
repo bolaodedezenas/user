@@ -4,9 +4,9 @@ export default function StatusBadge  ({ status }) {
   return (
     <div className="flex items-center gap-2 font-medium">
       <span
-        className={`w-2.5 h-2.5 rounded-full ${isPaid ? "bg-green-500" : "bg-orange-500"}`}
+        className={`w-3 h-3 animate-pulse rounded-full ${isPaid ? "bg-green-500" : "bg-orange-600"}`}
       />
-      <span className={isPaid ? "text-green-700" : "text-orange-700"}>
+      <span className={isPaid ? "text-zinc-800" : "text-zinc-800"}>
         {status}
       </span>
     </div>

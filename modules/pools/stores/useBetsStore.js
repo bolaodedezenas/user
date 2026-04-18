@@ -3,12 +3,16 @@ import toast from "react-hot-toast";
 import { useAuthStore } from "../../auth/stores/auth.store";
 
 const MAX_BALLS = 10;
+const userId = useAuthStore.getState().user?.id;
+
 
 export const useBetsStore = create((set, get) => ({
   selectedBalls: [],
   tickets: [],
   activeContest: null,
   activePool: null,
+
+
 
   // ✅ Atualiza o estado global de bilhetes (usado na edição/exclusão e checkout)
   setTickets: (newTickets) => set({ tickets: newTickets }),
@@ -85,8 +89,8 @@ export const useBetsStore = create((set, get) => ({
         // Caso contrário, cria um novo bilhete para este bolão e concurso
         // Cria um novo bilhete estruturado para a tabela do banco
         newTickets.push({
-          user_id: useAuthStore.getState().user.id, 
-          customer_id: null,
+          user_id: userId,
+          customer_id: "69f74dcc-9d48-4c14-ab0e-86b0c521968c", // id fixo de um cliente
           contest_id: activeContest.id,
           contest_number: activeContest.contest_number,
           pool_id: activePool.id,
@@ -96,7 +100,7 @@ export const useBetsStore = create((set, get) => ({
           total_value: activeContest.bet_price,
           status: "pending",
           created_at: new Date().toISOString(),
-          color: activePool.color,// nao envia para o banco, apenas para controle visual
+          color: activePool.color, // nao envia para o banco, apenas para controle visual
           bets: [
             {
               numbers: gameNumbers,

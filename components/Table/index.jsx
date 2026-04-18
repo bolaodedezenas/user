@@ -1,4 +1,3 @@
-
 "use client";
 
 // Sub-componente para Ações
@@ -14,21 +13,20 @@ const ActionButton = ({ action, row }) => {
   );
 };
 
-
 export default function Table({ headers, data, actions = [] }) {
   return (
-    <div className="w-full h-[calc(100vh-180px)] bg-white   rounded-xl overflow-hidden">
+    <>
       {/* SCROLL HORIZONTAL */}
-      <div className="w-full overflow-x-auto">
-        <div className="min-w-[750px]">
+      <div className="w-full flex-1 overflow-x-auto flex flex-col min-h-0">
+        <div className="flex flex-col flex-1 min-w-[1000px] min-h-0">
           {/* HEADER */}
-          <div className="border-b border-zinc-300 px-12 py-4 flex items-center ">
+          <div className="border-b border-zinc-300 px-10 py-4 flex items-center  ">
             {headers.map((header) => (
               <div
                 key={header.key}
-                className={` flex items-center text-[0.9rem] font-semibold uppercase tracking-wider text-zinc-500 ${
-                  header.center ? "justify-center" : "justify-start"
-                }`}
+                className={` flex items-center text-[0.9rem] font-semibold uppercase tracking-wider text-zinc-500 
+                  ${header.center ? "justify-center" : "justify-start"}
+                 `}
                 style={{ flex: header.flex || 1 }}
               >
                 {header.label}
@@ -37,7 +35,7 @@ export default function Table({ headers, data, actions = [] }) {
           </div>
 
           {/* BODY */}
-          <div className="flex flex-col gap-3 overflow-y-auto max-h-[calc(100vh-220px)] p-5">
+          <div className="flex-1 flex flex-col gap-3 overflow-y-auto p-5">
             {data.map((row, rowIndex) => (
               <div
                 key={rowIndex}
@@ -46,9 +44,10 @@ export default function Table({ headers, data, actions = [] }) {
                 {headers.map((header) => (
                   <div
                     key={header.key}
-                    className={`flex items-center text-sm text-zinc-600 ${
-                      header.center ? "justify-center" : "justify-start"
-                    }`}
+                    className={`flex items-center text-sm text-zinc-600 
+                      ${header.center ? "justify-center" : "justify-start"}
+                      ${header.key === "jogos" && "text-[1.2rem]  font-semibold"}
+                    `}
                     style={{ flex: header.flex || 1 }}
                   >
                     {header.key === "acoes" ? (
@@ -69,6 +68,6 @@ export default function Table({ headers, data, actions = [] }) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

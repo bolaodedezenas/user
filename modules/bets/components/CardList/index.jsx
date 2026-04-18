@@ -16,11 +16,11 @@ const ActionButton = ({ action, row }) => {
 
 export default function CardList({ headers, data, actions = [] }) {
   return (
-    <div className=" bg-white   rounded-lg    flex flex-wrap justify-center gap-4   h-[calc(100vh-170px)] overflow-y-auto ">
+    <>
       {data.map((row) => (
         <div
           key={row.id}
-          className="w-70 bg-[rgb(var(--blue-50))]/60 border border-zinc-200 rounded-2xl shadow-sm p-3 flex flex-col gap-6"
+          className="w-67    h-fit  bg-[rgb(var(--blue-50))]/60 border border-zinc-200 rounded-2xl shadow-sm p-4 flex flex-col gap-4"
         >
           {/* 🔹 Conteúdo */}
           <div className="flex flex-col gap-2">
@@ -30,7 +30,8 @@ export default function CardList({ headers, data, actions = [] }) {
                 <div
                   key={header.key}
                   className={`flex justify-between items-center text-[0.9rem] bg-[rgb(var(--blue-100))]/30 rounded-[5px] p-2 px-4
-                  ${header.key === "id" && " text-[1.2rem] font-extrabold bg-transparent"}
+                  ${header.key === "id" && " text-[1rem] font-extrabold bg-transparent"}
+                  ${header.key === "nome" && " flex-col justify-start items-start  "}
                   `}
                 >
                   <span className="text-zinc-950 font-bold">
@@ -60,6 +61,6 @@ export default function CardList({ headers, data, actions = [] }) {
           )}
         </div>
       ))}
-    </div>
+    </>
   );
 }
