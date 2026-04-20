@@ -8,13 +8,13 @@ export default function BetCardDashboard({
   prize,
   status,
   sales,
-  color = "#3b82f6",
+  $color = "#3b82f6",
 }) {
   return (
     <div
-      className="w-full rounded-xl p-4 flex gap-4 flex-wrap items-center justify-between shadow-md text-white"
+      className="w-full shadow-xl rounded-xl p-4 flex gap-4 flex-wrap items-center justify-between   text-white"
       style={{
-        background: `linear-gradient(to right, ${color}, ${color}B3)`,
+        background: `linear-gradient(to right, ${$color}, ${$color}B3)`,
       }}
     >
       {/* LEFT */}

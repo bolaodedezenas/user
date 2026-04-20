@@ -1,6 +1,6 @@
 "use client";
 
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 export default function MonthSummary({ title = "Mês Atual", data = [] }) {
   return (
@@ -42,6 +42,23 @@ export default function MonthSummary({ title = "Mês Atual", data = [] }) {
         <div className="w-[270px] h-[270px]  ">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
+              <Tooltip
+                contentStyle={{
+                  borderRadius: "8px",
+                  border: "none",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                }}
+                itemStyle={{
+                  color: "#000000",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                }}
+                 
+                formatter={(value, name, props) => {
+                  return [value, props.payload.label];
+                }}
+              />
+
               <Pie
                 data={data}
                 dataKey="value"

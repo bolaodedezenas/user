@@ -138,7 +138,6 @@ input:-webkit-autofill:active {
 
 
 /*  scrollbar azul */
-
 ::-webkit-scrollbar-thumb {
   background: #324F8E;
   border-radius: 4px;
@@ -151,4 +150,11 @@ input:-webkit-autofill:active {
 
 
 
+ 
+ /*   estilo para o recharts remove o outline do grafico */
 
+.recharts-wrapper * {
+  outline: none !important;
+}
+
+ 
