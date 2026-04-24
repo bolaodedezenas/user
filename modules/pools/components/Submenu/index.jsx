@@ -17,12 +17,12 @@ export default function Submenu({ itemContest }) {
   }, [itemContest?.status]);
 
   return (
-    <nav className="">
+    <nav>
       <ul
-        className={` flex flex-wrap justify-center  gap-2 list-none text-[1rem] text-[rgb(var(--text))] 
-        [&>*]:cursor-pointer
+        className={` flex flex-wrap items-center justify-center  gap-2 list-none text-[1rem] text-[rgb(var(--text))] 
+        [&>*]:cursor-pointer [&>*]:w-30
         [&>*]:rounded-[5px]  [&>*]:transition [&>*]:duration-300
-        [&>*]:flex  [&>*]:items-center [&>*]:pl-4 [&>*]:pr-4 [&>*]:py-2 
+        [&>*]:flex  [&>*]:items-center  [&>*]:justify-center [&>*]:pl-4 [&>*]:pr-4 [&>*]:py-2 
       `}
       >
         <li

@@ -156,8 +156,8 @@ export default function Pools() {
           </div>
         </div>
 
-        <div className="flex justify-center pt-10">
-          <div className=" flex  gap-2  flex-wrap  max-sm:justify-center md:max-w-[950px] p-4 max-h-[340px] overflow-auto   scrollbar-transparent ">
+        <div className="flex justify-center pt-5">
+          <div className=" flex  gap-2  flex-wrap  max-sm:justify-center md:max-w-[950px] p-2 max-h-[470px] overflow-auto   scrollbar-transparent ">
             {balls.map((ball, index) => (
               <Balls
                 $anima={false}

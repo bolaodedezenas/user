@@ -121,9 +121,9 @@ const handleWhatsapp = async () => {
 
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-1 animate-in fade-in duration-200">
       {/* CONTAINER DO BILHETE */}
-      <div className="relative w-full max-w-md bg-zinc-100 rounded-xl shadow-2xl overflow-hidden flex flex-col pt-8 max-h-[95vh]">
+      <div className="relative w-full max-w-md bg-zinc-100 rounded-xl shadow-2xl overflow-hidden flex flex-col pt-10 max-h-[98vh]">
         {/* BOTÃO FECHAR */}
         <button
           onClick={onClose}
@@ -133,7 +133,7 @@ const handleWhatsapp = async () => {
         </button>
 
         {/* ÁREA DO "PAPEL" */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto  p-6   scrollbar-thin">
           <div
             ref={ticketRef}
             className="bg-white shadow-sm border-t-8 border-[rgb(var(--btn))] relative p-6 flex flex-col gap-6"
@@ -221,20 +221,20 @@ const handleWhatsapp = async () => {
 
             {/* LISTA DE JOGOS (BETS) */}
             <div className="border-t border-dashed border-zinc-300 pt-6">
-              <h3 className="text-[0.65rem] font-black text-zinc-400 uppercase mb-4 tracking-[0.2em]">
+              <h3 className="text-[0.9rem] font-black text-zinc-400 uppercase mb-4 tracking-[0.2em]">
                 Seus Jogos
               </h3>
               <div className="flex flex-col gap-3">
                 {bets?.map((bet, idx) => (
                   <div
                     key={bet.id}
-                    className="flex flex-col gap-2 py-2 border-b border-zinc-200 last:border-0"
+                    className="flex justify-center   flex-col gap-2 py-2 border-b border-zinc-200 last:border-0"
                   >
                     <div className="flex justify-between items-center">
-                      <span className="text-[0.7rem] font-bold text-zinc-500 uppercase">
+                      <span className="text-[0.9rem] font-bold text-zinc-500 uppercase">
                         Jogo #{idx + 1}
                       </span>
-                      <span className="text-[0.65rem] font-bold text-zinc-400">
+                      <span className="text-[0.9rem] font-bold text-zinc-400">
                         {(
                           (ticket?.total_value || 0) / (bets?.length || 1)
                         ).toLocaleString("pt-BR", {
@@ -243,15 +243,17 @@ const handleWhatsapp = async () => {
                         })}
                       </span>
                     </div>
-                    <div className="flex flex-wrap justify-end gap-1">
-                      {bet.numbers.map((num) => (
-                        <Balls
-                          key={num}
-                          number={num}
-                          size="sm"
-                          className="w-7 h-7 text-[0.7rem] bg-zinc-400  "
-                        />
-                      ))}
+                    <div className="flex w-full flex-wrap justify-center p-2 ">
+                      <div className="flex w-70 justify-center  gap-3 flex-wrap">
+                        {bet.numbers.map((num) => (
+                          <Balls
+                            key={num}
+                            number={num}
+                            size="sm"
+                            className="w-10 h-10 text-[0.9rem] bg-zinc-400  "
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 ))}
