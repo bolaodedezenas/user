@@ -32,37 +32,8 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex items-center justify-between border-t border-zinc-200 bg-white px-4 py-3 sm:px-6 mt-auto rounded-b-lg">
-      <div className="flex flex-1 justify-between sm:hidden">
-        <button
-          onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
-          disabled={currentPage === 1}
-          className="relative inline-flex items-center rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-blue-200 transition-colors disabled:opacity-50 disabled:hover:bg-white"
-        >
-          Anterior
-        </button>
-        <button
-          onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
-          disabled={currentPage === totalPages}
-          className="relative ml-3 inline-flex items-center rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-blue-200 transition-colors disabled:opacity-50 disabled:hover:bg-white"
-        >
-          Próxima
-        </button>
-      </div>
-      <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm text-zinc-700">
-            Mostrando{" "}
-            <span className="font-semibold">
-              {(currentPage - 1) * itemsPerPage + 1}
-            </span>{" "}
-            até{" "}
-            <span className="font-semibold">
-              {Math.min(currentPage * itemsPerPage, totalItems)}
-            </span>{" "}
-            de <span className="font-semibold">{totalItems}</span> resultados
-          </p>
-        </div>
+    <div className="border flex items-center justify-end border-t border-zinc-200 bg-white px-4 py-3 sm:px-6 mt-auto rounded-b-lg">
+      <div className=" flex items-center  justify-between">
         <div>
           <nav className="isolate inline-flex gap-2" aria-label="Pagination">
             <button

@@ -21,10 +21,17 @@ import { useTickets } from "@/modules/bets/hooks/useTickets";
 // stores
 import { usePoolsStore } from "@/modules/pools/stores/usePoolsStore";
 // icons
-import { FaFileInvoiceDollar, FaWhatsapp, FaReceipt } from "react-icons/fa";
+import {
+  FaFileInvoiceDollar,
+  FaWhatsapp,
+  FaReceipt,
+  FaFilter,
+  FaTimes,
+} from "react-icons/fa";
 import { AiOutlineExport } from "react-icons/ai";
 // toast
 import toast from "react-hot-toast";
+import { vi } from "zod/v4/locales";
 
 export default function Bets() {
   // Tabela header
@@ -73,29 +80,30 @@ export default function Bets() {
   const [contest, setContest] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 600); // 🔹 Debounce de 600ms
+
   const [activeRemoteSearchTerm, setActiveRemoteSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [remoteEmpty, setRemoteEmpty] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  const itemsPerPage = 10;
 
   // 🔹 Hook que busca concursos automaticamente quando o 'pool' muda
   const { contests, isLoading: isLoadingContests } = useContests(pool?.id);
 
-  const itemsPerPage = 8;
-
   // 🔹 Hook que busca os tickets de forma real no banco (paginação e busca)
-  const {
-    tickets,
-    totalCount,
-    isLoading: isLoadingTickets,
-  } = useTickets(contest?.id, currentPage, itemsPerPage, activeRemoteSearchTerm);
+  const { tickets, totalCount, isLoading: isLoadingTickets} = useTickets(
+    contest?.id,
+    currentPage,
+    itemsPerPage,
+    activeRemoteSearchTerm,
+  );
 
   // 🔹 Busca Local: Filtra instantaneamente o que já está na memória (Store)
   const localFilteredTickets = tickets.filter((t) => {
     if (!searchTerm) return true;
     return t.id?.toString().includes(searchTerm);
   });
-
 
 
   // 🔹 Lógica Híbrida: Monitora o termo digitado
@@ -139,36 +147,35 @@ export default function Bets() {
     contest?.id,
   ]);
 
+
+  
   useEffect(() => {
     if (!isLoadingTickets && activeRemoteSearchTerm) {
       setRemoteEmpty(totalCount === 0);
     }
   }, [isLoadingTickets, totalCount, activeRemoteSearchTerm]);
 
-
   // 🔹 Toast amigável para quando nem o banco encontra nada
- useEffect(() => {
-   // 🔥 se o usuário mudou o termo → ignora tudo
-   if (searchTerm !== activeRemoteSearchTerm) return;
+  useEffect(() => {
+    // 🔥 se o usuário mudou o termo → ignora tudo
+    if (searchTerm !== activeRemoteSearchTerm) return;
 
-   // 🔥 se tem resultado local → nunca mostra erro
-   if (localFilteredTickets.length > 0) return;
+    // 🔥 se tem resultado local → nunca mostra erro
+    if (localFilteredTickets.length > 0) return;
 
-   if (remoteEmpty && activeRemoteSearchTerm && !isLoadingTickets) {
-     toast.error(
-       `Bilhete "${activeRemoteSearchTerm}" não encontrado. Verifique o bolão e o concurso selecionados.`,
-       { duration: 6000, id: "search-not-found", icon: "🔍" },
-     );
-   }
- }, [
-   remoteEmpty,
-   activeRemoteSearchTerm,
-   searchTerm,
-   localFilteredTickets.length,
-   isLoadingTickets,
- ]);
-
-
+    if (remoteEmpty && activeRemoteSearchTerm && !isLoadingTickets) {
+      toast.error(
+        `Bilhete "${activeRemoteSearchTerm}" não encontrado. Verifique o bolão e o concurso selecionados.`,
+        { duration: 6000, id: "search-not-found", icon: "🔍" },
+      );
+    }
+  }, [
+    remoteEmpty,
+    activeRemoteSearchTerm,
+    searchTerm,
+    localFilteredTickets.length,
+    isLoadingTickets,
+  ]);
 
 
   const [view, setView] = useState(true); // vizualizar  o modo card ou tabela
@@ -191,11 +198,31 @@ export default function Bets() {
 
   const handleChangeContest = (item) => {
     setContest(item);
-    setCurrentPage(1); // Reseta para a primeira página
-    toast.success(`Você selecionou o  ${item.contest_number}`, { duration: 4000 });
+    setSearchTerm(""); // Limpa busca ao mudar concurso
     setActiveRemoteSearchTerm("");
     setRemoteEmpty(false);
+    setCurrentPage(1); // Reseta para a primeira página
+    toast.success(`Você selecionou o  ${item.contest_number}`, {
+      duration: 4000,
+    });
   };
+
+  // Efeito para controlar a visibilidade dos filtros conforme a largura da tela
+  useEffect(() => {
+    const handleResize = () => {
+      // Se a tela for desktop (>= 768px), forçamos os filtros a ficarem abertos
+      if (window.innerWidth >= 768) {
+        setIsFilterOpen(true);
+      } else {
+        // No mobile, iniciamos com eles fechados para economizar espaço
+        setIsFilterOpen(false);
+      }
+    };
+
+    handleResize(); // Executa ao montar o componente para definir o estado inicial
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // ✅ Handler para permitir apenas números no campo de busca desta página
   const handleSearchChange = (value) => {
@@ -226,67 +253,87 @@ export default function Bets() {
     }
   }, [pools, pool]);
 
+
+  const [viewLoading, setViewloading] = useState(true);
   useEffect(() => {
-     setTimeout(() => {
-       setLoading(false);
-     }, 500);
+    setTimeout(() => {
+      setViewloading(false);
+    }, 500);
   }, [view]);
 
-  if (loading) return <PageLoading />;
+  if  (loading) return <PageLoading />;
 
   return (
-    <section className="flex-1 h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
-      <section className=" w-full flex flex-wrap items-center justify-between bg-white shadow-md rounded-lg p-4 gap-4">
-        <div className="flex flex-wrap items-center gap-3 pl-8   ">
-          <FaFileInvoiceDollar className="text-[3rem] text-[rgb(var(--btn))]" />
-          <div className="flex flex-col">
-            <Title
-              text="Apostas"
-              className="text-zinc-700 font-semibold text-[0.9rem]"
-            />
-            <Paragraph
-              text="Visualize aqui todas as apostas realizadas nos concursos."
-              className="text-zinc-500 text-[0.9rem] max-w-95"
-            />
+    <section className="flex-1 min-h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
+      <section className="w-full flex flex-wrap  items-center justify-between bg-white shadow-md rounded-lg p-4 gap-2 transition-all duration-300">
+        <div className=" max-sm:pl-8  flex flex-wrap items-center justify-between gap-2    ">
+          <div className=" flex items-center gap-3">
+            <FaFileInvoiceDollar className="text-[2rem] text-[rgb(var(--btn))]" />
+            <div className="flex flex-col">
+              <Title
+                text="Apostas"
+                className="text-zinc-700 font-semibold text-[0.9rem]"
+              />
+              <Paragraph
+                text="Visualize aqui todas as apostas realizadas nos concursos."
+                className="text-zinc-500 text-[0.8rem] w-50 "
+              />
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 justify-center">
+        <div className="  max-sm:flex-1 max-xs:w-full  flex items-center justify-center gap-2  ">
           <ViewToggle
             value={view}
             onChange={() => {
-              (setView(!view), setLoading(true));
+              setView(!view);
+              setViewloading(true);
             }}
           />
 
-          <SearchInput
-            value={searchTerm}
-            onChange={handleSearchChange}
-            placeholder=" N° do Bilhete "
-            className="w-38"
-          />
+          <button
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            className="hidden  max-md:flex  p-3 bg-zinc-100 rounded-lg text-[rgb(var(--btn))] border border-zinc-100 active:scale-95 transition-transform"
+            title="Filtros"
+          >
+            {isFilterOpen ? <FaTimes size={20} /> : <FaFilter size={20} />}
+          </button>
+        </div>
+
+        {/* Container de Filtros: Toggleable no mobile, flex-row no desktop */}
+        <div
+          className={`${isFilterOpen ? "flex" : "hidden"} flex-wrap justify-center items-center gap-4   max-md:w-full`}
+        >
+          <div className="flex items-center gap-2 w-full md:w-auto justify-center">
+            <SearchInput
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder=" N° do Bilhete "
+              className=" w-48"
+            />
+          </div>
+
           <Select
             label={pool?.name || "Selecione um Bolão"}
-            value={pool} // sincroniza o valor selecionado com o primeiro bolão da lista
+            value={pool}
             options={pools}
             onChange={handleChangePool}
-            className="px-5 py-3"
+            className="w-60 px-5 py-3"
           />
-          {/* NOVO: Select de Concursos */}
           <Select
             label={contest ? ` ${contest.contest_number} ` : "..."}
             value={contest}
             options={contests}
             isLoading={isLoadingContests}
             onChange={handleChangeContest}
-            className="px-5 py-3"
+            className=" w-60 px-5 py-3"
           />
         </div>
       </section>
 
-      <div className="flex-1 flex flex-col bg-white shadow-lx rounded-lg mt-3 overflow-hidden">
-        {isLoadingTickets ? (
-          <div className="flex flex-col justify-center items-center h-full gap-4 text-zinc-400">
+      <div className="flex-1 flex flex-col bg-white shadow-lx rounded-lg mt-4 overflow-hidden">
+        {isLoadingTickets  || viewLoading ? (
+          <div className="flex-1 flex flex-col overflow-hidden min-h-0">
             <PageLoading />
           </div>
         ) : localFilteredTickets.length > 0 ? (
@@ -300,7 +347,7 @@ export default function Bets() {
                 />
               </section>
             ) : (
-              <section className="flex gap-8 flex-wrap  justify-center  max-h-[calc(100vh-200px)] py-8 px-5 overflow-auto  ">
+              <section className=" flex-1 flex justify-center flex-wrap p-5 gap-5 overflow-y-auto min-h-0 max-h-[710px]">
                 <CardList
                   headers={headers}
                   data={localFilteredTickets}

@@ -4,34 +4,28 @@ import { AiOutlineExport } from "react-icons/ai";
 
 export default function TicketCard({ ticket, poolName, contestNumber, onView }) {
   return (
-    <div className="bg-white border border-zinc-200 rounded-xl overflow-hidden hover:shadow-md transition-all group border-l-10 border-l-[rgb(var(--btn))] flex flex-col w-full">
+    <div className="min-w-[700px]  bg-white border shadow-md border-zinc-300 rounded-xl overflow-hidden hover:shadow-md transition-all group border-l-10 border-l-[rgb(var(--btn))] flex flex-col w-full">
       {/* HEADER */}
-      <div className="hidden md:flex items-center gap-4 px-6 py-2 border-b border-zinc-300 text-[0.8rem] font-bold text-zinc-500 uppercase tracking-widest">
-        <div className="flex-1 text-left">Nº Bilhete</div>
-        <div className="flex-1 text-left">Bolão / Concurso</div>
+      <div className="  flex items-center gap-4 px-6 py-2 border-b border-zinc-300 text-[0.8rem] font-bold text-zinc-500 uppercase tracking-widest">
+        <div className="flex-1 text-left  ">Nº Bilhete</div>
+        <div className="flex-1 text-left  ">Bolão / Concurso</div>
         <div className="flex-1 flex justify-center">Apostas</div>
-        <div className="flex-1 flex justify-center">Status</div>
-        <div className="flex-1 flex justify-end">Valor Total</div>
-        <div className="flex-1 flex justify-end">Ações</div>
+        <div className="flex-1 flex justify-center  ">Status</div>
+        <div className="flex-1 flex justify-end  ">Valor Total</div>
+        <div className="flex-1 flex justify-end  ">Ações</div>
       </div>
 
       {/* ROW */}
       <div className="flex items-center gap-4 px-6 py-4">
         {/* Coluna 1 */}
         <div className="flex-1 flex flex-col md:flex-row md:items-center gap-1 text-left">
-          <span className="md:hidden text-sm font-bold text-zinc-600 uppercase">
-            Bilhete
-          </span>
-          <span className="text-sm md:text-base font-black text-zinc-700">
+          <span className="text-[1.2rem] md:text-base font-black text-zinc-700">
             #{ticket.ticket_number}
           </span>
         </div>
 
         {/* Coluna 2 */}
         <div className="flex-1 flex flex-col text-left">
-          <span className="md:hidden text-sm font-bold text-zinc-600 uppercase">
-            Bolão / Concurso
-          </span>
           <span className="text-sm font-bold text-zinc-600 truncate">
             {poolName}
           </span>
@@ -40,9 +34,6 @@ export default function TicketCard({ ticket, poolName, contestNumber, onView }) 
 
         {/* Coluna 3 */}
         <div className="flex-1 flex flex-col items-center">
-          <span className="md:hidden text-sm font-bold text-zinc-600 uppercase">
-            Apostas
-          </span>
           <span className="text-lg font-black text-zinc-600">
             {ticket.total_bets <= 9
               ? `0${ticket.total_bets}`
@@ -52,9 +43,6 @@ export default function TicketCard({ ticket, poolName, contestNumber, onView }) 
 
         {/* Coluna 4 */}
         <div className="flex-1 flex flex-col items-center">
-          <span className="md:hidden text-xs font-bold text-zinc-400 uppercase mb-1">
-            Status
-          </span>
           <div
             className={`px-3 py-1 rounded-full flex items-center gap-1.5 animate-pulse ${
               ticket.status === "completed"
@@ -85,7 +73,7 @@ export default function TicketCard({ ticket, poolName, contestNumber, onView }) 
 
         {/* Coluna 6 */}
         <div className="flex-1 flex justify-end">
-          <button 
+          <button
             onClick={onView}
             className="w-10 h-10 flex items-center justify-center bg-zinc-100 rounded-lg text-zinc-600 group-hover:bg-[rgb(var(--blue-50))] group-hover:text-[rgb(var(--btn))] transition-all cursor-pointer border border-zinc-100"
           >
