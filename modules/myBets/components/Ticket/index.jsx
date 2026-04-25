@@ -6,6 +6,7 @@ import { MdLocalActivity } from "react-icons/md";
 import { useTicketBets } from "../../hooks/useTicketBets";
 import Balls from "@/components/Balls";
 import { toPng } from "html-to-image";
+import toast from "react-hot-toast";
 
 
 export default function Ticket({ isOpen, onClose, ticket, poolName, contestNumber }) {
@@ -16,8 +17,10 @@ export default function Ticket({ isOpen, onClose, ticket, poolName, contestNumbe
   if (!isOpen || !ticket) return null;
  
   const handleDownload = async () => {
-    if (!ticketRef.current) return;
-
+    
+    if (!ticketRef.current) return toast.error("Erro ao acessar o bilhete para download.");
+    toast.success("Gerando PDF para download...", { duration: 3000 });
+    
     try {
       const { default: jsPDF } = await import("jspdf");
 
@@ -53,9 +56,11 @@ export default function Ticket({ isOpen, onClose, ticket, poolName, contestNumbe
       pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
 
       pdf.save(`bilhete-${ticket.ticket_number}.pdf`);
+
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
-    }
+      toast.error("Ocorreu um erro ao gerar o PDF.");
+    } 
   };
 
 

@@ -33,7 +33,7 @@ export default function SharedLayout({ children }) {
     "
     >
       <HiMenuAlt2
-        className={`absolute text-[2rem] left-6 max-xss:left-4 xss:left-7   top-7  flex items-center justify-center 
+        className={`absolute text-[2rem] left-6 max-xss:left-4 xss:left-7   top-5  flex items-center justify-center 
           rounded-t-0 rounded-b-lg  text-[rgb(var(--btn))]
           cursor-pointer hover:opacity-80   transition   duration-300 z-60
         `}

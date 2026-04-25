@@ -27,7 +27,7 @@ export default function Dashboard() {
     <section className="w-full min-h-screen bg-[rgb(var(--blue-50))] pt-8 ">
       <Header>
         <section className="relative bg-white w-full flex flex-wrap gap-4 items-center">
-          <div className="flex items-center gap-3 ml-14 xss:ml-2">
+          <div className="flex items-center gap-3 ml-13 xss:ml-2 max-xs:flex-row-reverse">
             <FaTrophy className="text-[2.2rem] text-[rgb(var(--btn))]" />
             <div>
               <Title
