@@ -44,11 +44,26 @@ export default function MyBets() {
 
   return (
     <section className="  bg-[rgb(var(--blue-50))]">
-      <div className=" bg-white rounded-xl shadow-md p-3 sx:p-8 w-full min-h-full flex flex-col gap-6">
+      <div className=" bg-white rounded-xl shadow-md   w-full min-h-full flex flex-col gap-4">
         {/* HEADER COM CONTADOR */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-300 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-300 pb-2 px-4">
           <div>
-            <Title text="Minhas Apostas" className="text-zinc-700 font-bold" />
+            <div className="flex gap-5 items-center">
+              <Title
+                text="Minhas Apostas"
+                className="text-zinc-700 font-bold"
+              />
+              <div className="flex gap-2 items-center">
+                <FaReceipt className="text-[rgb(var(--btn))] text-[1.5rem]" />
+                <span className="text-[1.5rem] font-black text-black leading-none">
+                  {filteredTickets.length === 0
+                    ? "0"
+                    : filteredTickets.length < 10
+                    ? `0${filteredTickets.length}`
+                    : filteredTickets.length}
+                </span>
+              </div>
+            </div>
             <Paragraph
               text="Acompanhe seus jogos realizados neste concurso."
               className="text-zinc-500"
@@ -70,28 +85,16 @@ export default function MyBets() {
                 onChange={setStatusFilter}
                 className=" w-60 py-3 px-4"
               />
-
-              <div className="bg-[rgb(var(--blue-50))] px-6 py-3 rounded-[0.6rem] flex  items-center  gap-6">
-                <FaReceipt className="text-[rgb(var(--btn))] text-xl" />
-                <div className="flex  items-center gap-4 ">
-                  <span className="text-[1rem] uppercase font-bold text-zinc-400">
-                    Bilhetes
-                  </span>
-                  <span className="text-[1.2rem] font-black text-black leading-none">
-                    {filteredTickets.length}
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
         {/* LISTAGEM COM ROLAGEM */}
-        <section className="overflow-auto py-4 ">
+        <section className="overflow-auto  ">
           <div
-            className="flex flex-wrap  justify-center  gap-6  px-4  rounded-lg   overflow-auto 
+            className="flex flex-wrap  justify-center  gap-6  p-4 pb-6  rounded-lg   overflow-auto 
             min-w-[760px]
-            max-h-[390px] scrollbar-thin"
+            h-[468px] scrollbar-thin"
           >
             {filteredTickets.length > 0 ? (
               filteredTickets.map((ticket) => (
@@ -104,7 +107,7 @@ export default function MyBets() {
                 />
               ))
             ) : (
-              <div className="col-span-full py-20 text-center flex flex-col items-center   gap-3">
+              <div className=" flex flex-col gap-2 items-center justify-center h-full  w-full">
                 <FaReceipt className="text-5xl text-zinc-200" />
                 <span className="text-zinc-400 italic">
                   Nenhum bilhete encontrado para estes filtros.
