@@ -46,9 +46,9 @@ export default function MyBets() {
     <section className="  bg-[rgb(var(--blue-50))]">
       <div className=" bg-white rounded-xl shadow-md   w-full min-h-full flex flex-col gap-4">
         {/* HEADER COM CONTADOR */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-300 pb-2 px-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-300   p-4">
           <div>
-            <div className="flex gap-5 items-center">
+            <div className="flex gap-5 items-center ">
               <Title
                 text="Minhas Apostas"
                 className="text-zinc-700 font-bold"

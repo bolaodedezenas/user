@@ -27,18 +27,18 @@ export default function Dashboard() {
     <section className="w-full min-h-screen bg-[rgb(var(--blue-50))] pt-8 ">
       <Header>
         <section className="relative bg-white w-full flex flex-wrap gap-4 items-center">
-          <div className="flex items-center gap-3 ml-13 xss:ml-2 max-xs:flex-row-reverse">
-            <FaTrophy className="text-[2.2rem] text-[rgb(var(--btn))]" />
-            <div>
+          <div className="flex flex-col gap-1 ml-13 xss:ml-2  ">
+            <div className="flex gap-3 items-center">
+              <FaTrophy className="text-[1.5rem] text-[rgb(var(--btn))]" />
               <Title
                 text="Dashboard"
                 className="text-zinc-700 font-semibold text-[0.9rem]"
               />
-              <Paragraph
-                text="Estatísticas de vendas e apostas"
-                className="text-zinc-500 text-[0.8rem]"
-              />
             </div>
+            <Paragraph
+              text="Estatísticas de vendas e apostas"
+              className="text-zinc-500 text-[0.8rem]"
+            />
           </div>
         </section>
       </Header>
