@@ -35,7 +35,9 @@ export default function Table({ headers, data, actions = [] }) {
           </div>
 
           {/* BODY */}
-          <div className="flex-1 flex flex-col gap-3 overflow-y-auto p-5">
+          <div className=" flex-1 flex flex-col gap-3 overflow-y-auto p-5
+            max-sm:max-h-[560px] 
+          ">
             {data.map((row, rowIndex) => (
               <div
                 key={rowIndex}
