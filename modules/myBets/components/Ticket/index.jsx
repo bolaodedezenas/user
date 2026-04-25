@@ -20,7 +20,7 @@ export default function Ticket({ isOpen, onClose, ticket, poolName, contestNumbe
     
     if (!ticketRef.current) return toast.error("Erro ao acessar o bilhete para download.");
     toast.success("Gerando PDF para download...", { duration: 3000 });
-    
+
     try {
       const { default: jsPDF } = await import("jspdf");
 
@@ -128,7 +128,7 @@ const handleWhatsapp = async () => {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-1 animate-in fade-in duration-200">
       {/* CONTAINER DO BILHETE */}
-      <div className="relative w-full max-w-md bg-zinc-100 rounded-xl shadow-2xl overflow-hidden flex flex-col pt-10 max-h-[98vh]">
+      <div className="relative   bg-zinc-200 rounded-xl shadow-2xl overflow-hidden flex flex-col pt-10   max-h-[90vh]">
         {/* BOTÃO FECHAR */}
         <button
           onClick={onClose}
@@ -255,7 +255,7 @@ const handleWhatsapp = async () => {
                             key={num}
                             number={num}
                             size="sm"
-                            className="w-10 h-10 text-[0.9rem] bg-zinc-400  "
+                            className="w-10 h-10 text-[0.9rem] bg-zinc-500  "
                           />
                         ))}
                       </div>
@@ -281,7 +281,7 @@ const handleWhatsapp = async () => {
         </div>
 
         {/* AÇÕES FIXAS NO RODAPÉ DO MODAL */}
-        <div className="p-4 bg-white border-t border-zinc-200 grid grid-cols-2 gap-3">
+        <div className="p-2 bg-white border-t border-zinc-200 grid grid-cols-2 gap-3">
           <button
             onClick={handleWhatsapp}
             className="flex items-center justify-center gap-2 py-3 px-4 bg-green-500 hover:bg-green-600 text-white rounded-lg font-bold text-sm transition-all"
