@@ -118,7 +118,7 @@ export default function LayoutPools({ children }) {
     <section className="flex-1 h-full flex flex-col gap-4 bg-[rgb(var(--blue-50))]">
       <Header>
         <section className="relative bg-white w-full flex flex-wrap gap-4 items-center">
-          <div className="flex items-center gap-3 ml-12 xss:ml-2">
+          <div className="flex items-center gap-3 ml-14 xss:ml-2 max-xs:flex-row-reverse">
             <FaTrophy className="text-[2.2rem] text-[rgb(var(--btn))]" />
             <div>
               <Title

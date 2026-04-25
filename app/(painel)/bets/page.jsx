@@ -267,7 +267,7 @@ export default function Bets() {
     <section className="flex-1 min-h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
       <section className="w-full flex flex-wrap  items-center justify-between bg-white shadow-md rounded-lg p-4 gap-2 transition-all duration-300">
         <div className=" max-sm:pl-8  flex flex-wrap items-center justify-between gap-2    ">
-          <div className=" flex items-center gap-3">
+          <div className=" flex items-center gap-3 max-xs:flex-row-reverse">
             <FaFileInvoiceDollar className="text-[2rem] text-[rgb(var(--btn))]" />
             <div className="flex flex-col">
               <Title
@@ -347,7 +347,7 @@ export default function Bets() {
                 />
               </section>
             ) : (
-              <section className=" flex-1 flex justify-center flex-wrap p-5 gap-5 overflow-y-auto min-h-0 max-h-[710px]">
+              <section className=" flex-1 flex justify-center flex-wrap p-5 gap-5 overflow-y-auto min-h-0 max-h-[750px]">
                 <CardList
                   headers={headers}
                   data={localFilteredTickets}
