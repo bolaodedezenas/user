@@ -4,7 +4,7 @@ import { AiOutlineExport } from "react-icons/ai";
 
 export default function TicketCard({ ticket, poolName, contestNumber, onView }) {
   return (
-    <div className="min-w-[700px]  bg-white border shadow-md border-zinc-300 rounded-xl overflow-hidden hover:shadow-md transition-all group border-l-10 border-l-[rgb(var(--btn))] flex flex-col w-full">
+    <div className="min-w-[700px] h-fit  bg-white border shadow-md border-zinc-300 rounded-xl overflow-hidden hover:shadow-md transition-all group border-l-10 border-l-[rgb(var(--btn))] flex flex-col w-full">
       {/* HEADER */}
       <div className="  flex items-center gap-4 px-6 py-2 border-b border-zinc-300 text-[0.8rem] font-bold text-zinc-500 uppercase tracking-widest">
         <div className="flex-1 text-left  ">Nº Bilhete</div>

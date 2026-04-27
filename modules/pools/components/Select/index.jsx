@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { FiChevronDown, FiSearch, FiLoader } from "react-icons/fi";
 
 export default function Select({
-  label = "Select an option",
+  label = "Selecione uma opção",
   options = [],
   value, // 👈 NOVO
   onChange,
@@ -81,7 +81,7 @@ export default function Select({
       </button>
 
       {isOpen && (
-        <ul className="absolute top-14  w-full bg-white border border-gray-300 rounded-[5px] shadow-lg z-10 overflow-hidden">
+        <ul className="absolute top-14 max-h-[190px]  w-full bg-white border border-gray-300 rounded-[5px] shadow-lg z-10 overflow-auto">
           {showSearch && (
             <div className="p-2 border-b border-gray-200 flex gap-2 bg-gray-50">
               <input

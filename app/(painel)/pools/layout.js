@@ -224,7 +224,7 @@ export default function LayoutPools({ children }) {
         </section>
       </BoxLayout>
 
-      <section className="h-full">{children}</section>
+      <section className=" flex-1  ">{children}</section>
       <Cart />
     </section>
   );

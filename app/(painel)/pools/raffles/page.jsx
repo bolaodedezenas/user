@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 // components
 import PageLoading from "@/components/PageLoading";
 import LotteryCard from "@/modules/raffles/components/LotteryCard";
+import Title from "@/components/Title";
+import Paragraph from "@/components/paragraph";
 
 export default function Raffles() {
   const [loading, setLoading] = useState(true);
@@ -15,13 +17,12 @@ export default function Raffles() {
   if (loading) return <PageLoading />;
 
   return (
-    <section className="bg-white flex-1 rounded-2xl shadow-md   ">
+    <section className=" h-full bg-white flex-1 rounded-2xl shadow-md   ">
       <div className="p-4 px-8 border-b border-zinc-300">
-        <h4 className="text-[1.2rem] font-semibold text-zinc-700  ">
-          4 Sorteios = 40 Dezenas sorteadas
-        </h4>
+        <Title text="Sorteios" />
+        <Paragraph text="5 Sorteios = 40 Dezenas sorteadas" />
       </div>
-      <section className="flex justify-center gap-6 flex-wrap p-8 max-h-[580px] overflow-auto scrollbar-thin">
+      <section className="flex justify-center gap-6 flex-wrap p-5 max-h-[560px] overflow-auto scrollbar-thin">
         <LotteryCard
           date="Segunda, 26/nov/25"
           draw="2º Sorteio"
