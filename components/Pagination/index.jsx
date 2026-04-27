@@ -32,7 +32,7 @@ export default function Pagination({
   };
 
   return (
-    <div className="border flex items-center justify-end border-t border-zinc-200 bg-white px-4 py-3 sm:px-6 mt-auto rounded-b-lg">
+    <div className="border flex items-center justify-end border-t border-zinc-200 bg-white  py-3 sm:px-6 mt-auto rounded-b-lg">
       <div className=" flex items-center  justify-between">
         <div>
           <nav className="isolate inline-flex gap-2" aria-label="Pagination">

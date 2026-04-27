@@ -30,7 +30,7 @@ export default function Awards() {
       </div>
 
       <section
-        className=" flex justify-center    gap-8 flex-wrap py-6 p-3 sm:p-6  sm:h-[505px] 
+        className=" flex justify-center    gap-8 flex-wrap py-6 p-3 sm:p-6 max-h-[565px]  sm:h-[505px] 
         overflow-auto  "
       >
         <AwardsPrizeCard

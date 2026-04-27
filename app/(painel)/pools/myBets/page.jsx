@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // components
 import PageLoading from "@/components/PageLoading";
 import Title from "@/components/Title";
@@ -12,6 +12,7 @@ import { FaSearch, FaReceipt } from "react-icons/fa";
 // stores / hooks
 import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
 import { useMyTickets } from "@/modules/myBets/hooks/useMyBets";
+// components
 import TicketCard from "@/modules/myBets/components//TicketCard";
 import Ticket from "@/modules/myBets/components/Ticket";
 
@@ -23,13 +24,15 @@ const statusOptions = [
 
 export default function MyBets() {
   const { activePool, activeContest } = useBetsStore();
-  const { myTickets, isLoading } = useMyTickets(activePool?.id, activeContest?.id);
+  const { myTickets} = useMyTickets(activePool?.id, activeContest?.id);
 
   const [searchNumber, setSearchNumber] = useState("");
   const [statusFilter, setStatusFilter] = useState(statusOptions[0]);
   const [selectedTicket, setSelectedTicket] = useState(null);
 
+  const [loading, setLoading] = useState(true);
 
+ 
   // Filtro local para busca e status
   const filteredTickets = myTickets.filter((ticket) => {
     const matchesNumber =
@@ -40,13 +43,20 @@ export default function MyBets() {
     return matchesNumber && matchesStatus;
   });
 
-  if (isLoading) return <PageLoading />;
+   useEffect(() => {
+     setTimeout(() => setLoading(false), 3000);
+   }, []);
+
+  if (loading) return <PageLoading />;
 
   return (
-    <section className="  bg-[rgb(var(--blue-50))]">
+    <section className=" h-full  flex  bg-[rgb(var(--blue-50))]">
       <div className=" bg-white rounded-xl shadow-md   w-full min-h-full flex flex-col gap-4">
         {/* HEADER COM CONTADOR */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-300   p-4">
+        <div
+          className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-300 
+            p-6"
+        >
           <div>
             <div className="flex gap-5 items-center ">
               <Title
@@ -59,8 +69,8 @@ export default function MyBets() {
                   {filteredTickets.length === 0
                     ? "0"
                     : filteredTickets.length < 10
-                    ? `0${filteredTickets.length}`
-                    : filteredTickets.length}
+                      ? `0${filteredTickets.length}`
+                      : filteredTickets.length}
                 </span>
               </div>
             </div>
@@ -71,7 +81,7 @@ export default function MyBets() {
           </div>
 
           {/* FILTROS */}
-          <div className="flex  flex-wrap items-center justify-center gap-10 bg-zinc-0 p-4 rounded-xl border border-zinc-100">
+          <div className="flex  flex-wrap items-center justify-center gap-10 bg-zinc-0   rounded-xl border border-zinc-100">
             <div className="flex flex-wrap justify-center items-center gap-4">
               <SearchInput
                 value={searchNumber}
@@ -90,11 +100,11 @@ export default function MyBets() {
         </div>
 
         {/* LISTAGEM COM ROLAGEM */}
-        <section className="overflow-auto  ">
+        <section className=" overflow-x-auto">
           <div
-            className="flex flex-wrap  justify-center  gap-6  p-4 pb-6  rounded-lg   overflow-auto 
-            min-w-[760px]
-            h-[468px] scrollbar-thin"
+            className="  flex flex-1 flex-wrap  justify-center  gap-6  p-4 px-6 pb-6  rounded-lg   overflow-y-auto scrollbar-track-transparent
+            min-w-[800px]  max-h-[440px] max-xs:max-h-[650px]
+            "
           >
             {filteredTickets.length > 0 ? (
               filteredTickets.map((ticket) => (
@@ -107,7 +117,7 @@ export default function MyBets() {
                 />
               ))
             ) : (
-              <div className=" flex flex-col gap-2 items-center justify-center h-full  w-full">
+              <div className=" flex flex-col gap-2 items-center justify-center h-[440px]  ">
                 <FaReceipt className="text-5xl text-zinc-200" />
                 <span className="text-zinc-400 italic">
                   Nenhum bilhete encontrado para estes filtros.

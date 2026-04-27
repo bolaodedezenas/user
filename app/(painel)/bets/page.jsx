@@ -360,7 +360,7 @@ export default function Bets() {
             )}
           </>
         ) : (
-          <div className="flex flex-col justify-center items-center h-full gap-3 text-zinc-400">
+          <div className="flex flex-1 flex-col justify-center items-center h-full gap-3 text-zinc-400">
             <FaReceipt className="text-5xl text-zinc-200" />
             <Paragraph
               text="Nenhuma aposta encontrada para este concurso."

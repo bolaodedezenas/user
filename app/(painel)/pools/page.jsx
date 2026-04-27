@@ -52,8 +52,8 @@ export default function Pools() {
 
   return (
     <section className="fle-1 min-h-full flex justify-center ">
-      <div className="py-3 px-3 sm:py-8 sm:px-6 bg-white rounded-[10px] shadow-lg w-full min-h-full">
-        <div className="flex flex-wrap border-b-2 border-zinc-300 justify-between pb-3 gap-4">
+      <div className="flex flex-col gap-2  py-3 px-3 sm:py-8 sm:px-6 bg-white rounded-[10px] shadow-lg w-full min-h-full">
+        <div className="flex flex-wrap border-b-2 border-zinc-300 justify-between pb-4 gap-4">
           <div className="">
             <Title
               text="Escolha 10 Dezenas"
@@ -131,16 +131,16 @@ export default function Pools() {
             {selectedBalls.length === 0
               ? "0"
               : selectedBalls.length < 10
-              ? `0${selectedBalls.length}`
-              : selectedBalls.length}
+                ? `0${selectedBalls.length}`
+                : selectedBalls.length}
           </h3>
           <p className="text-[1.4rem] ">Dezenas</p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center  gap-0 sm:gap-8  bg-[rgb(var(--blue-50))] rounded-[10px] px-2 py-3 sm:py-4 sm:px-4  max-xss:h-26 min-h-18 ">
+        <div className="flex flex-wrap items-center justify-center  gap-0 sm:gap-8  bg-[rgb(var(--blue-50))] rounded-[10px] px-2 py-5  sm:px-4 ">
           <div
-            className="  flex justify-center  gap-1.5 flex-wrap 
-             max-xs:w-[230px]  w-full "
+            className="  flex justify-center  gap-2 flex-wrap 
+             max-xs:w-[250px]  w-full max-xs:min-h-22 min-h-10 "
           >
             {selectedBalls.length > 0 &&
               selectedBalls.map((ball, index) => (
@@ -150,21 +150,23 @@ export default function Pools() {
                   onClick={() => removeBall(ball)}
                   key={index}
                   number={ball}
-                  className="  bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] w-[35px] h-[35px] text-[1rem]  "
+                  className="  bg-gradient-to-l from-[rgb(var(--blue-400))]  to-[rgb(var(--background))] 
+                  w-[40px] h-[40px] sm:w-[40px] sm:h-[40px]  text-[1rem] text-white  "
                 />
               ))}
           </div>
         </div>
 
-        <div className="flex justify-center pt-5">
-          <div className=" flex  gap-2  flex-wrap  max-sm:justify-center md:max-w-[950px] p-2 max-h-[470px] overflow-auto   scrollbar-transparent ">
+        <div className="h-full  flex justify-center items-center py-2">
+          <div className="flex  gap-2  flex-wrap  items-center  justify-center sm:max-w-[1230px] max-h-[450px] overflow-auto   scrollbar-transparent ">
             {balls.map((ball, index) => (
               <Balls
                 $anima={false}
                 onClick={() => setBall(ball)}
                 key={index}
                 number={ball}
-                className={` w-[38px] h-[38px]  hover:bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))]
+                className={`w-[40px] h-[40px] sm:w-[40px] sm:h-[40px]  text-white cursor-pointer
+                  hover:bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))]
                  ${
                    selectedBalls.includes(ball)
                      ? "bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] "
