@@ -71,6 +71,9 @@ export const registerSchema = z.object({
   password: passwordField,
   phone: phoneField,
   terms: termsField,
+  cep: z.string().regex(/^\d{2}\.\d{3}-\d{3}$/, "CEP inválido. Ex: 12.345-678"),
+  state: stateField,
+  city: cityField,
 });
 
  // Schema de reset de senha
@@ -84,7 +87,7 @@ export const editUserSchema = z.object({
   name: nameField,
   email: emailField,
   phone: phoneField,
-  cep: z.string().regex(/^\d{2}\.\d{3}-\d{3}$/, "CEP inválido. Formato esperado: 12.345-678"),
+  cep: z.string().regex(/^\d{2}\.\d{3}-\d{3}$/, "CEP inválido. Ex: 12.345-678"),
   state: stateField,
   city: cityField,
   photoURL: z.string().optional()
