@@ -90,7 +90,7 @@ export const useBetsStore = create((set, get) => ({
         // Cria um novo bilhete estruturado para a tabela do banco
         newTickets.push({
           user_id: userId,
-          customer_id: "52274569-4265-4c47-ac14-83e62f943a86", // id fixo de um cliente
+          customer_id: "ef27affc-047c-4435-bca5-50879b37ca02", // id fixo de um cliente
           contest_id: activeContest.id,
           contest_number: activeContest.contest_number,
           pool_id: activePool.id,

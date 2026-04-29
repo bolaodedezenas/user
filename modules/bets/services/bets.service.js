@@ -12,8 +12,8 @@ export const betsService = {
     return {
       tickets: data.map((ticket) => ({
         id: ticket.ticket_number,
-        nome: ticket.customers?.name || "N/A",
-        telefone: ticket.customers?.phone || "N/A",
+        name: ticket.customers?.name || "N/A",
+        phone: ticket.customers?.phone || "N/A",
         endereco: `${ticket.customers?.city || ""}-${ticket.customers?.state || ""}`,
         jogos: ticket.total_bets,
         valor: ticket.total_value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }),

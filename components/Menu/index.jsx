@@ -9,6 +9,8 @@ import { FaMapMarkerAlt, FaUser } from "react-icons/fa";
 import { FaPhone } from "react-icons/fa6";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { FaFileInvoiceDollar } from "react-icons/fa";
+import { BsPersonLinesFill } from "react-icons/bs";
+
 import { FaTrophy } from "react-icons/fa6";
 import { HiHome } from "react-icons/hi2";
 import { IoArrowUndo } from "react-icons/io5";
@@ -50,7 +52,7 @@ export default function Menu({ toggleUser, setToggleUser }) {
           
         "
       >
-        {user?.avatar_url  !== "" ? (
+        {user?.avatar_url !== "" ? (
           <img
             src={user?.avatar_url || "/ball.png"}
             alt="logo"
@@ -158,6 +160,19 @@ export default function Menu({ toggleUser, setToggleUser }) {
           >
             <FaFileInvoiceDollar className="text-[1.3rem] text-[rgb(var(--btn))]" />
             <p>Apostas</p>
+          </li>
+          <li
+            className={
+              currentRoute === "/customers" ? "bg-[rgb(var(--blue-50))] " : ""
+            }
+            onClick={() => {
+              {
+                (router.push("/customers"), setToggle(false), setToggleUser(false));
+              }
+            }}
+          >
+            <BsPersonLinesFill className="text-[1.3rem] text-[rgb(var(--btn))]" />
+            <p>Clientes</p>
           </li>
           <li
             className={
