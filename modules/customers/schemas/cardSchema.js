@@ -1,10 +1,13 @@
 // components
 import ToggleSwitch from "@/components/ToggleSwitch";
 // icons
-import { FaWhatsapp, FaEdit,  FaTrashAlt,} from "react-icons/fa";
+import { FaWhatsapp, FaEdit, FaTrashAlt } from "react-icons/fa";
 
- 
-export const getCardSchema = (handleStatusToggle, handleDeleteClick) => [
+export const getCardSchema = (
+  handleStatusToggle,
+  handleDeleteClick,
+  onEdit,
+) => [
   {
     type: "group",
     label: "",
@@ -15,7 +18,10 @@ export const getCardSchema = (handleStatusToggle, handleDeleteClick) => [
         key: "avatar_url",
         render: (value) => (
           <div className="w-10 h-10 rounded-full overflow-hidden">
-            <img src={value} className=" object-cover w-full  h-full rounded-full   " />
+            <img
+              src={value}
+              className=" object-cover w-full  h-full rounded-full   "
+            />
           </div>
         ),
       },
@@ -96,7 +102,7 @@ export const getCardSchema = (handleStatusToggle, handleDeleteClick) => [
 
       {
         icon: FaEdit,
-        onClick: (row) => console.log("edit:", row),
+        onClick: (row) => onEdit(row),
         className: "text-blue-600 hover:bg-blue-100",
       },
 

@@ -140,7 +140,7 @@ export default function ProfileForm() {
       {/* CARD */}
       <div className="flex flex-wrap  justify-center p-5 gap-6">
         {/* FOTO */}
-        <div className="w-80 sm:w-[200px] max-w-[260px] shrink-0">
+        <div className="h-[200px]  w-[200px]  ">
           <ImageUpload
             label="Foto de Perfil"
             value={avatar}

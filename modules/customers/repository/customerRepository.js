@@ -40,6 +40,23 @@ export const customerRepository = {
     return data;
   },
 
+  /**
+   * Atualiza um cliente existente no banco de dados.
+   */
+  async updateCustomer(customerId, customerData) {
+    const { data, error } = await supabase
+      .from("customers")
+      .update(customerData)
+      .eq("id", customerId)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+    return data;
+  },
+
   async uploadImage(file, path) {
     if (!file) return null;
 
