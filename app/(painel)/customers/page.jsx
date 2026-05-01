@@ -42,6 +42,7 @@ export default function Customers() {
   const [remoteEmpty, setRemoteEmpty] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  const [customerToEdit, setCustomerToEdit] = useState(null); // Novo estado para o cliente a ser editado
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [customerToDelete, setCustomerToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -63,6 +64,11 @@ export default function Customers() {
   const handleDeleteClick = (customer) => {
     setCustomerToDelete(customer);
     setIsDeleteModalOpen(true);
+  };
+
+  const handleEditClick = (customer) => {
+    setCustomerToEdit(customer);
+    setOpen(true); // Abre o modal
   };
 
   const handleStatusToggle = async (row) => {
@@ -95,8 +101,8 @@ export default function Customers() {
   // =========================================================
   // 🔹 SCHEMAS
   // =========================================================
-  const columns = getTableSchema(handleStatusToggle, handleDeleteClick);
-  const schemaCard = getCardSchema(handleStatusToggle, handleDeleteClick);
+  const columns = getTableSchema(handleStatusToggle, handleDeleteClick, handleEditClick);
+  const schemaCard = getCardSchema(handleStatusToggle, handleDeleteClick, handleEditClick);
 
   // =========================================================
   // 🔹 HOOKS EXTERNOS
@@ -310,7 +316,14 @@ export default function Customers() {
         message={`Tem certeza que deseja excluir o cliente "${customerToDelete?.name}"? Essa ação não poderá ser desfeita.`}
       />
 
-      <CustomersForm isOpen={open} onClose={() => setOpen(false)} />
+      <CustomersForm
+        isOpen={open}
+        onClose={() => {
+          setOpen(false);
+          setCustomerToEdit(null); // Limpa o cliente a ser editado ao fechar o modal
+        }}
+        customer={customerToEdit} // Passa o cliente para o formulário
+      />
     </section>
   );
 }

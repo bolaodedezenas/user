@@ -1,15 +1,12 @@
 // components
 import ToggleSwitch from "@/components/ToggleSwitch";
 // icons
-import { FaWhatsapp, FaEdit,  FaTrashAlt,} from "react-icons/fa";
-
+import { FaWhatsapp, FaEdit, FaTrashAlt } from "react-icons/fa";
 
 export const getTableSchema = (
   handleStatusToggle,
   handleDeleteClick,
-  nWatsapp,
-  onEdit,
-  onDelete,
+  handleEditClick,
 ) => [
   {
     label: "Foto",
@@ -92,7 +89,7 @@ export const getTableSchema = (
 
       {
         icon: FaEdit,
-        onClick: (row) => console.log("edit:", row),
+        onClick: (row) => handleEditClick(row),
         className:
           "text-[1.3rem] text-blue-600 hover:bg-blue-100 cursor-pointer",
       },

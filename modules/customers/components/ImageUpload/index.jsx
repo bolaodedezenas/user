@@ -4,6 +4,7 @@
 import Paragraph from "@/components/paragraph";
 import { useRef } from "react";
 import { FaCloudUploadAlt, FaPen, FaTimes } from "react-icons/fa";
+ import Image from "next/image";
  
 export default function ImageUpload({
   label = "Imagem",
@@ -46,7 +47,7 @@ export default function ImageUpload({
   }
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full h-full ${className}`}>
       {/* Input hidden */}
       <input
         ref={inputRef}
@@ -89,12 +90,14 @@ export default function ImageUpload({
             className="group relative w-full h-full   rounded-2xl   cursor-pointer"
           >
             {/* Imagem */}
-            <img
-              src={value.preview || value}
-              alt="Preview"
-              className="h-full w-full   transition    rounded-2xl"
+            <Image
+              src={value?.preview || value}
+              alt="imagem"
+              width={250}
+              height={250}
+              sizes="320"
+              className="h-full w-full object-cover  transition    rounded-2xl"
             />
-
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/0 transition group-hover:bg-[rgb(var(--blue-50))]/40" />
 

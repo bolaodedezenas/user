@@ -9,8 +9,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
-        // opcional: você pode restringir pathname se quiser
-        // pathname: "/dclp9qfhg/**"
+      },
+      {
+        protocol: "https",
+        hostname: "gcsyxakhikziajivtphi.supabase.co",
       },
     ],
   },

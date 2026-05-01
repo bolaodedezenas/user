@@ -1,10 +1,9 @@
 // components
 import ToggleSwitch from "@/components/ToggleSwitch";
 // icons
-import { FaWhatsapp, FaEdit,  FaTrashAlt,} from "react-icons/fa";
+import { FaWhatsapp, FaEdit, FaTrashAlt } from "react-icons/fa";
 
- 
-export const getCardSchema = (handleStatusToggle, handleDeleteClick) => [
+export const getCardSchema = (handleStatusToggle, handleDeleteClick, onEdit) => [
   {
     type: "group",
     label: "",
@@ -15,7 +14,10 @@ export const getCardSchema = (handleStatusToggle, handleDeleteClick) => [
         key: "avatar_url",
         render: (value) => (
           <div className="w-10 h-10 rounded-full overflow-hidden">
-            <img src={value} className=" object-cover w-full  h-full rounded-full   " />
+            <img
+              src={value}
+              className=" object-cover w-full  h-full rounded-full   "
+            />
           </div>
         ),
       },
@@ -30,35 +32,35 @@ export const getCardSchema = (handleStatusToggle, handleDeleteClick) => [
     type: "normal",
     label: "Telefone",
     key: "phone",
-    className: "text-center",
+    className: "text-center justify-between",
   },
 
   {
     type: "normal",
     label: "CEP",
     key: "cep",
-    className: "text-center",
+    className: "text-center justify-between",
   },
 
   {
     type: "normal",
     label: "Cidade",
     key: "city",
-    className: "text-center",
+    className: "text-center justify-between",
   },
 
   {
     type: "normal",
     label: "UF",
     key: "state",
-    className: "text-center",
+    className: "text-center justify-between",
   },
 
   {
     type: "normal",
     label: "Status",
     key: "status",
-    className: "flex  items-center gap-2",
+    className: "flex  items-center gap-2 justify-between",
 
     render: (value, row) => (
       <div className=" w-20 flex flex-col items-end    items-center gap-1">
@@ -96,7 +98,7 @@ export const getCardSchema = (handleStatusToggle, handleDeleteClick) => [
 
       {
         icon: FaEdit,
-        onClick: (row) => console.log("edit:", row),
+        onClick: (row) => onEdit(row),
         className: "text-blue-600 hover:bg-blue-100",
       },
 

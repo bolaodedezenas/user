@@ -10,24 +10,21 @@ export const customerService = {
     );
   },
 
-  /**
-   * Cria um novo cliente utilizando o repository.
-   */
   async createCustomer(customerData) {
     return await customerRepository.createCustomer(customerData);
   },
 
-  //Alterna o status do cliente (Ativo/Inativo).
+  async updateCustomer(customerId, customerData) {
+    return await customerRepository.updateCustomer(customerId, customerData);
+  },
+
   async toggleCustomerStatus(customerId, currentStatus) {
     const newStatus = !currentStatus;
     await customerRepository.updateStatus(customerId, newStatus);
     return newStatus;
   },
 
-  /**
-   * Deleta um cliente delegando ao repository.
-   */
   async deleteCustomer(customerId) {
-    await customerRepository.deleteCustomer(customerId);
+    return await customerRepository.deleteCustomer(customerId);
   },
 };

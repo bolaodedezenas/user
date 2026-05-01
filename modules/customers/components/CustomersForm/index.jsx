@@ -23,7 +23,8 @@ import { formatCep } from "@/utils/formatCep";
 import { buscarCEP } from "@/utils/buscaCep";
 import { useCustomers } from "../../hooks/useCustomers"; // Import the correct hook
  
-export default function CustomersForm({ isOpen, onClose }) {
+export default function CustomersForm({ isOpen, onClose, customer = null }) {
+  
   const [avatar, setAvatar] = useState(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -34,8 +35,33 @@ export default function CustomersForm({ isOpen, onClose }) {
   const [isCepValid, setIsCepValid] = useState(false);
   const [status, setStatus] = useState(true);  
 
-  const { createCustomer, isSaving } = useCustomers();  
+  const { createCustomer, updateCustomer, isSaving } = useCustomers();  
  
+  // Efeito para carregar os dados caso seja uma edição
+  useEffect(() => {
+    if (isOpen && customer) {
+      setName(customer.name || "");
+      setPhone(customer.phone || "");
+      setCep(customer.cep || "");
+      setState(customer.state || "");
+      setCity(customer.city || "");
+      setStatus(customer.status ?? true);
+      setAvatar(customer.avatar_url ? { preview: customer.avatar_url } : null);
+      setIsCepValid(!!customer.cep);
+    } else if (isOpen && !customer) {
+      // Resetar caso mude de edição para cadastro sem fechar o modal
+      setName("");
+      setPhone("");
+      setCep("");
+      setState("");
+      setCity("");
+      setAvatar(null);
+      setStatus(true);
+      setIsCepValid(false);
+    }
+    setFocusInput("");
+  }, [isOpen, customer]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
@@ -61,14 +87,23 @@ export default function CustomersForm({ isOpen, onClose }) {
       return;
     }
 
-    // Call the createCustomer function from the hook
-    // Passamos os dados validados e o arquivo real para processamento de upload no hook
-    const newCustomer = await createCustomer({
-      ...formData,
-      avatar_file: avatar?.file || null,
-    });
+    let result;
 
-    if (newCustomer) {
+    if (customer?.id) {
+      // Lógica de Edição
+      result = await updateCustomer(customer.id, {
+        ...formData,
+        avatar_file: avatar?.file || null,
+      });
+    } else {
+      // Lógica de Criação
+      result = await createCustomer({
+        ...formData,
+        avatar_file: avatar?.file || null,
+      });
+    }
+
+    if (result) {
       // Reset form fields on successful creation
       setName("");
       setPhone("");
@@ -150,21 +185,27 @@ export default function CustomersForm({ isOpen, onClose }) {
         >
           <Title
             className="font-semibold text-[1.2rem]"
-            text="Cadastrar Cliente"
+            text={customer ? "Editar Cliente" : "Cadastrar Cliente"}
           />
 
           <Paragraph
             className="text-[0.8rem]"
-            text="Preencha os campos abaixo para criar sua conta."
+            text={
+              customer
+                ? "Altere os dados abaixo para atualizar o cliente."
+                : "Preencha os campos abaixo para criar sua conta."
+            }
           />
 
-          <div className="w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5 pr-5 mt-5">
-            <div className="pb-5 w-full">
-              <ImageUpload
-                label="Foto de Perfil"
-                value={avatar}
-                onChange={(file) => setAvatar(file)}
-              />
+          <div className="w-full   xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5 pr-5 mt-5">
+            <div className="flex justify-center">
+              <div className=" pb-5 h-[250px] w-[250px]">
+                <ImageUpload
+                  label="Foto de Perfil"
+                  value={avatar}
+                  onChange={(file) => setAvatar(file)}
+                />
+              </div>
             </div>
 
             <InputLayout>
@@ -259,7 +300,15 @@ export default function CustomersForm({ isOpen, onClose }) {
 
             <div className="flex flex-col items-center gap-3 mt-8">
               <SignInButton
-                text={isSaving ? "Cadastrando..." : "Cadastrar"}
+                text={
+                  isSaving
+                    ? customer
+                      ? "Salvando..."
+                      : "Cadastrando..."
+                    : customer
+                      ? "Salvar Alterações"
+                      : "Cadastrar"
+                }
                 disabled={isSaving}
               />
 
