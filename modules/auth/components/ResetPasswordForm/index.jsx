@@ -18,6 +18,7 @@ import { useAuthStore } from "@/modules/auth/stores/auth.store";
 // icons
 import Icon from "@/components/Icon";
 import { supabase } from "@/libs/supabase/client";
+import Paragraph from "@/components/paragraph";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
@@ -80,9 +81,8 @@ export default function ResetPasswordForm() {
           color="rgb(var(--icon))"
         />
         <Title text="Redefinição de Senha" />
-        <p className="pl-3 pr-3 text-[1rem] text-center text-[rgb(var(--text-paragraph))] font-normal">
-          Por favor, preencha os campos abaixo!
-        </p>
+        <Paragraph className="text-center" text="Por favor, preencha os campos abaixo!" />
+
         <div className="w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5  pr-5 mt-5">
           <InputLayout>
             <Label id="password">Senha *</Label>

@@ -82,14 +82,14 @@ export const resetPassordSchema = z.object({
 });
 
 
-// Schema de Cadastro
+// Schema de Edição de Perfil
 export const editUserSchema = z.object({
   name: nameField,
   email: emailField,
   phone: phoneField,
+  cpf: z.string().optional(),
   cep: z.string().regex(/^\d{2}\.\d{3}-\d{3}$/, "CEP inválido. Ex: 12.345-678"),
   state: stateField,
   city: cityField,
-  photoURL: z.string().optional()
+  avatar_url: z.string().nullable().optional()
 });
-

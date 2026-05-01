@@ -5,11 +5,11 @@ export default function CardList({ schemaCard = [], data = [] }) {
   if (!Array.isArray(schemaCard) || !Array.isArray(data)) return null;
 
   return (
-    <div className="flex flex-wrap gap-4 justify-start">
+    <>
       {data.map((row) => (
         <div
           key={row.id}
-          className=" w-68  h-fit bg-[rgb(var(--blue-50))]/60 border border-zinc-200 rounded-2xl shadow-sm p-2 flex flex-col gap-4"
+          className=" min-w-70 w-75  h-fit bg-[rgb(var(--blue-50))]/30 border border-zinc-100 rounded-md shadow-sm p-4 flex flex-col gap-4"
         >
           {/* 🔹 BODY */}
           <div className="flex flex-col gap-2">
@@ -23,7 +23,7 @@ export default function CardList({ schemaCard = [], data = [] }) {
                 return (
                   <div
                     key={key}
-                    className={`flex    text-[0.9rem] bg-[rgb(var(--blue-100))]/30 rounded-[5px] p-2 px-4 ${col.className || ""}`}
+                    className={`flex text-[0.9rem] bg-[rgb(var(--blue-100))]/30 rounded-[5px] p-2 px-4 ${col.className || ""}`}
                   >
                     <span className="text-zinc-950 font-bold">{col.label}</span>
 
@@ -50,15 +50,22 @@ export default function CardList({ schemaCard = [], data = [] }) {
                 return (
                   <div
                     key={key}
-                    className={`flex justify-between items-center text-[0.9rem] bg-[rgb(var(--blue-100))]/30 rounded-[5px] p-2 px-4 ${col.className || ""}`}
+                    className={`flex flex-wrap   items-center text-[0.9rem] bg-[rgb(var(--blue-100))]/30 rounded-[5px] p-2 px-4 ${col.className || ""}`}
                   >
-                    <span className="text-zinc-950 font-bold">{col.label}</span>
-
-                    <span className="text-zinc-500 text-[0.8rem] text-right">
-                      {col.render
-                        ? col.render(row[col.key], row)
-                        : (row[col.key] ?? "-")}
+                    <span className="text-zinc-950 text-[1rem] font-bold">
+                      {col.label}
                     </span>
+                    <div>
+                      <span
+                        className={`
+                          ${col.key === "id" ? "text-[1.2rem] p-1 px-2 font-bold bg-[rgb(var(--blue-100))] rounded-[5px] " : ""} 
+                          text-[0.9rem] text-right`}
+                      >
+                        {col.render
+                          ? col.render(row[col.key], row)
+                          : (row[col.key] ?? "-")}
+                      </span>
+                    </div>
                   </div>
                 );
               }
@@ -81,7 +88,7 @@ export default function CardList({ schemaCard = [], data = [] }) {
                           onClick={() => act.onClick(row)}
                           className={`p-2 rounded-lg transition-colors flex items-center justify-center ${act.className || ""}`}
                         >
-                          <Icon size={18} />
+                          <Icon size={20} />
                         </button>
                       );
                     })}
@@ -92,6 +99,6 @@ export default function CardList({ schemaCard = [], data = [] }) {
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 }

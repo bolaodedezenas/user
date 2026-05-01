@@ -17,6 +17,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import toast from "react-hot-toast";
 // zustand
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import Paragraph from "@/components/paragraph";
 
 export default function SignInForm() {
   const { login, loginWithGoogle } = useAuth();
@@ -28,13 +29,15 @@ export default function SignInForm() {
   const [password, setPassword] = useState("");
   const [visiblePassword, setVisiblePassword] = useState(true);
 
+ 
+
   // Carrega a foto do localStorage após o componente montar para evitar erros de hidratação
   useEffect(() => {
     try {
-      const photo = localStorage.getItem("Photo");
-      if (photo) {
-        setPerfil(JSON.parse(photo));
-      }
+      const photo = localStorage.getItem("avatar_url");
+      if (!photo) return setPerfil(null);
+ 
+      setPerfil(photo);
     } catch (error) {
       console.error("Erro ao ler foto do localStorage:", error);
     }
@@ -53,7 +56,7 @@ export default function SignInForm() {
       await login(email, password);
 
       toast.success("Login realizado com sucesso!");
-      router.push("/");
+      router.replace("/dashboard");
     } catch (error) {
       console.log(error);
       if (error.message?.includes("Invalid login credentials")) {
@@ -101,11 +104,14 @@ export default function SignInForm() {
           />
         )}
 
-        <Title text="Acesso ao Painel" />
-
-        <p className="pl-3 pr-3 text-[1rem] text-center text-[rgb(var(--text-paragraph))] font-normal">
-          Entre na sua conta com seus dados abaixo:
-        </p>
+        <Title
+          className="text-zinc-700 font-semibold text-[1rem]"
+          text="Acesso ao Painel"
+        />
+        <Paragraph
+          className="text-zinc-500 font-semibold text-[0.9rem]"
+          text=" Faça login para continuar"
+        />
 
         <div className="w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5 pr-5 mt-8">
           <InputLayout>
@@ -151,13 +157,11 @@ export default function SignInForm() {
               />
             )}
           </InputLayout>
-
-          <p
+          <Paragraph
             onClick={() => router.push("/forgotPassword")}
-            className="text-[rgb(var(--text))] text-[0.9rem] w-full text-center cursor-pointer hover:underline mb-3.5 mt-3 italic font-medium"
-          >
-            Esqueceu a senha?
-          </p>
+            className="w-full text-center text-[rgb(var(--text))] text-[1rem] font-medium pb-1 mb-4 cursor-pointer hover:underline"
+            text="Esqueceu a senha?"
+          />
 
           <SignInButton text={"Entrar"} />
 

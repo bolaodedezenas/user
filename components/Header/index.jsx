@@ -12,7 +12,7 @@ export default function Header({ children, className }) {
       $toggle={toggle}
       className={`{
       bg-white  flex flex-wrap  gap-4 items-center   p-3  rounded-[10px] shadow-lg select-none
-      absolute top-3 right-0 trasition-all duration-300 z-40
+      absolute  top-4  right-0 trasition-all duration-300 z-40
        ${className}
     `}
     >

@@ -29,7 +29,7 @@ export default function RankingList({
 
       {/* 🔥 LISTA COM SCROLL */}
       <div className="p-2   overflow-y-auto">
-        <div className="  h-[400px] flex  flex-col gap-8  ">
+        <div className=" flex-1 h-[285px] flex  flex-col gap-8  ">
           {data.map((item, index) => {
             const width = (item.value / max) * 100;
 

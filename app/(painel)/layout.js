@@ -33,9 +33,9 @@ export default function SharedLayout({ children }) {
     "
     >
       <HiMenuAlt2
-        className={`absolute text-[2.4rem] left-6 max-xss:left-4 xss:left-7   top-4  flex items-center justify-center 
-          rounded-t-0 rounded-b-lg  text-[rgb(var(--btn))]
-          cursor-pointer hover:opacity-80   transition   duration-300 z-60
+        className={`absolute text-[2rem]  max-xss:left-6 xss:left-7  top-6  flex items-center justify-center 
+          rounded-t-0 rounded-[5px]  text-white p-1 bg-[rgb(var(--btn))]
+          cursor-pointer hover:opacity-80   transition  duration-300 z-60
         `}
         onClick={() => {
           setToggle(!toggle);

@@ -58,12 +58,12 @@ export default function ImageUpload({
       />
 
       {!value ? (
-        <div className="flex items-center justify-center w-full h-40">
+        <div className="flex items-center justify-center w-full h-full ">
           <button
             type="button"
             onClick={handleOpenFile}
             disabled={disabled}
-            className="flex w-40 h-full  flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-8 text-center transition hover:border-blue-500 hover:bg-blue-50"
+            className="flex w-full h-full  flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-8 text-center transition hover:border-blue-500 hover:bg-blue-50"
           >
             <div className="flex  p-3 items-center justify-center rounded-[10px] bg-blue-100 text-blue-600">
               <FaCloudUploadAlt size={40} />
@@ -82,15 +82,15 @@ export default function ImageUpload({
           </button>
         </div>
       ) : (
-        <div className="flex items-center justify-center w-full h-40">
+        <div className="flex items-center justify-center w-full h-full  ">
           <button
             type="button"
             onClick={handleOpenFile}
-            className="group relative w-40 h-full   rounded-2xl   cursor-pointer"
+            className="group relative w-full h-full   rounded-2xl   cursor-pointer"
           >
             {/* Imagem */}
             <img
-              src={value.preview}
+              src={value.preview || value}
               alt="Preview"
               className="h-full w-full   transition    rounded-2xl"
             />

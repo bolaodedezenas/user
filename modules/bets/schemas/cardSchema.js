@@ -14,49 +14,49 @@ export const getCardSchema = (
     type: "normal",
     label: "# Bilhete",
     key: "id",
-    className: " ",
+    className: "justify-between ",
   },
 
   {
     type: "normal",
     label: "Apostador (a)",
     key: "name",
-    className: " w-full flex items-start flex-col   ",
+    className: " ",
   },
 
   {
     type: "normal",
     label: "Telefone",
     key: "phone",
-    className: " ",
+    className: " justify-between",
   },
 
   {
     type: "normal",
     label: "Endereço",
     key: "endereco",
-    className: " ",
+    className: "justify-between ",
   },
 
   {
     type: "normal",
     label: "Jogos",
     key: "jogos",
-    className: "  ",
+    className: "justify-between ",
   },
 
   {
     type: "normal",
     label: "Valor",
     key: "valor",
-    className: " ",
+    className: "justify-between ",
   },
 
   {
     type: "normal",
     label: "Status",
     key: "status",
-    className: " ",
+    className: "justify-between ",
     render: (value) => <StatusBadge status={value} />,
   },
 
@@ -73,14 +73,14 @@ export const getCardSchema = (
             "_blank",
           ),
         className:
-          "text-[1.3rem] text-green-600 hover:bg-green-100 cursor-pointer",
+          "text-[1.3rem] text-green-700 hover:bg-green-100 cursor-pointer",
       },
 
       {
         icon: AiOutlineExport,
         onClick: (row) => console.log("Exportar:", row),
         className:
-          "text-[1.3rem] text-zinc-800 hover:bg-blue-100 cursor-pointer",
+          "text-[1.3rem] text-zinc-950 hover:bg-blue-100 cursor-pointer",
       },
     ],
   },

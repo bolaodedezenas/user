@@ -109,14 +109,14 @@ export default function Table({ columns, data }) {
               {columns.map((col) => (
                 <div
                   key={col.key}
-                  className={`
-                    flex items-center text-sm text-zinc-600
+                  className={`  ${col.key === "id" ? "text-[1.2rem] p-1 px-2 font-bold " : ""}
+                    flex items-center text-sm text-zinc-600 
                     ${col.className || ""}
                   `}
                 >
                   {/* ACTIONS DENTRO DO MESMO ARRAY */}
                   {col.actions ? (
-                    <div className="flex items-center justify-center w-full gap-1">
+                    <div className="flex items-center justify-center w-full  ">
                       {col.actions.map((act, i) => {
                         const Icon = act.icon;
 

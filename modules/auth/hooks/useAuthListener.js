@@ -19,6 +19,8 @@ export const useAuthListener = () => {
 
       //  busca perfil do usuário ou cria se não existir (primeiro login)
       const profile = await getUserProfileRepository(data.user.id);
+       // salva avatar no localStorage
+      localStorage.setItem("avatar_url", profile.data.avatar_url);
       if (profile) setUser(profile.data);
       setLoading(false) 
     };

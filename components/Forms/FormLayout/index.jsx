@@ -5,7 +5,7 @@ export default function FormLayout({ children, visible, className }) {
     <div
       className={`${visible ? "hidden" : "flex"}  
         w-full xs:w-[450px] items-center justify-center 
-        bg-white py-8   rounded-[35px] shadow-lg select-none
+        bg-white py-6  rounded-[35px] shadow-lg select-none
         m-auto
         ${className}
       `}
