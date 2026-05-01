@@ -21,7 +21,7 @@ export const getCardSchema = (
     type: "normal",
     label: "Apostador (a)",
     key: "name",
-    className: " ",
+    className: " flex-col items-start  ",
   },
 
   {

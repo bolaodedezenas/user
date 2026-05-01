@@ -3,11 +3,7 @@ import ToggleSwitch from "@/components/ToggleSwitch";
 // icons
 import { FaWhatsapp, FaEdit, FaTrashAlt } from "react-icons/fa";
 
-export const getCardSchema = (
-  handleStatusToggle,
-  handleDeleteClick,
-  onEdit,
-) => [
+export const getCardSchema = (handleStatusToggle, handleDeleteClick, onEdit) => [
   {
     type: "group",
     label: "",
@@ -36,35 +32,35 @@ export const getCardSchema = (
     type: "normal",
     label: "Telefone",
     key: "phone",
-    className: "text-center",
+    className: "text-center justify-between",
   },
 
   {
     type: "normal",
     label: "CEP",
     key: "cep",
-    className: "text-center",
+    className: "text-center justify-between",
   },
 
   {
     type: "normal",
     label: "Cidade",
     key: "city",
-    className: "text-center",
+    className: "text-center justify-between",
   },
 
   {
     type: "normal",
     label: "UF",
     key: "state",
-    className: "text-center",
+    className: "text-center justify-between",
   },
 
   {
     type: "normal",
     label: "Status",
     key: "status",
-    className: "flex  items-center gap-2",
+    className: "flex  items-center gap-2 justify-between",
 
     render: (value, row) => (
       <div className=" w-20 flex flex-col items-end    items-center gap-1">
