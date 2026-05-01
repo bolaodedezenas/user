@@ -56,12 +56,14 @@ export default function Menu({ toggleUser, setToggleUser }) {
           <img
             src={user?.avatar_url || "/ball.png"}
             alt="logo"
-            className={`object-cover rounded-full w-30 h-30   trasition duration-300 `}
+            className={`object-cover rounded-full  trasition duration-300 
+              ${toggle ? " w-30 h-30" : "absolute left-5.5 w-12 h-12"} 
+            `}
           />
         ) : (
           <HiUserCircle
             className={`text-[rgb(var(--btn))] trasition duration-300
-              ${toggle ? "text-[9rem]" : "absolute left-5.5 text-[2.8rem]"}
+              ${toggle ? " w-40 h-40" : "absolute left-5.5 w-12 h-12"} 
           `}
           />
         )}
@@ -122,17 +124,6 @@ export default function Menu({ toggleUser, setToggleUser }) {
           [&>*]:flex [&>*]:gap-7 [&>*]:items-center [&>*]:pl-2 [&>*]:p-3 [&>*]:py-2 
         "
         >
-          <li
-            className={currentRoute === "/" ? "bg-[rgb(var(--blue-50))] " : ""}
-            onClick={() => {
-              {
-                (router.push("/"), setToggle(false), setToggleUser(false));
-              }
-            }}
-          >
-            <HiHome className="text-[1.3rem] text-[rgb(var(--btn))]" />
-            <p>Home</p>
-          </li>
           <li
             className={
               currentRoute === "/dashboard" ? "bg-[rgb(var(--blue-50))] " : ""

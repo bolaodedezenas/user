@@ -12,10 +12,10 @@ export const useProtectedRoute = (type = "private") => {
   useEffect(() => {
     if (loading) return; //  ainda carregando
 
-    //   rota privada
+    // rota privada protegida, redireciona para login se não tiver usuário
     if (type === "private" && !user) router.replace("/login");
 
-    //  rota pública
-    // if (type === "public" && user) router.replace("/");
-  }, [user, loading, router]);
+    // rota pública protegida, redireciona para dashboard se tiver usuário
+    if (type === "public" &&  user) router.replace("/dashboard");
+  }, [user, loading, router, type]);
 };

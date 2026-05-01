@@ -67,14 +67,14 @@ export const getTableSchema = (
             "_blank",
           ),
         className:
-          "text-[1.3rem] text-green-600 hover:bg-green-100 cursor-pointer",
+          "text-[1.4rem] text-green-600 hover:bg-green-100 cursor-pointer",
       },
 
       {
         icon: AiOutlineExport,
         onClick: (row) => console.log("Exportar:", row),
         className:
-          "text-[1.3rem] text-zinc-800 hover:bg-blue-100 cursor-pointer",
+          "text-[1.4rem] text-zinc-800 hover:bg-blue-100 cursor-pointer",
       },
     ],
   },

@@ -15,6 +15,7 @@ import { supabase } from "@/libs/supabase/client";
 import toast from "react-hot-toast";
 // zustand store
 import { useAuthStore } from "@/modules/auth/stores/auth.store";
+import Paragraph from "@/components/paragraph";
 
 export default function RecoveryForm() {
   const { setLoading } = useAuthStore();
@@ -22,6 +23,17 @@ export default function RecoveryForm() {
   const [email, setEmail] = useState("");
   const [time, setTime] = useState(0);
   const [perfil, setPerfil] = useState(null);
+
+  useEffect(() => {
+    try {
+      const photo = localStorage.getItem("avatar_url");
+      if (!photo) return setPerfil(null);
+
+      setPerfil(photo);
+    } catch (error) {
+      console.error("Erro ao ler foto do localStorage:", error);
+    }
+  }, []);
 
   useEffect(() => {
     setLoading(false);
@@ -35,17 +47,7 @@ export default function RecoveryForm() {
     }
   }, [time]);
 
-  // Carrega a foto do localStorage após o componente montar para evitar erros de hidratação
-  useEffect(() => {
-    try {
-      const photo = localStorage.getItem("Photo");
-      if (photo) {
-        setPerfil(JSON.parse(photo));
-      }
-    } catch (error) {
-      console.error("Erro ao ler foto do localStorage:", error);
-    }
-  }, []);
+  
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -94,9 +96,8 @@ export default function RecoveryForm() {
           />
         )}
         <Title text="Recuperar Senha" />
-        <p className="pl-3 pr-3 text-[1rem] text-center text-[rgb(var(--text-paragraph))] font-normal">
-          Entre com seus dados abaixo:
-        </p>
+        <Paragraph className="text-center" text="Entre com seus dados abaixo." />
+ 
         <div className="w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5  pr-5 mt-8 ">
           <InputLayout>
             <Label id="email">Email *</Label>
@@ -122,9 +123,7 @@ export default function RecoveryForm() {
         </p>
         <div className="w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5  pr-5 relative  ">
           {time > 0 ? (
-            <span
-              className="flex items-center justify-center w-full h-12 font-semibold text-[rgb(var(--text))] text-[1.4rem] text-center border rounded-md"
-            >
+            <span className="flex items-center justify-center w-full h-12 font-semibold text-[rgb(var(--text))] text-[1.4rem] text-center border rounded-md">
               Aguarde {time}s
             </span>
           ) : (

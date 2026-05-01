@@ -28,6 +28,7 @@ import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { formatCep } from "@/utils/formatCep";
 import { buscarCEP } from "@/utils/buscaCep";
+import Paragraph from "@/components/paragraph";
 
 export default function SignUpForm() {
   const { loginWithGoogle, register } = useAuth();
@@ -183,11 +184,11 @@ export default function SignUpForm() {
         className="w-full flex flex-col items-center"
       >
         <Title text="Criar Conta" />
-
-        <p className="pl-3 pr-3 text-[1rem] text-center text-[rgb(var(--text-paragraph))] font-normal">
-          Registre-se e Comece a ganhar hoje!
-        </p>
-
+        <Paragraph
+          className="pl-3 pr-3 text-[1rem] text-center  font-normal text-[rgb(var(--text-paragraph))]"
+          text="Registre-se e Comece a ganhar hoje!"
+        />
+        
         <div className="w-full xxs:w-[85%] xs:w-[80%] sm:w-[80%] pl-5 pr-5 mt-5">
           <InputLayout>
             <Label id="name">Nome *</Label>
@@ -323,7 +324,7 @@ export default function SignUpForm() {
               id="uf"
               type="text"
               placeholder="UF"
-              value={ state }
+              value={state}
               onChange={(e) => {
                 setState(e.target.value);
                 setFocusInput("");
@@ -341,7 +342,7 @@ export default function SignUpForm() {
               id="city"
               type="text"
               placeholder="Cidade"
-              value={ city }
+              value={city}
               onChange={(e) => {
                 setCity(e.target.value);
                 setFocusInput("");
@@ -352,7 +353,7 @@ export default function SignUpForm() {
           </InputLayout>
 
           <div
-            className={`flex items-center mb-4 cursor-pointer gap-3 ${
+            className={` flex items-center mb-4 cursor-pointer gap-2 ${
               focusInput === "terms" ? "underline text-red-500 font-bold " : ""
             }`}
           >
@@ -368,12 +369,11 @@ export default function SignUpForm() {
               }}
             />
 
-            <p className="max-w-[90%] text-[rgb(var(--text))] text-[0.9rem] font-medium">
+            <p className="  text-[rgb(var(--text))] text-[0.8rem] font-medium">
               Declaro ter 18+
-              <span className="text-[rgb(var(--text-links))] cursor-pointer hover:underline pl-1">
+              <span className="text-[rgb(var(--text-links))] cursor-pointer hover:underline pl-1 ">
                 Termos e Condições
-              </span>{" "}
-              *
+              </span>
             </p>
           </div>
 

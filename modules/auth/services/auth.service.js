@@ -60,6 +60,7 @@ export const registerService = async (formData) => {
 export const loginWithGoogleService = async () => {
   const { data, error } = await signInWithGoogleRepository();
   if (error) throw error;
+ 
   return data;
 };
 
