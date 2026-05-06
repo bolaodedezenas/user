@@ -1,6 +1,6 @@
 "user client";
 
-export default function Button({ onClick, text, className }) {
+export default function Button({ onClick, text, className, icon }) {
   return (
     <button
       onClick={onClick}
@@ -11,13 +11,13 @@ export default function Button({ onClick, text, className }) {
         px-4 py-3 
         w-full
         bg-[rgb(var(--btn))] hover:bg-[rgb(var(--btn-hover))]
-        rounded-[5px]  
+        rounded-[10px]  
         transition duration-300 
         cursor-pointer 
         ${className}
       `}
     >
-      {text}
+      {text }{ icon && <span className="ml-2">{icon}</span>}
     </button>
   );
 }

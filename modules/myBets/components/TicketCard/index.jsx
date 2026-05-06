@@ -45,18 +45,18 @@ export default function TicketCard({ ticket, poolName, contestNumber, onView }) 
         <div className="flex-1 flex flex-col items-center">
           <div
             className={`px-3 py-1 rounded-full flex items-center gap-1.5 animate-pulse ${
-              ticket.status === "completed"
+              ticket.status === "paid"
                 ? "bg-green-50 text-green-600"
                 : "bg-orange-50 text-orange-600"
             }`}
           >
-            {ticket.status === "completed" ? (
+            {ticket.status === "paid" ? (
               <MdPayment size={18} />
             ) : (
               <MdHourglassEmpty size={18} />
             )}
             <span className="text-xs font-black uppercase ">
-              {ticket.status === "completed" ? "Pago" : "Pendente"}
+              {ticket.status === "paid" ? "Pago" : "Pendente"}
             </span>
           </div>
         </div>

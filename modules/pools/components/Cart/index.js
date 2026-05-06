@@ -8,15 +8,19 @@ import {
   FaCheck,
   FaWindowClose,
   FaShoppingCart,
-  FaChevronRight,
 } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { useCheckout } from "../../hooks/useCheckout";
 import toast from "react-hot-toast";
+// stores
+import { useCheckoutStore } from "@/modules/checkout/stores/useCheckoutStore";
 
-export default function Cart() {
+export default function Cart({ onClose }) {
+  const openCheckout = useCheckoutStore((s) => s.openCheckout);
+
   const { tickets, setTickets, removeTicket } = useBetsStore();
+  console.log(tickets);
   const [editingPath, setEditingPath] = useState(null); // { pool_id, contest_id, betIndex }
   const [isOpen, setIsOpen] = useState(false);
   const [tempBet, setTempBet] = useState([]);
@@ -24,7 +28,6 @@ export default function Cart() {
   const { handleCheckout, isPending } = useCheckout();
 
   // console.log(tickets);
-
   // Função para deletar um bilhete inteiro
   const handleDeleteTicket = (pool_id, contest_id) => {
     removeTicket(pool_id, contest_id);
@@ -170,9 +173,7 @@ export default function Cart() {
               {/* Cabeçalho do Bilhete por Concurso */}
               <div className="flex justify-between items-start px-1 mb-1">
                 <span className="text-[1rem] text-black font-black  uppercase tracking-widest leading-tight">
-                  <span>
-                    {ticket.pool_name}
-                  </span>
+                  <span>{ticket.pool_name}</span>
                   <br />
                   <span className="text-[0.8rem] text-zinc-500">
                     Concurso: #{ticket.contest_number}
@@ -325,16 +326,15 @@ export default function Cart() {
             </span>
           </div>
           <button
-            onClick={handleCheckout}
+            // onClick={handleCheckout}
+            onClick={() => {console.log('oi'), openCheckout()}}
             disabled={isPending}
             className="w-full bg-[rgb(var(--btn))] text-white font-bold py-4 rounded-xl shadow-lg hover:brightness-110 
             transition-all flex items-center justify-center gap-2 cursor-pointer uppercase text-xs tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isPending ? (
-              "Enviando..."
-            ) : (
-              `Finalizar ${totalGamesCount} ${totalGamesCount === 1 ? "Aposta" : "Apostas"}`
-            )}
+            {isPending
+              ? "Enviando..."
+              : `Finalizar ${totalGamesCount} ${totalGamesCount === 1 ? "Aposta" : "Apostas"}`}
           </button>
         </div>
       </div>

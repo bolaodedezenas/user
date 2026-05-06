@@ -7,6 +7,7 @@ export const fetchMyTickets = async (userId, poolId, contestId) => {
     .eq("user_id", userId)
     .eq("pool_id", poolId)
     .eq("contest_id", contestId)
+    .is("customer_id", null) 
     .order("created_at", { ascending: false });
 
   if (error) {

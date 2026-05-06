@@ -1,0 +1,577 @@
+
+-- -- ============================================
+-- -- RESET TOTAL
+-- -- ============================================
+
+-- drop table if exists bets cascade;
+-- drop table if exists transaction_tickets cascade;
+-- drop table if exists transactions cascade;
+-- drop table if exists tickets cascade;
+-- drop table if exists contest_rules cascade;
+-- drop table if exists draws cascade;
+-- drop table if exists contests cascade;
+-- drop table if exists pools cascade;
+-- drop table if exists customers cascade;
+-- drop table if exists profiles cascade;
+
+-- drop function if exists public.update_updated_at cascade;
+-- drop function if exists public.handle_new_user cascade;
+-- drop function if exists public.is_admin cascade;
+-- drop function if exists public.get_role cascade;
+-- drop function if exists public.is_owner cascade;
+
+-- drop sequence if exists contest_number_seq cascade;
+
+-- -- ============================================
+-- -- EXTENSÕES
+-- -- ============================================
+
+-- create extension if not exists "pgcrypto";
+-- create extension if not exists "pg_trgm";
+
+-- -- ============================================
+-- -- PROFILES
+-- -- ============================================
+
+-- create table profiles (
+--   id uuid primary key references auth.users(id) on delete cascade,
+--   email text not null,
+--   name text not null,
+--   phone text,
+--   cpf text,
+--   role text not null default 'apostador',
+--   avatar_url text,
+--   status boolean default true,
+--   terms boolean default true,
+--   cep text,
+--   city text,
+--   state text,
+--   created_at timestamptz default now(),
+--   updated_at timestamptz default now(),
+--   check (role in ('apostador','revendedor','ADMIN'))
+-- );
+
+-- -- ============================================
+-- -- TRIGGERS / FUNCTIONS
+-- -- ============================================
+
+-- create or replace function public.update_updated_at()
+-- returns trigger as $$
+-- begin
+--   new.updated_at = now();
+--   return new;
+-- end;
+-- $$ language plpgsql;
+
+-- create or replace function public.get_role()
+-- returns text language sql stable as $$
+--   select role from profiles where id = auth.uid()
+-- $$;
+
+-- create or replace function public.is_admin()
+-- returns boolean language sql stable as $$
+--   select exists (
+--     select 1 from profiles
+--     where id = auth.uid() and role = 'ADMIN'
+--   );
+-- $$;
+
+-- create or replace function public.is_owner(owner_id uuid)
+-- returns boolean language sql stable as $$
+--   select owner_id = auth.uid()
+-- $$;
+
+-- create or replace function public.handle_new_user()
+-- returns trigger as $$
+-- begin
+--   insert into public.profiles (
+--     id, email, name, phone, cpf, avatar_url, role, status, terms
+--   )
+--   values (
+--     new.id,
+--     coalesce(new.email,''),
+--     coalesce(new.raw_user_meta_data->>'name', new.email, 'Usuário'),
+--     new.raw_user_meta_data->>'phone',
+--     new.raw_user_meta_data->>'cpf',
+--     new.raw_user_meta_data->>'avatar_url',
+--     'apostador',
+--     true,
+--     coalesce((new.raw_user_meta_data->>'terms')::boolean,false)
+--   );
+--   return new;
+-- exception when others then
+--   return new;
+-- end;
+-- $$ language plpgsql security definer;
+
+-- -- ============================================
+-- -- TRIGGERS
+-- -- ============================================
+
+-- create trigger on_auth_user_created
+-- after insert on auth.users
+-- for each row execute function public.handle_new_user();
+
+-- create trigger trigger_profiles_updated_at
+-- before update on profiles
+-- for each row execute function public.update_updated_at();
+
+-- -- ============================================
+-- -- RLS PROFILES
+-- -- ============================================
+
+-- alter table profiles enable row level security;
+
+-- create policy "profiles_select"
+-- on profiles for select
+-- using (public.is_admin() OR id = auth.uid());
+
+-- create policy "profiles_insert"
+-- on profiles for insert
+-- with check (auth.uid() is not null);
+
+-- create policy "profiles_update"
+-- on profiles for update
+-- using (public.is_admin() OR id = auth.uid());
+
+-- create policy "profiles_delete"
+-- on profiles for delete
+-- using (public.is_admin());
+
+-- -- ============================================
+-- -- CUSTOMERS
+-- -- ============================================
+
+-- create table customers (
+--   id uuid primary key default gen_random_uuid(),
+--   revendedor_id uuid not null references profiles(id) on delete cascade,
+--   avatar_url text,
+--   name text not null,
+--   phone text,
+--   cep text,
+--   city text,
+--   state text,
+--   status boolean default true,
+--   created_at timestamptz default now(),
+--   updated_at timestamptz default now()
+-- );
+
+-- create trigger trigger_customers_updated_at
+-- before update on customers
+-- for each row execute function public.update_updated_at();
+
+-- alter table customers enable row level security;
+
+-- create policy "customers_select"
+-- on customers for select
+-- using (public.is_admin() OR revendedor_id = auth.uid());
+
+-- create policy "customers_insert"
+-- on customers for insert
+-- with check (public.is_admin() OR revendedor_id = auth.uid());
+
+-- create policy "customers_update"
+-- on customers for update
+-- using (public.is_admin() OR revendedor_id = auth.uid());
+
+-- create policy "customers_delete"
+-- on customers for delete
+-- using (public.is_admin() OR revendedor_id = auth.uid());
+
+-- -- ============================================
+-- -- POOLS
+-- -- ============================================
+
+-- create table pools (
+--   id uuid primary key default gen_random_uuid(),
+--   name text not null,
+--   description text,
+--   image_url text,
+--   color text,
+--   is_active boolean default true,
+--   created_at timestamptz default now()
+-- );
+
+-- alter table pools enable row level security;
+
+-- create policy "pools_select"
+-- on pools for select using (true);
+
+-- create policy "pools_admin"
+-- on pools for all using (public.is_admin());
+
+
+
+-- -- ============================================
+-- -- CONTESTS_RULES
+-- -- ============================================
+
+-- create table contest_rules (
+--   id uuid primary key default gen_random_uuid(),
+--   contest_id uuid references contests(id) on delete cascade,
+--   hits_required int not null,
+--   prize_amount numeric(10,2) not null,
+--   winners_count int default 0,
+--   hits_round_limit int not null,
+--   status text default 'pending',
+--   created_at timestamptz default now(),
+--   unique (contest_id, hits_required),
+--   check (status in ('pending','winner','accumulated'))
+-- );
+
+-- alter table contest_rules enable row level security;
+
+-- create policy "rules_select"
+-- on contest_rules for select using (true);
+
+-- create policy "rules_admin"
+-- on contest_rules for all using (public.is_admin());
+
+
+
+-- -- ============================================
+-- -- CONTESTS
+-- -- ============================================
+
+-- create sequence contest_number_seq start 100000;
+
+-- create table contests (
+--   id uuid primary key default gen_random_uuid(),
+--   pool_id uuid references pools(id) on delete cascade,
+--   contest_number integer default nextval('contest_number_seq'),
+--   bet_price numeric(10,2) not null,
+--   total_prize numeric(10,2) default 0,
+--   status text default 'open',
+--   starts_at timestamptz,
+--   created_at timestamptz default now(),
+--   check (status in ('open','closed','finished','cancelled')),
+--   unique (contest_number)
+-- );
+
+-- alter table contests enable row level security;
+
+-- create policy "contests_select"
+-- on contests for select using (true);
+
+-- create policy "contests_admin"
+-- on contests for all using (public.is_admin());
+
+-- -- ============================================
+-- -- TICKETS
+-- -- ============================================
+
+-- create table tickets (
+--   id uuid primary key default gen_random_uuid(),
+--   user_id uuid references auth.users(id),
+--   customer_id uuid references customers(id) on delete cascade,
+--   contest_id uuid references contests(id),
+--   pool_id uuid references pools(id),
+--   pool_name text,
+--   ticket_number bigint generated always as identity unique,
+--   bet_price numeric(10,2),
+--   total_bets int,
+--   total_value numeric(10,2),
+--   payment_method text,
+--   status text default 'pending',
+--   created_at timestamptz default now()
+--   updated_at timestamptz default now(),
+--   check (status in ('pending','paid','failed','cancelled'))
+-- );
+
+
+-- create trigger trigger_tickets_updated_at
+-- before update on  tickets
+-- for each row execute function public.update_updated_at();
+
+
+-- alter table tickets enable row level security;
+
+-- create policy "tickets_select"
+-- on tickets for select
+-- using (public.is_admin() OR public.is_owner(user_id));
+
+-- create policy "tickets_insert"
+-- on tickets for insert
+-- with check (public.is_admin() OR public.is_owner(user_id));
+
+-- -- ============================================
+-- -- 📦 ÍNDICES (CORRIGIDOS)
+-- -- ============================================
+
+-- CREATE INDEX IF NOT EXISTS idx_tickets_contest_created
+-- ON tickets (contest_id, created_at DESC);
+
+-- CREATE INDEX IF NOT EXISTS idx_tickets_customer_id
+-- ON tickets (customer_id);
+
+-- CREATE INDEX IF NOT EXISTS idx_tickets_contest_customer_created
+-- ON tickets (contest_id, customer_id, created_at DESC);
+
+-- -- 🔥 CORREÇÃO AQUI
+-- CREATE INDEX IF NOT EXISTS idx_ticket_number_trgm
+-- ON tickets USING gin ((ticket_number::text) gin_trgm_ops);
+
+
+
+
+-- -- ============================================
+-- -- BETS
+-- -- ============================================
+
+-- create table bets (
+--   id uuid primary key default gen_random_uuid(),
+--   ticket_id uuid references tickets(id) on delete cascade,
+--   numbers int[] not null,
+--   created_at timestamptz default now(),
+--   check (array_length(numbers,1)=10)
+-- );
+
+-- alter table bets enable row level security;
+
+-- create policy "bets_access"
+-- on bets for all
+-- using (
+--   public.is_admin()
+--   OR exists (
+--     select 1 from tickets t
+--     where t.id = bets.ticket_id
+--     and t.user_id = auth.uid()
+--   )
+-- )
+-- with check (
+--   public.is_admin()
+--   OR exists (
+--     select 1 from tickets t
+--     where t.id = bets.ticket_id
+--     and t.user_id = auth.uid()
+--   )
+-- );
+
+
+
+
+-- -- =====================================================
+-- -- 🧾 TABELA: TRANSACTIONS (PAGAMENTO)
+-- -- =====================================================
+
+-- create table if not exists transactions (
+--   id uuid primary key default gen_random_uuid(),
+--   user_id uuid references auth.users(id),
+--   -- resumo do checkout (snapshot)
+--   total_amount numeric(10,2) not null,
+--   total_tickets int,
+--   total_bets int,
+--   status text not null default 'pending', -- pending, paid, failed, cancelled
+--   payment_method text, -- pix, cash, card
+--   -- integração com gateway de pagamento
+--   payment_provider text, -- ex: mercadopago, stripe
+--   payment_code text, -- código PIX, QR code, etc
+--   payment_external_id text, -- id da API externa
+--   paid_at timestamptz,
+--   check (status in ('pending','paid','failed','cancelled'))
+--   update_at timestamptz default now()
+--   created_at timestamptz default now()
+-- );
+
+
+
+-- create trigger trigger_transactions_updated_at
+-- before update on  transactions
+-- for each row execute function public.update_updated_at();
+
+
+
+
+
+
+-- -- =====================================================
+-- -- 🔗 TABELA: TRANSACTION_TICKETS (RELAÇÃO)
+-- -- =====================================================
+
+-- create table if not exists transaction_tickets (
+--   id uuid primary key default gen_random_uuid(),
+--   transaction_id uuid not null references transactions(id) on delete cascade,
+--   ticket_id uuid not null references tickets(id) on delete cascade,
+--   pool_id uuid,
+--   created_at timestamptz default now(),
+--   unique (transaction_id, ticket_id) -- evita duplicidade
+-- );
+
+-- -- =====================================================
+-- -- ⚡ ÍNDICES (ALTA PERFORMANCE)
+-- -- =====================================================
+
+-- -- transactions
+-- create index if not exists idx_transactions_user
+-- on transactions(user_id);
+
+-- create index if not exists idx_transactions_status
+-- on transactions(status);
+
+-- create index if not exists idx_transactions_created_at
+-- on transactions(created_at desc);
+
+-- -- transaction_tickets
+-- create index if not exists idx_tt_transaction
+-- on transaction_tickets(transaction_id);
+
+-- create index if not exists idx_tt_ticket
+-- on transaction_tickets(ticket_id);
+
+-- -- 🔥 índice forte para relatórios e filtros
+-- create index if not exists idx_tt_pool
+-- on transaction_tickets(pool_id);
+
+-- -- índice composto (consulta pesada)
+-- create index if not exists idx_tt_tx_pool
+-- on transaction_tickets(transaction_id, pool_id);
+
+
+
+-- -- =====================================================
+-- -- 🔐 RLS (SE VOCÊ USA SUPABASE)
+-- -- =====================================================
+
+-- alter table transactions enable row level security;
+-- alter table transaction_tickets enable row level security;
+
+-- -- transactions
+-- create policy "transactions_select"
+-- on transactions for select
+-- using (public.is_admin() OR public.is_owner(user_id));
+
+-- create policy "transactions_insert"
+-- on transactions for insert
+-- with check (public.is_admin() OR public.is_owner(user_id));
+
+-- -- transaction_tickets
+-- create policy "tt_select"
+-- on transaction_tickets for select
+-- using (
+--   public.is_admin()
+--   OR exists (
+--     select 1 from transactions t
+--     where t.id = transaction_tickets.transaction_id
+--     and t.user_id = auth.uid()
+--   )
+-- );
+
+-- create policy "tt_insert"
+-- on transaction_tickets for insert
+-- with check (
+--   public.is_admin()
+--   OR exists (
+--     select 1 from transactions t
+--     where t.id = transaction_tickets.transaction_id
+--     and t.user_id = auth.uid()
+--   )
+-- );
+
+
+
+
+-- -- ============================================
+-- -- DRAWS
+-- -- ============================================
+
+-- create table draws (
+--   id uuid primary key default gen_random_uuid(),
+--   contest_id uuid references contests(id),
+--   draw_number int,
+--   numbers int[],
+--   source text,
+--   status text default 'pending',
+--   created_at timestamptz default now(),
+--   unique(contest_id, draw_number),
+--   check (status in ('pending','completed','cancelled'))
+-- );
+
+-- create index idx_draws_contest_id on draws(contest_id);
+
+-- alter table draws enable row level security;
+
+-- create policy "draws_select"
+-- on draws for select using (auth.uid() is not null);
+
+-- create policy "draws_admin"
+-- on draws for all using (public.is_admin());
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- -- =========================================
+-- -- USER (REVENDEDOR)
+-- -- =========================================
+-- -- 4c02494d-e997-46c4-af02-73867fe1cfe9
+
+-- -- =========================================
+-- -- POOLS (4 BOLÕES - CORES FORTES)
+-- -- =========================================
+
+-- insert into pools (id, name, description, color)
+-- values
+-- (gen_random_uuid(), 'Bolão Clássico', 'Simples', '#1E3A8A'), -- azul forte
+-- (gen_random_uuid(), 'Bolão Premium', 'Intermediário', '#065F46'), -- verde escuro
+-- (gen_random_uuid(), 'Bolão Elite', 'Alto nível', '#4C1D95'), -- roxo forte
+-- (gen_random_uuid(), 'Bolão Supremo', 'Alta performance', '#7C2D12'); -- marrom forte
+
+-- -- =========================================
+-- -- CONTESTS (3 POR BOLÃO - INTERVALO 15 DIAS)
+-- -- =========================================
+
+-- insert into contests (pool_id, bet_price, total_prize, starts_at)
+-- select
+--   p.id,
+--   (random()*50 + 5)::numeric(10,2),
+--   (random()*100000)::numeric(10,2),
+--   now() + (gs.i * interval '15 days')
+-- from pools p
+-- cross join generate_series(0,2) as gs(i);
+
+-- -- =========================================
+-- -- RULES (1 REGRA POR CONCURSO)
+-- -- =========================================
+
+-- insert into contest_rules (contest_id, hits_required, prize_amount, hits_round_limit)
+-- select
+--   c.id,
+--   10,
+--   (random()*100000)::numeric(10,2),
+--   10
+-- from contests c;
+
+
+
+
+
+-- ----------------------------------------------------------
+-- --------------   libera upload de images ---------------
+-- ---------------------------------------------------------
+-- create policy "Allow upload avatars"
+-- on storage.objects
+-- for insert
+-- to authenticated
+-- with check (
+--   bucket_id = 'avatars'
+-- );
+
+
+
+-- create policy "avatars insert authenticated"
+-- on storage.objects
+-- for insert
+-- to authenticated
+-- with check (
+--   bucket_id = 'avatars'
+-- );
+
+

@@ -1,3 +1,5 @@
+
+
 import { supabase } from "@/libs/supabase/client";
 
 export const betsRepository = {
@@ -5,23 +7,28 @@ export const betsRepository = {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
-    // Utilizamos  ilike para filtragem por campos do cliente na busca
     let query = supabase
       .from("tickets")
       .select(
         `
-    *,
-    customers (
-      name,
-      phone,
-      city,
-      state
-    )
-  `,
-    { count: "exact" },
-  )
-  .eq("contest_id", contestId);
-
+        id,
+        ticket_number,
+        created_at,
+        total_value,
+        total_bets,
+        status,
+        customer_id,
+        customers (
+          name,
+          phone,
+          city,
+          state
+        )
+      `,
+        { count: "planned" },
+      )
+      .eq("contest_id", contestId)
+      .not("customer_id", "is", null);
 
     if (searchTerm) {
       if (!isNaN(searchTerm)) {
@@ -31,12 +38,15 @@ export const betsRepository = {
       }
     }
 
-
     const { data, error, count } = await query
       .order("created_at", { ascending: false })
       .range(from, to);
 
     if (error) throw error;
+
     return { data, count };
   },
 };
+
+
+
