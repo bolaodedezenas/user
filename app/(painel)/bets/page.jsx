@@ -58,7 +58,7 @@ export default function Bets() {
   const [loading, setLoading] = useState(true);
   const [viewLoading, setViewloading] = useState(true);
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 30;
 
   // =========================================================
   // 🧠 HOOKS
@@ -66,6 +66,8 @@ export default function Bets() {
   usePools();
   const { pools } = usePoolsStore();
   const { contests, isLoading: isLoadingContests } = useContests(pool?.id);
+  console.log(contests);
+
   const {
     tickets,
     totalCount,

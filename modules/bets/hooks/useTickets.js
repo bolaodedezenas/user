@@ -3,12 +3,25 @@ import { useTicketsStore } from "../stores/useTicketsStore";
 import { betsService } from "../services/bets.service";
 import toast from "react-hot-toast";
 
-export const useTickets = (contestId, page = 1, limit = 30, searchTerm = "") => {
-  const { tickets, totalCount, isLoading, setTickets, setTotalCount, setLoading, setError } =
-    useTicketsStore();
+export const useTickets = (
+  contestId,
+  page = 1,
+  limit = 30,
+  searchTerm = "",
+) => {
+  const {
+    tickets,
+    totalCount,
+    isLoading,
+    setTickets,
+    setTotalCount,
+    setLoading,
+    setError,
+  } = useTicketsStore();
 
   const fetchTickets = useCallback(async () => {
-    if (!contestId) return;
+    // Proteção para evitar chamadas com IDs inválidos ou a string "undefined"
+    if (!contestId || contestId === "undefined" || contestId === "null") return;
 
     setLoading(true);
     try {
@@ -16,7 +29,7 @@ export const useTickets = (contestId, page = 1, limit = 30, searchTerm = "") => 
         contestId,
         page,
         limit,
-        searchTerm
+        searchTerm,
       );
       setTickets(tickets);
       setTotalCount(totalCount);
@@ -26,7 +39,7 @@ export const useTickets = (contestId, page = 1, limit = 30, searchTerm = "") => 
       // Evita mostrar erro caso seja apenas um cancelamento de query ou termo vazio
       if (searchTerm) toast.error("Erro ao realizar busca no servidor");
     } finally {
-      setTimeout(() => setLoading(false), 1000); // Aguarda 1 segundo para evitar o flash de loading  
+      setTimeout(() => setLoading(false), 1000); // Aguarda 1 segundo para evitar o flash de loading
     }
   }, [
     contestId,

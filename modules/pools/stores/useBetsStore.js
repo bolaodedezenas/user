@@ -5,14 +5,11 @@ import { useAuthStore } from "../../auth/stores/auth.store";
 const MAX_BALLS = 10;
 const userId = useAuthStore.getState().user?.id;
 
-
 export const useBetsStore = create((set, get) => ({
   selectedBalls: [],
   tickets: [],
   activeContest: null,
   activePool: null,
-
-
 
   // ✅ Atualiza o estado global de bilhetes (usado na edição/exclusão e checkout)
   setTickets: (newTickets) => set({ tickets: newTickets }),
@@ -55,7 +52,7 @@ export const useBetsStore = create((set, get) => ({
   // ✅  Adiciona um jogo ao bilhete
   addBet: (gameNumbers) => {
     const { activeContest, activePool } = get();
-    if (!activeContest || !activePool) return ;
+    if (!activeContest || !activePool) return;
 
     set((state) => {
       // Busca se já existe um bilhete para este bolão e concurso específicos
@@ -64,7 +61,7 @@ export const useBetsStore = create((set, get) => ({
       );
 
       const newTickets = [...state.tickets];
-      
+
       // verifica se já existe um bilhete para o bolão e concurso atuais, e add  o bet no bilhete
       if (existingTicketIndex > -1) {
         console.log(existingTicketIndex);
@@ -90,7 +87,7 @@ export const useBetsStore = create((set, get) => ({
         // Cria um novo bilhete estruturado para a tabela do banco
         newTickets.push({
           user_id: userId,
-          customer_id: "609632db-5399-48cc-8528-45e26037c4fc", // id fixo de um cliente
+          customer_id: null, // id fixo de um cliente
           contest_id: activeContest.id,
           contest_number: activeContest.contest_number,
           pool_id: activePool.id,
@@ -133,6 +130,19 @@ export const useBetsStore = create((set, get) => ({
       ),
     }));
     toast.error(`O bilhete foi removido!`, { duration: 4000, icon: "🟠" });
+  },
+
+
+  updateTicketsStatus: (status, customerId, paymentMethod) => {
+    const updated = get().tickets.map((ticket) => ({
+      ...ticket,
+      status,
+      customer_id: customerId ? customerId : null,
+      payment_method: paymentMethod,
+    }));
+
+    set({ tickets: updated });
+    return updated; // 👈 ISSO AQUI MUDA TUDO
   },
 
   clearBalls: () => set({ selectedBalls: [] }),

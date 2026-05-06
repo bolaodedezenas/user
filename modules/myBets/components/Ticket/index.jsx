@@ -178,13 +178,16 @@ const handleWhatsapp = async () => {
               <div className="flex flex-col text-right">
                 <span className="text-zinc-400">Status</span>
                 <span
-                  className={
-                    ticket.status === "completed"
-                      ? "text-green-600"
-                      : "text-orange-600"
-                  }
+                  className={`
+                    ${
+                      ticket.status === "paid"
+                        ? "text-green-600 font-black"
+                        : "text-orange-600"
+                    }
+                    
+                  `}
                 >
-                  {ticket.status === "completed" ? "PAGO" : "PENDENTE"}
+                  {ticket.status === "paid" ? "PAGO" : "PENDENTE"}
                 </span>
               </div>
             </div>
@@ -255,7 +258,7 @@ const handleWhatsapp = async () => {
                             key={num}
                             number={num}
                             size="sm"
-                            className="w-10 h-10 text-[0.9rem] bg-zinc-500  "
+                            className="w-10 h-10 text-[0.9rem] bg-zinc-200    "
                           />
                         ))}
                       </div>

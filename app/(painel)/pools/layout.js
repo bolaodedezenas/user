@@ -14,15 +14,13 @@ import Select from "@/modules/pools/components/Select";
 import PoolCard from "@/modules/pools/components/PoolCard";
 import Submenu from "@/modules/pools/components/Submenu";
 import Cart from "@/modules/pools/components/Cart";
-
+import CheckoutModal from "@/modules/checkout/components/checkoutModal";
 // icons
 import { FaTrophy } from "react-icons/fa6";
 import { FaCircle } from "react-icons/fa";
-
 // hooks / stores
 import { useToggleStore } from "@/stores/toggleStore";
 import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
-
 // hooks
 import { useCountTime } from "@/modules/pools/utils/countTime";
 import { useFormatDateTime } from "@/hooks/useFormatDate";
@@ -33,7 +31,8 @@ import { useContests } from "@/modules/pools/hooks/useContests";
 export default function LayoutPools({ children }) {
   const { toggle } = useToggleStore();
   const {setActiveContest, setActivePool } = useBetsStore();
-  // console.log(bets);
+ 
+
 
   usePools(); // Dispara a busca inicial se necessário
   const { pools, isLoading: isLoadingPools } = usePoolsStore();
@@ -226,6 +225,7 @@ export default function LayoutPools({ children }) {
 
       <section className=" flex-1  ">{children}</section>
       <Cart />
+      <CheckoutModal />
     </section>
   );
 }
