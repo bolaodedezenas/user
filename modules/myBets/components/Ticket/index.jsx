@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { use, useRef } from "react";
 import { FaWhatsapp, FaDownload, FaTimes, FaPrint } from "react-icons/fa";
 import { MdLocalActivity } from "react-icons/md";
 import { useTicketBets } from "../../hooks/useTicketBets";
@@ -9,16 +9,23 @@ import { toPng } from "html-to-image";
 import toast from "react-hot-toast";
 
 
-export default function Ticket({ isOpen, onClose, ticket, poolName, contestNumber }) {
+export default function Ticket({
+  isOpen,
+  onClose,
+  ticket,
+  poolName,
+  contestNumber,
+  userData,
+}) {
+  console.log( userData);
   const { bets } = useTicketBets(ticket?.id);
-
   const ticketRef = useRef(null);
 
   if (!isOpen || !ticket) return null;
- 
+
   const handleDownload = async () => {
-    
-    if (!ticketRef.current) return toast.error("Erro ao acessar o bilhete para download.");
+    if (!ticketRef.current)
+      return toast.error("Erro ao acessar o bilhete para download.");
     toast.success("Gerando PDF para download...", { duration: 3000 });
 
     try {
@@ -56,74 +63,75 @@ export default function Ticket({ isOpen, onClose, ticket, poolName, contestNumbe
       pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
 
       pdf.save(`bilhete-${ticket.ticket_number}.pdf`);
-
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
       toast.error("Ocorreu um erro ao gerar o PDF.");
-    } 
+    }
   };
 
+  const handleWhatsapp = async () => {
+    if (ticketRef.current && navigator.share) {
+      try {
+        const { default: jsPDF } = await import("jspdf");
 
-const handleWhatsapp = async () => {
-  if (ticketRef.current && navigator.share) {
-    try {
-      const { default: jsPDF } = await import("jspdf");
+        const node = ticketRef.current;
 
-      const node = ticketRef.current;
-
-      //  gera imagem base (alta qualidade)
-      const dataUrl = await toPng(node, {
-        pixelRatio: 4,
-        backgroundColor: "#ffffff",
-        cacheBust: true,
-      });
-
-      // formato cupom  
-      const pdfWidth = 80;
-
-      const img = new Image();
-      img.src = dataUrl;
-
-      await new Promise((resolve) => {
-        img.onload = resolve;
-      });
-
-      const ratio = img.height / img.width;
-      const pdfHeight = pdfWidth * ratio;
-
-      const pdf = new jsPDF({
-        unit: "mm",
-        format: [pdfWidth, pdfHeight],
-      });
-
-      pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
-
-      // gera blob do PDF
-      const pdfBlob = pdf.output("blob");
-
-      const file = new File([pdfBlob], `bilhete-${ticket.ticket_number}.pdf`, {
-        type: "application/pdf",
-      });
-
-      //  envia como arquivo (SEM compressão)
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: "Bolão de Dezenas",
-          text: `Confira meu bilhete #${ticket.ticket_number}`,
+        //  gera imagem base (alta qualidade)
+        const dataUrl = await toPng(node, {
+          pixelRatio: 4,
+          backgroundColor: "#ffffff",
+          cacheBust: true,
         });
-        return;
+
+        // formato cupom
+        const pdfWidth = 80;
+
+        const img = new Image();
+        img.src = dataUrl;
+
+        await new Promise((resolve) => {
+          img.onload = resolve;
+        });
+
+        const ratio = img.height / img.width;
+        const pdfHeight = pdfWidth * ratio;
+
+        const pdf = new jsPDF({
+          unit: "mm",
+          format: [pdfWidth, pdfHeight],
+        });
+
+        pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+        // gera blob do PDF
+        const pdfBlob = pdf.output("blob");
+
+        const file = new File(
+          [pdfBlob],
+          `bilhete-${ticket.ticket_number}.pdf`,
+          {
+            type: "application/pdf",
+          },
+        );
+
+        //  envia como arquivo (SEM compressão)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: "Bolão de Dezenas",
+            text: `Confira meu bilhete #${ticket.ticket_number}`,
+          });
+          return;
+        }
+      } catch (error) {
+        console.error("Erro ao compartilhar PDF:", error);
       }
-    } catch (error) {
-      console.error("Erro ao compartilhar PDF:", error);
     }
-  }
 
-  // fallback
-  const text = `Confira meu bilhete #${ticket.ticket_number} no Bolão de Dezenas (${poolName})!`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-};
-
+    // fallback
+    const text = `Confira meu bilhete #${ticket.ticket_number} no Bolão de Dezenas (${poolName})!`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-1 animate-in fade-in duration-200">
@@ -203,7 +211,7 @@ const handleWhatsapp = async () => {
                     Nome
                   </span>
                   <span className="font-black text-zinc-800 uppercase">
-                    {ticket?.user_name || "Bolão de Dezenas"}
+                    {userData?.name }
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-[0.7rem]">
@@ -211,7 +219,7 @@ const handleWhatsapp = async () => {
                     Telefone
                   </span>
                   <span className="font-black text-zinc-800 uppercase">
-                    {ticket?.user_phone || "(00) 00000-0000"}
+                    { userData?.phone }
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-[0.7rem]">
@@ -219,8 +227,8 @@ const handleWhatsapp = async () => {
                     Cidade / UF
                   </span>
                   <span className="font-black text-zinc-800 uppercase">
-                    {ticket?.user_city
-                      ? `${ticket.user_city} / ${ticket.user_state || ""}`
+                    { userData?.city
+                      ? `${userData.city} / ${userData.state || ""}`
                       : "Brasilia-DF"}
                   </span>
                 </div>
@@ -258,7 +266,7 @@ const handleWhatsapp = async () => {
                             key={num}
                             number={num}
                             size="sm"
-                            className="w-10 h-10 text-[0.9rem] bg-zinc-200    "
+                            className="w-10 h-10 text-[0.9rem] bg-zinc-300    "
                           />
                         ))}
                       </div>
@@ -269,7 +277,7 @@ const handleWhatsapp = async () => {
             </div>
 
             {/* TOTAL */}
-            <div className="mt-4 pt-6 border-t-2 border-zinc-800 flex justify-between items-center">
+            <div className="mt-4 pt-6 border-t-2 border-zinc-200 flex justify-between items-center">
               <span className="font-black text-zinc-800 uppercase text-sm">
                 Valor Total
               </span>

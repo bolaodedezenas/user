@@ -12,6 +12,7 @@ import { FaSearch, FaReceipt } from "react-icons/fa";
 // stores / hooks
 import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
 import { useMyTickets } from "@/modules/myBets/hooks/useMyBets";
+import { useAuthStore } from "@/modules/auth/stores/auth.store";
 // components
 import TicketCard from "@/modules/myBets/components//TicketCard";
 import Ticket from "@/modules/myBets/components/Ticket";
@@ -23,6 +24,8 @@ const statusOptions = [
 ];
 
 export default function MyBets() {
+  const { user } =  useAuthStore();
+  console.log(user);
   const { activePool, activeContest } = useBetsStore();
   const { myTickets} = useMyTickets(activePool?.id, activeContest?.id);
 
@@ -135,6 +138,7 @@ export default function MyBets() {
         ticket={selectedTicket} // Passar o objeto completo, não apenas o ID
         poolName={activePool?.name}
         contestNumber={activeContest?.contest_number}
+        userData={user}
       />
     </section>
   );

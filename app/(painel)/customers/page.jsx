@@ -248,7 +248,7 @@ export default function Customers() {
 
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="hidden  max-md:flex  p-3 bg-zinc-100 rounded-lg text-[rgb(var(--btn))] border border-zinc-100 active:scale-95 transition-transform"
+            className="hidden  max-md:flex  p-2 bg-zinc-100 rounded-lg text-[rgb(var(--btn))] border border-zinc-100 active:scale-95 transition-transform"
             title="Filtros"
           >
             {isFilterOpen ? <FaTimes size={20} /> : <FaFilter size={20} />}
