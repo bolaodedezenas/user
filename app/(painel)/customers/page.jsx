@@ -201,20 +201,29 @@ export default function Customers() {
 
  
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsFilterOpen(true);
-      } else {
-        setIsFilterOpen(false);
-      }
-    };
+   useEffect(() => {
+     let lastWidth = window.innerWidth;
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
+     const handleResize = () => {
+       const currentWidth = window.innerWidth;
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+       // 🔥 Só executa se mudou a LARGURA (não altura do teclado)
+       if (currentWidth !== lastWidth) {
+         if (currentWidth >= 768) {
+           setIsFilterOpen(true);
+         } else {
+           setIsFilterOpen(false);
+         }
+
+         lastWidth = currentWidth;
+       }
+     };
+
+     handleResize();
+     window.addEventListener("resize", handleResize);
+
+     return () => window.removeEventListener("resize", handleResize);
+   }, []);
  
   if (loading) return <PageLoading />;
 
