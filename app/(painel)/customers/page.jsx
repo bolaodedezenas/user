@@ -56,7 +56,7 @@ export default function Customers() {
 
   const [open, setOpen] = useState(false);
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
 
   // =========================================================
   // 🔹 FUNCTIONS / HANDLERS
@@ -138,24 +138,13 @@ export default function Customers() {
       return;
     }
 
-    if (localFilteredCustomers.length > 0) {
-      if (activeRemoteSearchTerm !== "") {
-        setActiveRemoteSearchTerm("");
-      }
-      setRemoteEmpty(false);
-      return;
-    }
-
-    if (debouncedSearchTerm && debouncedSearchTerm !== activeRemoteSearchTerm) {
+    // ✅ Correção: Sincroniza a busca remota diretamente com o termo debounced.
+    // Removida a verificação local que causava o loop infinito (ping-pong de estados).
+    if (debouncedSearchTerm !== activeRemoteSearchTerm) {
       setRemoteEmpty(false);
       setActiveRemoteSearchTerm(debouncedSearchTerm);
     }
-  }, [
-    debouncedSearchTerm,
-    searchTerm,
-    localFilteredCustomers.length,
-    activeRemoteSearchTerm,
-  ]);
+  }, [debouncedSearchTerm, searchTerm, activeRemoteSearchTerm]);
 
   useEffect(() => {
     if (!isLoadingCustomers && activeRemoteSearchTerm) {
@@ -163,24 +152,40 @@ export default function Customers() {
     }
   }, [isLoadingCustomers, totalCount, activeRemoteSearchTerm]);
 
+  
   useEffect(() => {
-    if (searchTerm !== activeRemoteSearchTerm) return;
-    if (localFilteredCustomers.length > 0) return;
-
-    if (remoteEmpty && activeRemoteSearchTerm && !isLoadingCustomers) {
-      toast.error(`Cliente "${activeRemoteSearchTerm}" não encontrado.`, {
-        duration: 6000,
-        id: "search-not-found",
-        icon: "🔍",
-      });
+    // 🔄 limpa estado ao mudar termo
+    if (searchTerm !== activeRemoteSearchTerm) {
+      setRemoteEmpty(false);
+      toast.dismiss("search-not-found");
     }
-  }, [
-    remoteEmpty,
-    activeRemoteSearchTerm,
-    searchTerm,
-    localFilteredCustomers.length,
-    isLoadingCustomers,
-  ]);
+
+    // 🔹 se limpou busca → volta pro normal
+    if (!searchTerm) {
+      setActiveRemoteSearchTerm("");
+      setRemoteEmpty(false);
+      return;
+    }
+
+    // 🔍 verifica se tem resultado LOCAL
+    const hasLocalResults = customers.some((c) =>
+      c.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+
+    // ✅ achou local → NÃO faz busca remota e NÃO muda página
+    if (hasLocalResults) {
+      return;
+    }
+
+    // ❌ não achou → busca remota
+    if (debouncedSearchTerm !== activeRemoteSearchTerm) {
+      setRemoteEmpty(false);
+      setActiveRemoteSearchTerm(debouncedSearchTerm);
+
+      // 🔥 só aqui reseta página
+      setCurrentPage(1);
+    }
+  }, [debouncedSearchTerm, searchTerm, activeRemoteSearchTerm, customers]);
 
   // =========================================================
   // 🔹 EFFECTS - UI
@@ -194,9 +199,7 @@ export default function Customers() {
     setTimeout(() => setViewloading(false), 500);
   }, [view]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
+ 
 
   useEffect(() => {
     const handleResize = () => {
@@ -216,7 +219,7 @@ export default function Customers() {
   if (loading) return <PageLoading />;
 
   return (
-    <section className="flex-1 min-h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
+    <section className="flex-1  h-full flex flex-col  overflow-hidden">
       <section className="w-full flex flex-wrap  items-center justify-between bg-white shadow-md rounded-lg  px-4 py-2 gap-2 transition-all duration-300">
         <div className=" flex flex-wrap items-center justify-between gap-2    ">
           <div className=" flex flex-col ml-10 xss:ml-0 ">
@@ -267,22 +270,23 @@ export default function Customers() {
           </div>
         </div>
       </section>
-      <div className="flex-1 flex flex-col bg-white shadow-lg rounded-lg mt-4 overflow-hidden">
+
+      <div className=" flex-1 flex flex-col bg-white shadow-lg rounded-lg mt-4 overflow-hidden">
         {isLoadingCustomers || viewLoading ? (
-          <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+          <div className="flex-1 flex flex-col overflow-hidden ">
             <PageLoading />
           </div>
         ) : localFilteredCustomers.length > 0 ? (
           <>
             {view ? (
               <section
-                className=" flex-1 flex flex-col overflow-hidden min-h-0 
+                className="flex-1  flex flex-col overflow-hidden   
               "
               >
                 <Table columns={columns} data={localFilteredCustomers} />
               </section>
             ) : (
-              <section className=" flex-1 flex justify-center flex-wrap p-5 gap-5 overflow-y-auto min-h-0  sm:max-h-[780px] max-sm:max-h-[625px]">
+              <section className=" flex-1 flex justify-center flex-wrap p-5 gap-5 overflow-y-auto ">
                 <CardList
                   schemaCard={schemaCard}
                   data={localFilteredCustomers}

@@ -3,7 +3,7 @@
 import { supabase } from "@/libs/supabase/client";
 
 export const betsRepository = {
-  async getTicketsByContest(contestId, page = 1, limit = 30, searchTerm = "") {
+  async getTicketsByContest(contestId, page = 1, limit = 10, searchTerm = "") {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
@@ -25,7 +25,7 @@ export const betsRepository = {
           state
         )
       `,
-        { count: "planned" },
+        { count: "exact" },
       )
       .eq("contest_id", contestId)
       .not("customer_id", "is", null);

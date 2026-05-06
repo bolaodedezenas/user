@@ -112,7 +112,7 @@ export default function Menu({ toggleUser, setToggleUser }) {
         </ol>
       </div>
       <nav
-        className={`p-4 pt-0  flex-1 border-b-2 border-b-gray-300  overflow-auto 
+        className={`p-4 pt-0  flex-1 border-b  border-b-gray-200  overflow-auto 
            min-w-[300px] sm:w-[260px]
          ${toggleUser ? "h-auto" : ""}
         `}
@@ -204,7 +204,7 @@ export default function Menu({ toggleUser, setToggleUser }) {
           </li>
         </ul>
       </nav>
-      <div className="h-10 flex items-center  justify-center  border-b-2 border-b-gray-300 ">
+      <div className="h-15 flex items-center  justify-center  ">
         {toggle && (
           <p className="text-[0.9rem] text-[rgb(var(--text))]">
             Desenvolvido pela Rixxer

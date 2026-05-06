@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 export const useTickets = (
   contestId,
   page = 1,
-  limit = 30,
+  limit = 10,
   searchTerm = "",
 ) => {
   const {

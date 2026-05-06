@@ -11,13 +11,21 @@ export function useCustomers(page, limit, searchTerm) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const user = useAuthStore((state) => state.user);
-  const { setCustomers, setTotalCount, customers, totalCount } =
-    useCustomersStore();
+
+  // ✅ Usando seletores individuais para garantir estabilidade e evitar loops de re-renderização
+  const customers = useCustomersStore((state) => state.customers);
+  const totalCount = useCustomersStore((state) => state.totalCount);
+  const setCustomers = useCustomersStore((state) => state.setCustomers);
+  const setTotalCount = useCustomersStore((state) => state.setTotalCount);
 
   const fetchCustomers = useCallback(async () => {
     if (!user?.id) return;
 
-    setIsLoading(true);
+    // ✅ Só ativa o loading global se não houver dados carregados.
+    // Se já tivermos clientes (como em uma pesquisa), não "piscamos" a tela.
+    const currentCustomers = useCustomersStore.getState().customers;
+    if (currentCustomers.length === 0) setIsLoading(true);
+
     try {
       const { data, count } = await customerService.getCustomers(
         user.id,
@@ -186,7 +194,7 @@ export function useCustomers(page, limit, searchTerm) {
       setCustomers(updatedCustomers);
 
       toast.success(
-        `Cliente ${newStatus ? "Ativo" : "Bloqueado"} com sucesso!`,
+        `Cliente ${newStatus ? "Ativo" : "Bloqueado"} com sucesso!`, {icon: newStatus ? "🟢" : "🔴"},
       );
       return true;
     } catch (error) {
@@ -226,3 +234,5 @@ export function useCustomers(page, limit, searchTerm) {
     deleteCustomer,
   };
 }
+
+

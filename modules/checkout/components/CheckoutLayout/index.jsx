@@ -2,7 +2,7 @@ import React from "react";
 
 export default function CheckoutLayout({ header, footer, children }) {
   return (
-    <div className="flex flex-col bg-gray-50 rounded-3xl overflow-hidden">
+    <div className="flex flex-col bg-gray-50 rounded-3xl overflow-hidden p-4">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b border-zinc-300 ">
         {header}

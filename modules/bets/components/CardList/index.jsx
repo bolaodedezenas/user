@@ -9,7 +9,8 @@ export default function CardList({ schemaCard = [], data = [] }) {
       {data.map((row) => (
         <div
           key={row.id}
-          className=" min-w-70 w-75  h-fit bg-[rgb(var(--blue-50))]/30 border border-zinc-100 rounded-md shadow-sm p-4 flex flex-col gap-4"
+          className="bg-white min-w-70 w-75  h-fit  hover:scale-102 transition-all
+          bg-[rgb(var(--blue-50))]/30 border border-zinc-200 rounded-md shadow-xl p-4 flex flex-col gap-4"
         >
           {/* 🔹 BODY */}
           <div className="flex flex-col gap-2">
@@ -86,7 +87,7 @@ export default function CardList({ schemaCard = [], data = [] }) {
                         <button
                           key={`${key}-action-${i}`}
                           onClick={() => act.onClick(row)}
-                          className={`p-2 rounded-lg transition-colors flex items-center justify-center ${act.className || ""}`}
+                          className={`p-2 rounded-lg transition-colors flex items-center justify-center cursor-pointer ${act.className || ""}`}
                         >
                           <Icon size={20} />
                         </button>
