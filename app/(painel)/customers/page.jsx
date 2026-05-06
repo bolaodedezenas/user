@@ -196,7 +196,7 @@ export default function Customers() {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => setViewloading(false), 500);
+    setTimeout(() => setViewloading(false), 400);
   }, [view]);
 
  
