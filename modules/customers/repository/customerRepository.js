@@ -1,7 +1,7 @@
 import { supabase } from "@/libs/supabase/client";
 
 export const customerRepository = {
-  async getCustomers(revendedorId, page = 1, limit = 50, searchTerm = "") {
+  async getCustomers(revendedorId, page = 1, limit = 12, searchTerm = "") {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 

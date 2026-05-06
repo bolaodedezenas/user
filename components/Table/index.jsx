@@ -100,11 +100,11 @@ export default function Table({ columns, data }) {
         </div>
 
         {/* BODY */}
-        <div className="flex-1 flex flex-col gap-3 overflow-y-auto p-4   max-sm:max-h-[560px]">
+        <div className="flex-1 flex flex-col gap-6 overflow-y-auto p-4   max-sm:max-h-[710px]">
           {data.map((row, rowIndex) => (
             <div
               key={rowIndex}
-              className="flex justify-between items-center px-4 py-2 odd:bg-[rgb(var(--blue-50))] even:bg-[rgb(var(--blue-100))]/30 rounded-lg"
+              className="flex justify-between items-center px-4 py-2 odd:bg-[rgb(var(--blue-100))]/85 even:bg-[rgb(var(--blue-200))]/30 rounded-lg shadow-xl "
             >
               {columns.map((col) => (
                 <div

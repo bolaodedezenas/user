@@ -10,7 +10,7 @@ export default function Pagination({
 }) {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  if (totalPages <= 1) return null;
+  // if (totalPages <= 1) return null;
 
   const getPageNumbers = () => {
     const pages = [];
@@ -32,10 +32,11 @@ export default function Pagination({
   };
 
   return (
-    <div className="border flex items-center justify-end border-t border-zinc-200 bg-white  py-3 sm:px-6 mt-auto rounded-b-lg">
+    <div className="border h-15 flex items-center justify-end border-t border-zinc-200 bg-white  py-3 sm:px-6 mt-auto rounded-b-lg">
       <div className=" flex items-center  justify-between">
         <div>
-          <nav className="isolate inline-flex gap-2" aria-label="Pagination">
+          {totalPages > 0  && 
+         <nav className="isolate inline-flex gap-2" aria-label="Pagination">
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
@@ -63,7 +64,7 @@ export default function Pagination({
             >
               <FiChevronRight className="h-5 w-5" aria-hidden="true" />
             </button>
-          </nav>
+          </nav>}
         </div>
       </div>
     </div>

@@ -137,10 +137,11 @@ export default function Pools() {
           <p className="text-[1.4rem] ">Dezenas</p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center  gap-0 sm:gap-8  bg-[rgb(var(--blue-50))] rounded-[10px] px-2 py-5  sm:px-4 ">
+        <div className="flex flex-wrap items-center justify-center  gap-0 sm:gap-8    sm:px-4  ">
           <div
-            className="  flex justify-center  gap-2 flex-wrap 
-             max-xs:w-[250px]  w-full max-xs:min-h-22 min-h-10 "
+            className="  rounded-[10px] px-2 py-5 flex justify-center  gap-2 flex-wrap 
+            sm:max-w-[1200px] max-xs:w-[290px]  w-full max-xs:min-h-22 min-h-20 
+            bg-[rgb(var(--blue-50))]"
           >
             {selectedBalls.length > 0 &&
               selectedBalls.map((ball, index) => (

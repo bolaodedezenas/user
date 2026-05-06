@@ -58,7 +58,7 @@ export default function Bets() {
   const [loading, setLoading] = useState(true);
   const [viewLoading, setViewloading] = useState(true);
 
-  const itemsPerPage = 30;
+  const itemsPerPage = 12;
 
   // =========================================================
   // 🧠 HOOKS
@@ -235,7 +235,7 @@ export default function Bets() {
   if (loading) return <PageLoading />;
 
   return (
-    <section className="flex-1 min-h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
+    <section className="flex-1  h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
       <section className="w-full flex flex-wrap  items-center justify-between bg-white shadow-md rounded-lg  px-4   py-2 gap-2 transition-all duration-300">
         <div className=" flex flex-wrap items-center justify-between gap-2    ">
           <div className=" flex flex-col ml-10 xss:ml-0 ">
@@ -304,20 +304,23 @@ export default function Bets() {
 
       <div className="flex-1 flex flex-col bg-white shadow-lx rounded-lg mt-4 overflow-hidden">
         {isLoadingTickets || viewLoading ? (
-          <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+          <div className="flex-1 flex flex-col overflow-hidden ">
             <PageLoading />
           </div>
         ) : localFilteredTickets.length > 0 ? (
           <>
             {view ? (
               <section
-                className=" flex-1 flex flex-col overflow-hidden min-h-0 
+                className=" flex flex-col overflow-hidden flex-1 
+                // h-[710px] 
               "
               >
                 <Table columns={columns} data={localFilteredTickets} />
               </section>
             ) : (
-              <section className=" flex-1 flex justify-center  flex-wrap p-5 gap-5 overflow-y-auto min-h-0  sm:max-h-[780px] max-sm:max-h-[625px]">
+              <section className="flex-1 flex justify-center flex-wrap p-5 gap-5  overflow-y-auto  
+              //  max-h-[710px] 
+              ">
                 <CardList schemaCard={schemaCard} data={localFilteredTickets} />
               </section>
             )}
