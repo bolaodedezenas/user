@@ -47,6 +47,7 @@ export default function LayoutPools({ children }) {
   // console.log(contests);
   const [itemContest, setItemContest] = useState(null);
 
+
   //  date format
   const { formatDate } = useFormatDateTime();
   const { date, time } = formatDate(itemContest?.starts_at);
@@ -114,7 +115,7 @@ export default function LayoutPools({ children }) {
   if (initialLoading || isLoadingPools) return <PageLoading />;
 
   return (
-    <section className="flex-1 h-full flex flex-col gap-4 bg-[rgb(var(--blue-50))]">
+    <section className="flex-1 h-full flex flex-col gap-3 bg-[rgb(var(--blue-50))]">
       <Header>
         <section className="relative bg-white w-full flex flex-wrap gap-4 items-center">
           <div className="flex  flex-col   ml-14 xss:ml-2  ">
@@ -131,7 +132,7 @@ export default function LayoutPools({ children }) {
             />
           </div>
 
-          <Box className="flex-1 flex justify-end items-center gap-8">
+          <Box className="flex-1 flex justify-end items-center pr-2 ">
             {/* SELECT BOLÕES */}
             <Select
               label={pool?.name || "Selecione um Bolão"}

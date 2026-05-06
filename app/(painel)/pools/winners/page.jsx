@@ -85,7 +85,7 @@ export default function Winners() {
 
   return (
     <section className=" bg-white fle-1 h-full flex flex-col   rounded-2xl shadow-md ">
-      <section className="flex flex-wrap justify-between items-center gap-4  px-6 py-4 border-b border-zinc-300">
+      <section className="flex flex-wrap justify-between items-center gap-4  px-6 py-3 border-b border-zinc-300">
         <div>
           <Title
             text="Lista de ganhadores."
@@ -107,8 +107,8 @@ export default function Winners() {
         </div>
       </section>
       <div
-        className=" w-full flex-1 flex justify-center items-center
-        gap-3 flex-wrap p-2 xs:p-4 max-xs:min-h-[580px] max-h-[480px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-300 scrollbar-track-transparent 
+        className=" w-full flex-1 flex justify-center  
+        gap-3 flex-wrap p-2    overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-300 scrollbar-track-transparent 
       "
       >
         {bettors.map((bettor) => (
@@ -122,12 +122,12 @@ export default function Winners() {
           />
         ))}
       </div>
-      {/* <Pagination
-        currentPage={20}
-        totalItems={3}
-        itemsPerPage={""}
+      <Pagination
+        currentPage={1}
+        totalItems={2}
+        itemsPerPage={12}
         onPageChange={ () => {}}
-      /> */}
+      />
     </section>
   );
 }

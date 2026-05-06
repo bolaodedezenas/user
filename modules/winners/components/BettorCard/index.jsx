@@ -20,7 +20,7 @@ export default  function BettorCard({
   onShareClick,
 }) {
   return (
-    <div className="  w-[350px] overflow-hidden rounded-2xl shadow-lg border border-zinc-200 bg-white  ">
+    <div className="  w-[350px] overflow-hidden rounded-2xl shadow-xl  border border-zinc-200 bg-white  ">
       {/* Header */}
       <div className="flex gap-5  p-4 pb-4 ">
         {/* Avatar */}
