@@ -8,17 +8,22 @@ const COLORS = [
 
 export default function NumberBallsLoader() {
   const BALL_COUNT = 5;
+
   const [balls, setBalls] = useState([]);
 
   const randomNumber = () =>
-    Math.floor(Math.random() * 100).toString().padStart(2, "0");
+    Math.floor(Math.random() * 100)
+      .toString()
+      .padStart(2, "0");
+
+  const initialBalls = Array.from({ length: BALL_COUNT }).map((_, i) => ({
+    number: randomNumber(),
+    color: COLORS[i % COLORS.length], // cor fixa por bola
+  }));
+  
 
   // Inicializa bolas com números aleatórios e cores fixas
   useEffect(() => {
-    const initialBalls = Array.from({ length: BALL_COUNT }).map((_, i) => ({
-      number: randomNumber(),
-      color: COLORS[i % COLORS.length], // cor fixa por bola
-    }));
     setBalls(initialBalls);
   }, []);
 
@@ -119,3 +124,6 @@ export default function NumberBallsLoader() {
     </div>
   );
 }
+
+
+ 
