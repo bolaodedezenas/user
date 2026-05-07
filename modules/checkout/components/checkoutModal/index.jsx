@@ -23,6 +23,8 @@ import { FaUserPlus } from "react-icons/fa6";
 import { PaymentMethodCard } from "../PaymentMethodCard";
 import { FaPix } from "react-icons/fa6";
 import { FiClock, FiDollarSign } from "react-icons/fi";
+import { MdDeleteForever } from "react-icons/md";
+
 //stores
 import { useCheckoutStore } from "../../stores/useCheckoutStore";
 import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
@@ -156,15 +158,19 @@ export default function CheckoutModal() {
       <div className="absolute inset-0 bg-black/60" />
 
       <div className="relative w-full h-full overflow-y-auto flex justify-center items-start">
-        <div className="w-full max-w-md py-6 px-3 flex justify-center">
+        <div className="w-full max-w-md py-6 px-2 flex justify-center">
           <div className="relative w-full bg-white rounded-3xl shadow-xl overflow-hidden">
             <CheckoutLayout
-              header={<ProgressHeader current={step} onBack={handleBack} />}
-              footer={
-                <FooterAction
-                  label={getButtonLabel()}
-                  onClick={handleNext}
+              header={
+                <ProgressHeader
+                  current={step}
+                  onBack={handleBack}
+                  setStep={setStep}
+                  setSelectedCustomer={setSelectedCustomer}
                 />
+              }
+              footer={
+                <FooterAction label={getButtonLabel()} onClick={handleNext} />
               }
             >
               {/* TRANSIÇÃO */}
@@ -192,15 +198,29 @@ export default function CheckoutModal() {
                   <div className="space-y-1">
                     {/* Associar cliente */}
                     <div className="bg-[rgb(var(--blue-800))] rounded-xl p-4 px-8 ">
-                      <Title
-                        text="Associar cliente"
-                        className="text-[1rem] font-semibold text-white"
-                      />
+                      <div className="flex  justify-between items-center pb-2">
+                        <div>
+                          <Title
+                            text="Associar cliente"
+                            className="text-[1rem] font-semibold text-white"
+                          />
+                          <Paragraph
+                            text="Associe um cliente a esta compra."
+                            className="text-[0.8rem] text-white/70! pb-2"
+                          />
+                        </div>
+                        <div
+                          className="group p-1.5 bg-white/20 rounded-[5px] 
+                          hover:bg-white/40  cursor-pointer transition-all"
+                        >
+                          <MdDeleteForever
+                            size={25}
+                            className="text-white  transition-colors "
+                            onClick={() => setSelectedCustomer(null)}
+                          />
+                        </div>
+                      </div>
 
-                      <Paragraph
-                        text="Associe um cliente a esta compra."
-                        className="text-[0.8rem] text-white/70! pb-2"
-                      />
                       <SelectCustomer
                         options={customers}
                         value={selectedCustomer}

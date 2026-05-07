@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { FiChevronDown, FiSearch, FiLoader } from "react-icons/fi";
+import { FaUserPlus } from "react-icons/fa6";
+
 
 export default function SelectCustomer({
   label = "Buscar cliente",
@@ -59,19 +61,26 @@ export default function SelectCustomer({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex  gap-4 items-center  bg-white  rounded-lg px-3 py-3 text-sm shadow-[inset_0_2px_6px_rgba(0,0,0,0.25)] "
+        className="h-14 w-full flex  gap-4 items-center  bg-white  rounded-lg pl-4 py-3 text-sm shadow-[inset_0_2px_6px_rgba(0,0,0,0.25)] "
       >
-        {selected?.avatar_url && (
+        {selected?.avatar_url ? (
           <img
             src={selected?.avatar_url}
             className="rounded-full w-8 h-8 "
             alt=""
           />
-        )}
-        <span>
-          {selected
-            ? `${selected.name} ${selected.phone ? `- ${selected.phone}` : ""}`
-            : label}
+        ) : (<FaUserPlus size={24} /> )}
+        <span className=" w-46 flex flex-col items-start  ">
+          {selected ? (
+            <>
+              <span>{selected.name.split(" ").slice(0, 2).join(" ")}</span>
+              {selected.phone && (
+                <span className="text-sm text-zinc-400">{selected.phone}</span>
+              )}
+            </>
+          ) : (
+            label
+          )}
         </span>
 
         <FiChevronDown

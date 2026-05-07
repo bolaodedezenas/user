@@ -4,14 +4,17 @@ import { AiFillCloseSquare } from "react-icons/ai";
 // stores
 import { useCheckoutStore } from "../../stores/useCheckoutStore";
 import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
+import { usePaymentMethodStore } from "../../stores/usePaymentMethodStore";
+
 
 
 const steps = ["Revisão", "Pagamento", "Confirmação"];
 
-export function ProgressHeader({ current, onBack }) {
+export function ProgressHeader({ current, onBack, setStep, setSelectedCustomer }) {
+  const { clearPaymentMethod } = usePaymentMethodStore();
   const { tickets } = useBetsStore();
   const closeCheckout = useCheckoutStore((s) => s.closeCheckout);
-  
+
   const getTitle = () => {
     if (current === 1) return "Carrinho";
     if (current === 2) return "Pagamento";
@@ -24,7 +27,7 @@ export function ProgressHeader({ current, onBack }) {
       <div className="flex items-center justify-between p-4 px-6">
         <div className="flex items-center gap-3">
           {current > 1 && current <= 2 ? (
-             <button
+            <button
               onClick={onBack}
               className="cursor-pointer hover:bg-[rgb(var(--blue-50))] hover:text-[rgb(var(--blue-700] p-2"
             >
@@ -46,9 +49,8 @@ export function ProgressHeader({ current, onBack }) {
             </span>
           )}
           <AiFillCloseSquare
-            onClick={() => { 
-              closeCheckout(),
-              onBack(1);// volta para step 1 do checkoutModal
+            onClick={() => {
+              clearPaymentMethod(), closeCheckout(), setStep(1), setSelectedCustomer(null);
             }}
             size={30}
             className="text-[rgb(var(--blue-700))] hover:text-[rgb(var(--blue-800))] cursor-pointer"
