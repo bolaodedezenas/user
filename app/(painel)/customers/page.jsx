@@ -26,6 +26,8 @@ import {
   FaUsers,
   FaUserTag,
 } from "react-icons/fa";
+// stores
+import { useToggleStore } from "@/stores/toggleStore";
 
 // toast
 import toast from "react-hot-toast";
@@ -34,13 +36,18 @@ import ConfirmDeleteModal from "@/modules/customers/components/ConfirmDeleteModa
 
 
 export default function Customers() {
+
+  const { toggle } = useToggleStore();
+
+
+
   // =========================================================
   // 🔹 STATES - UI / CONTROLE
   // =========================================================
   const [activeRemoteSearchTerm, setActiveRemoteSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [remoteEmpty, setRemoteEmpty] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
 
   const [customerToEdit, setCustomerToEdit] = useState(null); // Novo estado para o cliente a ser editado
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -209,7 +216,7 @@ export default function Customers() {
 
        // 🔥 Só executa se mudou a LARGURA (não altura do teclado)
        if (currentWidth !== lastWidth) {
-         if (currentWidth >= 768) {
+         if (currentWidth >= 873) {
            setIsFilterOpen(true);
          } else {
            setIsFilterOpen(false);
@@ -246,7 +253,10 @@ export default function Customers() {
           </div>
         </div>
 
-        <div className="  max-sm:flex-1 max-xs:w-full  flex items-center justify-center gap-2  ">
+        <div
+          className={` ${toggle ? "max-customer-873:w-full" : "max-customer-511:w-full"}  
+        flex items-center justify-center gap-2 `}
+        >
           <ViewToggle
             value={view}
             onChange={() => {
@@ -257,8 +267,8 @@ export default function Customers() {
 
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="hidden  max-md:flex  p-2 bg-zinc-100 rounded-lg text-[rgb(var(--btn))] border border-zinc-100 active:scale-95 transition-transform"
-            title="Filtros"
+            className={`hidden ${toggle ? "max-customer-1263:flex" : "max-customer-1028:flex"}  p-2 bg-zinc-100 rounded-lg text-[rgb(var(--btn))] border border-zinc-100 active:scale-95 transition-transform"
+            title="Filtros`}
           >
             {isFilterOpen ? <FaTimes size={20} /> : <FaFilter size={20} />}
           </button>
@@ -266,7 +276,7 @@ export default function Customers() {
 
         {/* Container de Filtros: Toggleable no mobile, flex-row no desktop */}
         <div
-          className={`${isFilterOpen ? "flex" : "hidden"} flex-wrap justify-center items-center gap-4   max-md:w-full pb-4`}
+          className={`${isFilterOpen ? "flex" : "hidden"} flex-wrap justify-center items-center gap-4    ${toggle ? "max-customer-1263:w-full" : "max-customer-1028:w-full"} `}
         >
           <div className="flex flex-wrap-reverse  items-center gap-4 w-full md:w-auto justify-center">
             <SearchInput
@@ -275,7 +285,11 @@ export default function Customers() {
               placeholder=" Nome do Cliente "
               className=" w-38"
             />
-            <SignInButton className=" !w-50" text="Novo Cliente" onClick={() => setOpen(true)} />
+            <SignInButton
+              className=" !w-50"
+              text="Novo Cliente"
+              onClick={() => setOpen(true)}
+            />
           </div>
         </div>
       </section>

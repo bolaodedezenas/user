@@ -25,9 +25,8 @@ export default function Cart({ onClose }) {
   const [isOpen, setIsOpen] = useState(false);
   const [tempBet, setTempBet] = useState([]);
 
-  const { handleCheckout, isPending } = useCheckout();
+  const { isPending } = useCheckout();
 
-  // console.log(tickets);
   // Função para deletar um bilhete inteiro
   const handleDeleteTicket = (pool_id, contest_id) => {
     removeTicket(pool_id, contest_id);
@@ -287,7 +286,8 @@ export default function Cart({ onClose }) {
                               <Ball
                                 key={i}
                                 number={num}
-                                className="bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] w-[28px] h-[28px] text-[0.8rem] font-bold text-white shadow-md"
+                                className=" w-[28px] h-[28px] text-[0.8rem] font-bold text-white shadow-md"
+                                style={{ backgroundColor: `${ticket.color}` }}
                               />
                             ))}
                       </div>

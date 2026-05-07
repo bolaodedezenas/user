@@ -12,7 +12,17 @@
   --breakpoint-xxs: 370px;
   --breakpoint-xs: 465px;
   --breakpoint-xss: 593px;
-  --breakpoint-xd: 844px;
+  /*breakpoint Bets */
+  --breakpoint-Bets-1064: 1064px;
+  --breakpoint-bets-956: 956px;
+  --breakpoint-Bets-821: 821px;
+  --breakpoint-Bets-721: 721px;
+  /*breakpoint Customer */
+  --breakpoint-customer-1263: 1263px;
+  --breakpoint-customer-873: 873px;
+  --breakpoint-customer-1028: 1028px;
+  --breakpoint-customer-511: 511px;
+
 }
 
 

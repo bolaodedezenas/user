@@ -16,8 +16,9 @@ export default function Ticket({
   poolName,
   contestNumber,
   userData,
+  borderColor,
 }) {
-  console.log( userData);
+  console.log(userData);
   const { bets } = useTicketBets(ticket?.id);
   const ticketRef = useRef(null);
 
@@ -149,7 +150,10 @@ export default function Ticket({
         <div className="flex-1 overflow-y-auto  p-6   scrollbar-thin">
           <div
             ref={ticketRef}
-            className="bg-white shadow-sm border-t-8 border-[rgb(var(--btn))] relative p-6 flex flex-col gap-6"
+            className="bg-white shadow-sm  relative p-6 flex flex-col gap-6"
+            style={{
+              borderTop: `8px solid ${borderColor}`,
+            }}
           >
             {/* HEADER DO BILHETE */}
             <div className="text-center border-b border-dashed border-zinc-300 pb-6">
@@ -157,8 +161,8 @@ export default function Ticket({
                 Bolão de Dezenas
               </p>
               <div className="flex justify-center mb-2">
-                <div className="w-16 h-16 bg-[rgb(var(--blue-50))] rounded-full flex items-center justify-center text-[rgb(var(--btn))]">
-                  <MdLocalActivity size={32} />
+                <div className="w-16 h-16 bg-[rgb(var(--blue-50))] rounded-full flex items-center justify-center  ">
+                  <MdLocalActivity size={32} style={{color: `${borderColor}`}} />
                 </div>
               </div>
               <h2 className="text-xl font-black text-zinc-800 uppercase tracking-tight">
@@ -211,7 +215,7 @@ export default function Ticket({
                     Nome
                   </span>
                   <span className="font-black text-zinc-800 uppercase">
-                    {userData?.name }
+                    {userData?.name}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-[0.7rem]">
@@ -219,7 +223,7 @@ export default function Ticket({
                     Telefone
                   </span>
                   <span className="font-black text-zinc-800 uppercase">
-                    { userData?.phone }
+                    {userData?.phone}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-[0.7rem]">
@@ -227,7 +231,7 @@ export default function Ticket({
                     Cidade / UF
                   </span>
                   <span className="font-black text-zinc-800 uppercase">
-                    { userData?.city
+                    {userData?.city
                       ? `${userData.city} / ${userData.state || ""}`
                       : "Brasilia-DF"}
                   </span>

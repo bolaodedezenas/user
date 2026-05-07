@@ -9,6 +9,8 @@ import Title from "@/components/Title";
 import Select from "@/modules/pools/components/Select";
 import SearchInput from "@/components/SearchInput";
 import Pagination from "@/components/Pagination";
+// stores
+import { useSelectedPoolStore } from "@/modules/pools/stores/useSelectedPoolStore";
 
 
 const bettors = [
@@ -75,6 +77,8 @@ const statusOptions = [
 
 
 export default function Winners() {
+  const selectedPool = useSelectedPoolStore((state) => state.selectedPool);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -119,6 +123,7 @@ export default function Winners() {
             ticketNumber={bettor.ticketNumber}
             totalGames={bettor.totalGames}
             prizes={bettor.prizes}
+            color={selectedPool.color}
           />
         ))}
       </div>

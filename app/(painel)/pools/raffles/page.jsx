@@ -6,8 +6,11 @@ import PageLoading from "@/components/PageLoading";
 import LotteryCard from "@/modules/raffles/components/LotteryCard";
 import Title from "@/components/Title";
 import Paragraph from "@/components/paragraph";
+// stores 
+import { useSelectedPoolStore } from "@/modules/pools/stores/useSelectedPoolStore";
 
 export default function Raffles() {
+  const selectedPool = useSelectedPoolStore((state) => state.selectedPool);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +34,7 @@ export default function Raffles() {
           numbers={[10, 10, 10, 10, 10, 10, 10, 10, 10, 10]}
           registeredAt="20:13h"
           contest="21033"
+          color={selectedPool.color}
         />
         <LotteryCard
           date="Segunda, 26/nov/25"
@@ -40,6 +44,7 @@ export default function Raffles() {
           numbers={[10, 10, 10, 10, 10, 10, 10, 10, 10, 10]}
           registeredAt="20:13h"
           contest="21033"
+          color={selectedPool.color}
         />
         <LotteryCard
           date="Segunda, 26/nov/25"
@@ -49,6 +54,7 @@ export default function Raffles() {
           numbers={[10, 10, 10, 10, 10, 10, 10, 10, 10, 10]}
           registeredAt="20:13h"
           contest="21033"
+          color={selectedPool.color}
         />
         <LotteryCard
           date="Segunda, 26/nov/25"
@@ -58,6 +64,7 @@ export default function Raffles() {
           numbers={[10, 10, 10, 10, 10, 10, 10, 10, 10, 10]}
           registeredAt="20:13h"
           contest="21033"
+          color={selectedPool.color}
         />
         <LotteryCard
           date="Segunda, 26/nov/25"
@@ -67,6 +74,7 @@ export default function Raffles() {
           numbers={[10, 10, 10, 10, 10, 10, 10, 10, 10, 10]}
           registeredAt="20:13h"
           contest="21033"
+          color={selectedPool.color}
         />
       </section>
     </section>

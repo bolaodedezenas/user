@@ -13,12 +13,16 @@ export default function AwardsPrizeCard({
   winners = "66 Ganhadores",
   amount = "R$ 75,76",
   waitingText = "Aguardando o 1º sorteio...",
+  color,
 }) {
   return (
     <div className=" h-fit w-100  min-w-[280px] overflow-hidden  rounded-2xl bg-white border border-zinc-300 shadow-md">
       {/* Top */}
       <div className="flex items-center gap-5 px-6 py-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#35549B] text-[1rem] font-bold text-white">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full  
+          text-[1rem] font-bold text-white"
+          style={{ backgroundColor: `${color}` }}
+        >
           {points}
         </div>
 
@@ -48,7 +52,9 @@ export default function AwardsPrizeCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between bg-[#35549B] px-6 py-3 text-white">
+      <div className="flex items-center justify-between   px-6 py-3 text-white"
+        style={{ backgroundColor: `${color}` }}
+      >
         <span className="text-[1rem] font-medium">{waitingText}</span>
         <IoTime className="text-[1.8rem] animate-spin" />
       </div>
