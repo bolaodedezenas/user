@@ -18,6 +18,7 @@ export default  function BettorCard({
   prizes = [],
   onWhatsappClick,
   onShareClick,
+  color,
 }) {
   return (
     <div className="  w-[350px] overflow-hidden rounded-2xl shadow-xl  border border-zinc-200 bg-white  ">
@@ -62,7 +63,9 @@ export default  function BettorCard({
       </div>
 
       {/* Rodapé */}
-      <div className=" flex  items-center bg-[rgb(var(--btn))] justify-between text-white text-[24px] px-6 py-2">
+      <div className=" flex  items-center   justify-between text-white text-[24px] px-6 py-2"
+        style={{ backgroundColor: `${color}` }}
+      >
         {/* Regras ganhas */}
         <div className="flex-1 flex gap-3 justify-start items-center">
           {prizes.map((item, index) => (
@@ -81,8 +84,6 @@ export default  function BettorCard({
           <FaShareAlt size={20} />
         </div>
       </div>
-
-
     </div>
   );
 }

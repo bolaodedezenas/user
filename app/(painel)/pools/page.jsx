@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 // stores
 import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
+import { useSelectedPoolStore } from "@/modules/pools/stores/useSelectedPoolStore";
 // components
 import Title from "@/components/Title";
 import Paragraph from "@/components/paragraph";
@@ -24,6 +25,7 @@ const options = [
 ];
 
 export default function Pools() {
+  const selectedPool = useSelectedPoolStore((state) => state.selectedPool);
   const { selectedBalls, setBall, removeBall } = useBetsStore();
   const [gamesCount, setGamesCount] = useState(1);
 
@@ -151,8 +153,11 @@ export default function Pools() {
                   onClick={() => removeBall(ball)}
                   key={index}
                   number={ball}
-                  className="  bg-gradient-to-l from-[rgb(var(--blue-400))]  to-[rgb(var(--background))] 
+                  className="  
                   w-[40px] h-[40px] sm:w-[40px] sm:h-[40px]  text-[1rem] text-white  "
+                  style={{
+                    backgroundImage: `linear-gradient(to left, ${selectedPool.color}90, ${selectedPool.color})`,
+                  }}
                 />
               ))}
           </div>
@@ -166,14 +171,22 @@ export default function Pools() {
                 onClick={() => setBall(ball)}
                 key={index}
                 number={ball}
-                className={`w-[40px] h-[40px] sm:w-[40px] sm:h-[40px]  text-white cursor-pointer
-                  hover:bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))]
-                 ${
-                   selectedBalls.includes(ball)
-                     ? "bg-gradient-to-l from-[rgb(var(--blue-400))] to-[rgb(var(--background))] "
-                     : "bg-zinc-400"
-                 }
-                text-[1rem]`}
+                className="
+                  w-[40px] h-[40px]
+                  sm:w-[40px] sm:h-[40px]
+                  text-white
+                  cursor-pointer
+                  text-[1rem]
+                "
+                style={{
+                  background: selectedBalls.includes(ball)
+                    ? `linear-gradient(
+                    to left,
+                    ${selectedPool.color}90,
+                    ${selectedPool.color}
+                  )`
+                  : "#a1a1aa",
+                }}
               />
             ))}
           </div>

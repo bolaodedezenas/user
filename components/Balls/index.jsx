@@ -1,6 +1,6 @@
 import { Ball } from "./styles";
 
-export default function Balls({ number, className, onClick, $close, $anima }) {
+export default function Balls({ number, className, onClick, $close, $anima, style }) {
   return (
     <Ball
       $anima={$anima}
@@ -10,6 +10,7 @@ export default function Balls({ number, className, onClick, $close, $anima }) {
         cursor-pointer shadow-lg
         ${className}
     `}
+      style={style}
     >
       {number}
     </Ball>

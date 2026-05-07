@@ -19,6 +19,7 @@ import { useContests } from "@/modules/pools/hooks/useContests";
 import { useTickets } from "@/modules/bets/hooks/useTickets";
 // stores
 import { usePoolsStore } from "@/modules/pools/stores/usePoolsStore";
+import { useToggleStore } from "@/stores/toggleStore";
 // icons
 import {
   FaFileInvoiceDollar,
@@ -33,6 +34,8 @@ import { getCardSchema } from "@/modules/bets/schemas/cardSchema";
 import toast from "react-hot-toast";
 
 export default function Bets() {
+  const { toggle } = useToggleStore();
+
   // =========================================================
   // 📦 SCHEMAS
   // =========================================================
@@ -52,7 +55,7 @@ export default function Bets() {
   const [activeRemoteSearchTerm, setActiveRemoteSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [remoteEmpty, setRemoteEmpty] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
 
   const [view, setView] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -169,7 +172,7 @@ export default function Bets() {
 
      // 🔥 Só executa se mudou a LARGURA (não altura do teclado)
      if (currentWidth !== lastWidth) {
-       if (currentWidth >= 768) {
+       if (currentWidth >= 1064) {
          setIsFilterOpen(true);
        } else {
          setIsFilterOpen(false);
@@ -246,7 +249,7 @@ export default function Bets() {
 
   return (
     <section className="flex-1  h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
-      <section className="w-full flex flex-wrap  items-center justify-between bg-white shadow-md rounded-lg  px-4   py-2 gap-2 transition-all duration-300">
+      <section className="w-full flex flex-wrap  items-center justify-between bg-white shadow-md rounded-lg max-xs:pb-4  px-4   py-2 gap-2 transition-all duration-300">
         <div className=" flex flex-wrap items-center justify-between gap-2    ">
           <div className=" flex flex-col ml-10 xss:ml-0 ">
             <div className="flex gap-2 items-center  ">
@@ -263,7 +266,10 @@ export default function Bets() {
           </div>
         </div>
 
-        <div className="  max-sm:flex-1 max-xs:w-full  flex items-center justify-center gap-2  ">
+        <div
+          className={` max-xs:w-full  ${toggle ? " max-bets-956:w-full" : "max-Bets-721:w-full"}
+          flex items-center justify-center gap-2  `}
+        >
           <ViewToggle
             value={view}
             onChange={() => {
@@ -274,7 +280,7 @@ export default function Bets() {
 
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="hidden  max-md:flex  p-3 bg-zinc-100 rounded-lg text-[rgb(var(--btn))] border border-zinc-100 active:scale-95 transition-transform"
+            className={`hidden ${toggle ? "max-Bets-1064:flex" : "max-Bets-821:flex"}  p-3 bg-zinc-100 rounded-lg text-[rgb(var(--btn))] border border-zinc-100 active:scale-95 transition-transform`}
             title="Filtros"
           >
             {isFilterOpen ? <FaTimes size={20} /> : <FaFilter size={20} />}
@@ -283,17 +289,14 @@ export default function Bets() {
 
         {/* Container de Filtros: Toggleable no mobile, flex-row no desktop */}
         <div
-          className={`${isFilterOpen ? "flex" : "hidden"} flex-wrap justify-center items-center gap-4   max-md:w-full pb-4`}
+          className={`${isFilterOpen ? "flex" : "hidden"} flex-wrap justify-center items-center gap-4   max-Bets-1375:w-full`}
         >
-          <div className="flex items-center gap-2 w-full md:w-auto justify-center">
-            <SearchInput
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder=" N° do Bilhete "
-              className=" w-38"
-            />
-          </div>
-
+          <SearchInput
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder=" N° do Bilhete "
+            className=" w-38"
+          />
           <Select
             label={pool?.name || "Selecione um Bolão"}
             value={pool}
@@ -328,9 +331,11 @@ export default function Bets() {
                 <Table columns={columns} data={localFilteredTickets} />
               </section>
             ) : (
-              <section className="flex-1 flex justify-center flex-wrap p-5 gap-5  overflow-y-auto  
+              <section
+                className="flex-1 flex justify-center flex-wrap p-5 gap-5  overflow-y-auto  
               //  max-h-[710px] 
-              ">
+              "
+              >
                 <CardList schemaCard={schemaCard} data={localFilteredTickets} />
               </section>
             )}

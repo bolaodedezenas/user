@@ -27,24 +27,29 @@ import { useFormatDateTime } from "@/hooks/useFormatDate";
 import { usePools } from "@/modules/pools/hooks/usePools";
 import { usePoolsStore } from "@/modules/pools/stores/usePoolsStore";
 import { useContests } from "@/modules/pools/hooks/useContests";
+// stores
+import { useSelectedPoolStore } from "@/modules/pools/stores/useSelectedPoolStore";
+
 
 export default function LayoutPools({ children }) {
   const { toggle } = useToggleStore();
   const {setActiveContest, setActivePool } = useBetsStore();
  
-
-
   usePools(); // Dispara a busca inicial se necessário
   const { pools, isLoading: isLoadingPools } = usePoolsStore();
   const [initialLoading, setInitialLoading] = useState(true);
 
-  // console.log(pools[0]);
 
-  const [pool, setPool] = useState(null);
+  const selectedPool = useSelectedPoolStore((state) => state.selectedPool);
+  const setSelectedPool = useSelectedPoolStore((state) => state.setSelectedPool,);
 
   // 🔹 Hook que busca concursos automaticamente quando o 'pool' muda
-  const { contests, isLoading: isLoadingContests, searchContestByNumber } = useContests(pool?.id);
-  // console.log(contests);
+  const {
+    contests,
+    isLoading: isLoadingContests,
+    searchContestByNumber,
+  } = useContests(selectedPool?.id);
+
   const [itemContest, setItemContest] = useState(null);
 
 
@@ -57,7 +62,7 @@ export default function LayoutPools({ children }) {
 
   // 🔹 Quando muda o bolão
   const handleChangePool = (item) => {
-    setPool(item);
+    setSelectedPool(item);
     toast.success(`Você selecionou o  ${item.name}`, { duration: 4000 });
   };
 
@@ -71,12 +76,12 @@ export default function LayoutPools({ children }) {
 
   // 🔹 Quando busca um concurso específico pelo número
   const handleSearchContest = useCallback(async (number) => {
-    const contest = await searchContestByNumber(pool?.id, number);
+    const contest = await searchContestByNumber(selectedPool?.id, number);
     
     if (contest) {
       setItemContest(contest);
     }
-  }, [pool?.id, searchContestByNumber]);
+  }, [selectedPool?.id, searchContestByNumber]);
 
   // 🔹 Define o concurso inicial assim que a lista de concursos carregar para o pool selecionado
   useEffect(() => {
@@ -90,10 +95,10 @@ export default function LayoutPools({ children }) {
 
   // 🔹 Define o primeiro bolão quando a lista carregar do Supabase
   useEffect(() => {
-    if (pools.length > 0 && !pool) {
-      setPool(pools[0]);
+    if (pools.length > 0 && !selectedPool) {
+      setSelectedPool(pools[0]);
     }
-  }, [pools, pool]);
+  }, [pools, selectedPool]);
 
   useEffect(() => {
     if (itemContest) {
@@ -102,10 +107,10 @@ export default function LayoutPools({ children }) {
   }, [itemContest, setActiveContest]);
 
   useEffect(() => {
-    if (pool) {
-      setActivePool(pool);
+    if (selectedPool) {
+      setActivePool(selectedPool);
     }
-  }, [pool, setActivePool]);
+  }, [selectedPool, setActivePool]);
 
   useEffect(() => {
     const timer = setTimeout(() => setInitialLoading(false), 3000);
@@ -135,8 +140,8 @@ export default function LayoutPools({ children }) {
           <Box className="flex-1 flex justify-end items-center pr-2 ">
             {/* SELECT BOLÕES */}
             <Select
-              label={pool?.name || "Selecione um Bolão"}
-              value={pool} // sincroniza o valor selecionado com o primeiro bolão da lista
+              label={selectedPool?.name || "Selecione um Bolão"}
+              value={selectedPool} // sincroniza o valor selecionado com o primeiro bolão da lista
               options={pools}
               onChange={handleChangePool}
               className="px-5 py-3"
@@ -151,10 +156,10 @@ export default function LayoutPools({ children }) {
       >
         {/* CARD */}
         <div className="flex flex-col gap-5">
-          {pool && (
+          {selectedPool && (
             <PoolCard
-              name={pool?.name}
-              color={pool?.color}
+              name={selectedPool?.name}
+              color={selectedPool?.color}
               money={itemContest?.total_prize}
               time={countTime}
               status={itemContest?.status}

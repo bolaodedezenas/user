@@ -9,8 +9,10 @@ import Select from "@/modules/pools/components/Select";
 import SearchInput from "@/components/SearchInput";
 // icons
 import { FaSearch, FaReceipt } from "react-icons/fa";
-// stores / hooks
+// stores s
 import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
+import { useSelectedPoolStore } from "@/modules/pools/stores/useSelectedPoolStore";
+// hooks
 import { useMyTickets } from "@/modules/myBets/hooks/useMyBets";
 import { useAuthStore } from "@/modules/auth/stores/auth.store";
 // components
@@ -24,8 +26,9 @@ const statusOptions = [
 ];
 
 export default function MyBets() {
+  const selectedPool = useSelectedPoolStore((state) => state.selectedPool);
   const { user } =  useAuthStore();
-  console.log(user);
+ 
   const { activePool, activeContest } = useBetsStore();
   const { myTickets} = useMyTickets(activePool?.id, activeContest?.id);
 
@@ -117,6 +120,7 @@ export default function MyBets() {
                   poolName={activePool?.name}
                   contestNumber={activeContest?.contest_number}
                   onView={() => setSelectedTicket(ticket)}
+                  borderColor={selectedPool?.color}
                 />
               ))
             ) : (
@@ -139,6 +143,7 @@ export default function MyBets() {
         poolName={activePool?.name}
         contestNumber={activeContest?.contest_number}
         userData={user}
+        borderColor={selectedPool?.color}
       />
     </section>
   );

@@ -6,8 +6,13 @@ import PageLoading from "@/components/PageLoading";
 import Title from "@/components/Title";
 import Paragraph from "@/components/paragraph";
 import AwardsPrizeCard from "@/modules/awards/components/AwardsPrizeCard";
+// stores
+import { useSelectedPoolStore } from "@/modules/pools/stores/useSelectedPoolStore";
+
 
 export default function Awards() {
+  const selectedPool = useSelectedPoolStore((state) => state.selectedPool);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,6 +46,7 @@ export default function Awards() {
           winners="6 Ganhadores"
           amount="R$  10.000,00"
           waitingText="Aguardando o 1º sorteio..."
+          color={selectedPool.color}
         />
 
         <AwardsPrizeCard
@@ -51,6 +57,7 @@ export default function Awards() {
           winners="2 Ganhadores"
           amount="R$  5.000,00"
           waitingText="Aguardando o 1º sorteio..."
+          color={selectedPool.color}
         />
         <AwardsPrizeCard
           points="08"
@@ -60,6 +67,7 @@ export default function Awards() {
           winners="1 Ganhadores"
           amount="R$  5.000,00"
           waitingText="Aguardando o 1º sorteio..."
+          color={selectedPool.color}
         />
 
         <AwardsPrizeCard
@@ -70,6 +78,7 @@ export default function Awards() {
           winners="1 Ganhadores"
           amount="R$  3.000,00"
           waitingText="Aguardando o 1º sorteio..."
+          color={selectedPool.color}
         />
         <AwardsPrizeCard
           points="05"
@@ -79,6 +88,7 @@ export default function Awards() {
           winners=" 1 Ganhadores"
           amount="R$  1.000,00"
           waitingText="Aguardando o 1º sorteio..."
+          color={selectedPool.color}
         />
         <AwardsPrizeCard
           points="0"
@@ -88,6 +98,7 @@ export default function Awards() {
           winners=" 1 Ganhadores"
           amount="R$  2.000,00"
           waitingText="Aguardando o ultimo sorteio..."
+          color={selectedPool.color}
         />
       </section>
     </section>

@@ -9,6 +9,7 @@ export default function LotteryCard({
   numbers = [],
   registeredAt,
   contest,
+  color,
 }) {
   return (
     <div className="border border-zinc-300  bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -24,7 +25,10 @@ export default function LotteryCard({
 
       {/* Draw Info */}
       <div className="flex items-center justify-between px-4 pt-3 pb-1 mx-3">
-        <span className="text-[1rem] bg-[rgb(var(--btn))] tex-[1rem] text-white px-3 py-1 rounded-md font-semibold">
+        <span
+          className="text-[1rem]  tex-[1rem] text-white px-3 py-1 rounded-md font-semibold"
+          style={{ backgroundColor: `${color}` }}
+        >
           {draw}
         </span>
         <span className="text-[1rem] font-semibold text-zinc-700">{time}</span>
@@ -52,6 +56,7 @@ export default function LotteryCard({
               number={num}
               size="sm"
               className="w-8 h-8 text-[0.8rem] bg-[rgb(var(--btn))] text-white"
+              style={{ backgroundColor: `${color}` }}
             />
           ))}
         </div>
@@ -62,7 +67,10 @@ export default function LotteryCard({
         <p className="font-semibold">Cadastrado às {registeredAt}</p>
       </div>
 
-      <div className="bg-[rgb(var(--btn))] text-white text-center py-2 rounded-b-2xl">
+      <div 
+        className="  text-white text-center py-2 rounded-b-2xl"
+        style={{ backgroundColor: `${color}` }}
+      >
         <p className="text-[0.9rem]">Bolão de Segunda</p>
         <p className="text-[0.9rem]">Concurso {contest}</p>
       </div>
