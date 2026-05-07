@@ -33,9 +33,13 @@ import { usePaymentMethodStore } from "../../stores/usePaymentMethodStore";
 import { useCheckout } from "@/modules/pools/hooks/useCheckout";
 import { useCheckoutTransaction } from "../../hooks/useCheckoutTransaction";
 
+import PixPaymentModal from "../PixPaymentModal";
+import { usePixPayment } from "../../hooks/usePixPayment";
 
 
 export default function CheckoutModal() {
+
+  const { loading, paymentData, openModal, setOpenModal, generatePix } = usePixPayment();
 
   const router = useRouter();
 
@@ -76,26 +80,72 @@ export default function CheckoutModal() {
     if (step === 1) clearPaymentMethod(); // Clear payment method when going back to step 1
   }, [step, clearPaymentMethod]);
 
-  const handleNext = () => {
+  // const handleNext = () => {
+  //   if (step === 1) {
+  //     setStep(2);
+  //   } else if (step === 2) {
+  //     if (!selectedPaymentMethod) {
+  //       toast.error("Por favor, selecione uma forma de pagamento.");
+  //       return;
+  //     }
+  //     // Abre o modal de confirmação antes de ir para o Step 3
+  //     setShowConfirmDialog(true);
+  //   } else {
+  //     setStep(1);
+  //     closeCheckout();
+
+  //     console.log(verifiedClientID);
+  //     if (verifiedClientID === null) return router.replace("/pools/myBets");
+  //     router.replace("/bets");
+     
+  //   }
+  // };
+
+  const handleNext = async () => {
     if (step === 1) {
       setStep(2);
-    } else if (step === 2) {
+      return;
+    }
+
+    if (step === 2) {
       if (!selectedPaymentMethod) {
         toast.error("Por favor, selecione uma forma de pagamento.");
         return;
       }
-      // Abre o modal de confirmação antes de ir para o Step 3
-      setShowConfirmDialog(true);
-    } else {
-      setStep(1);
-      closeCheckout();
 
-      console.log(verifiedClientID);
-      if (verifiedClientID === null) return router.replace("/pools/myBets");
-      router.replace("/bets");
-     
+      // 🔥 SE FOR PIX, NÃO VAI PARA CONFIRMAÇÃO
+      if (selectedPaymentMethod === "pix") {
+        try {
+          const data = await generatePix({
+            amount: 10, // depois você troca pelo total real
+            email: selectedCustomer?.email || "cliente@email.com",
+            name: selectedCustomer?.name || "Cliente",
+            ticketId: "ticket_" + Date.now(),
+          });
+          console.log(data);
+
+        } catch (error) {
+          toast.error("Erro ao gerar PIX");
+        }
+
+        return; // 🔴 trava o fluxo aqui
+      }
+
+      // 🔵 fluxo normal (cash / pending)
+      setShowConfirmDialog(true);
+      return;
     }
+
+    setStep(1);
+    closeCheckout();
+
+    if (verifiedClientID === null) return router.replace("/pools/myBets");
+
+    router.replace("/bets");
   };
+
+
+
 
   const handleBack = () => {
     if (step > 1) setStep(step - 1);
@@ -149,6 +199,16 @@ export default function CheckoutModal() {
     if (step === 2) return "Confirmar pagamento";
     return "Ver meus bolões";
   };
+
+  // 
+  // async function handleCheckout() {
+  //   await generatePix({
+  //     amount: 10,
+  //     email: "cliente@email.com",
+  //     name: "Fernando",
+  //     ticketId: "ticket_" + Date.now(),
+  //   });
+  // }
 
   if (!open) return null;
 
@@ -385,6 +445,12 @@ export default function CheckoutModal() {
           </div>
         </div>
       </div>
+
+      <PixPaymentModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        paymentData={paymentData}
+      />
     </div>
   );
 }
