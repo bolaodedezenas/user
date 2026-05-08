@@ -1,38 +1,26 @@
 import { Payment } from "mercadopago";
-import { mpClient } from "@/libs/mercadopago/client";
- 
+import { mercadopago } from "@/libs/mercadopago/client";
 
 export async function createPixService(payload) {
-  const payment = new Payment(mpClient);
-
-  const amount = Number(payload.amount);
-  if (isNaN(amount) || amount <= 0) {
-    throw new Error("O valor do pagamento deve ser maior que zero.");
-  }
+  const payment = new Payment(mercadopago);
 
   const response = await payment.create({
     body: {
-      transaction_amount: amount,
-      description: "Bolão Online",
-      payment_method_id: "pix",
+      transaction_amount: Number(payload.transaction_amount),
+      description: payload.description,
+      payment_method_id: payload.payment_method,
       payer: {
-        email: payload.email,
-        name: payload.name,
-        // Identificação (CPF) é OBRIGATÓRIA para PIX em muitos casos de produção
-        ...(payload.cpf && {
-          identification: {
-            type: "CPF",
-            number: payload.cpf.replace(/\D/g, ""), // Remove pontos e traços
-          },
-        }),
+        email: payload.payer?.email,
+        first_name: payload.payer?.name,
       },
-      external_reference: String(payload.ticketId || ""),
+      external_reference: String(payload.external_reference),
+      date_of_expiration: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
     },
     requestOptions: {
-      // Garante uma chave única por tentativa de pagamento
-      idempotencyKey: `${payload.ticketId}`,
+      idempotencyKey: String(payload.external_reference),
     },
   });
 
+  console.log("PIX RESPONSE:", response);
   return response;
 }

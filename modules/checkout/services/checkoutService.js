@@ -3,8 +3,7 @@ import { checkoutRepository } from "../repository/checkoutRepository";
 
 export const checkoutService = {
   async createCompleteTransaction({ tickets, transactionData }) {
-    console.log("TICKETS:", tickets);
-    // 1. Salva a transação principal
+     // 1. Salva a transação principal
     const transaction =
       await checkoutRepository.saveTransaction(transactionData);
 

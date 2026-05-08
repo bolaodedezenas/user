@@ -2,7 +2,7 @@
 import { HiTicket } from "react-icons/hi2";
 
 export function BolaoCard({ title, concurso, cotas, valor, color }) {
-  console.log(color);
+
 
   return (
     <div
