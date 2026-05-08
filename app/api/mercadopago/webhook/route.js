@@ -1,99 +1,120 @@
 // export async function POST(req) {
 //   try {
-//     let body;
-
-//     try {
-//       body = await req.json();
-//     } catch (e) {
-//       console.log("⚠️ JSON inválido, tentando texto...");
-//       const text = await req.text();
-//       console.log("RAW BODY:", text);
-//       body = {};
-//     }
+//     const body = await req.json();
 
 //     console.log("🔥 WEBHOOK RECEBIDO:");
-//     console.log(body);
 
-//     const type = body?.type;
-//     const paymentId = body?.data?.id;
+//     console.log(JSON.stringify(body, null, 2));
+
+//     const type = body.type; // payment
+//     const paymentId = body.data?.id;
 
 //     if (type === "payment") {
 //       console.log("💰 Pagamento atualizado:", paymentId);
+
+//       // aqui você consulta o pagamento no Mercado Pago
+//       // e atualiza seu banco (Supabase / DB)
 //     }
 
 //     return Response.json({ success: true });
-
 //   } catch (error) {
 //     console.error("Webhook error:", error);
 
-//     return Response.json(
-//       { success: false, error: error.message },
-//       { status: 500 }
-//     );
+//     return Response.json({ success: false }, { status: 500 });
 //   }
 // }
+
+export const runtime = "nodejs";
+
+import { redis } from "@/libs/redis";
 import { Payment } from "mercadopago";
-import { mpClient } from "@/libs/mercadopago/client";
-import { supabase } from "@/libs/supabase/client";
+import { mercadopago } from "@/libs/mercadopago/client";
+
+import { checkoutTicketsService } from "@/modules/pools/services/ticketsService";
+import { registerTransactionServer } from "@/modules/checkout/services/registerTransactionServer";
 
 export async function POST(req) {
   try {
     const body = await req.json();
 
-    // O Mercado Pago envia notificações de vários tipos, filtramos por 'payment'
-    if (body?.type !== "payment") {
-      return Response.json({ ok: true });
+    console.log("WEBHOOK:", body);
+
+    const paymentId = body.data.id;
+
+    const payment = new Payment(mercadopago);
+
+    const paymentData = await payment.get({
+      id: paymentId,
+    });
+
+    // ignora pagamentos não aprovados
+    if (paymentData.status !== "approved") {
+      return Response.json({
+        success: true,
+      });
     }
 
-    const payment = new Payment(mpClient);
-    // Buscamos os detalhes do pagamento no Mercado Pago usando o ID recebido
-    const result = await payment.get({ id: body.data.id });
+    const externalReference = paymentData.external_reference;
 
-    // Só prosseguimos se o status for 'approved'
-    if (result.status !== "approved") {
-      return Response.json({ ok: true });
+    // Busca dados temporários que foram salvos quando o PIX foi gerado no cliente.
+    // Esse cache contém os tickets e o cliente selecionado para montar a transação.
+    const tempData = await redis.get(`pix:${externalReference}`);
+
+    if (!tempData) {
+      return Response.json({
+        success: false,
+        error: "dados temporários não encontrados",
+      });
     }
 
-    // O external_reference que enviamos na criação do PIX é o ID da Transação no nosso banco
-    const transactionId = result.external_reference;
+    const parsed =
+      typeof tempData === "string" ? JSON.parse(tempData) : tempData;
 
-    if (!transactionId) {
-      console.error("⚠️ Webhook recebido sem external_reference");
-      return Response.json({ ok: true });
-    }
+    // atualiza tickets
+    const updatedTickets = parsed.tickets.map((ticket) => ({
+      ...ticket,
+      status: "paid",
+      customer_id: parsed.customer_id,
+      payment_method: "pix",
+      user_id: parsed.user_id || ticket.user_id,
+    }));
 
-    console.log(`💰 Pagamento aprovado para transação: ${transactionId}`);
+    // salva tickets via serviço de checkout
+    const registeredTickets = await checkoutTicketsService(updatedTickets);
 
-    // 1. Atualizar a Transação principal para 'paid'
-    const { error: errorTx } = await supabase
-      .from("transactions")
-      .update({
-        status: "paid",
-        paid_at: new Date().toISOString(),
-      })
-      .eq("id", transactionId);
+    // salva transação
+    const transaction = await registerTransactionServer({
+      tickets: registeredTickets,
+      paymentMethod: "pix",
+      status: "paid",
+      userId: parsed.user_id,
+    });
 
-    if (errorTx) throw errorTx;
+    // marca finalizado no Redis para o cliente poder detectar
+    await redis.set(
+      `pix:complete:${externalReference}`,
+      JSON.stringify({ transaction }),
+      {
+        ex: 60 * 30,
+      },
+    );
 
-    // 2. Buscar os IDs dos bilhetes (tickets) vinculados a essa transação
-    const { data: relations } = await supabase
-      .from("transaction_tickets")
-      .select("ticket_id")
-      .eq("transaction_id", transactionId);
+    // remove cache temporária dos dados do pagamento
+    await redis.del(`pix:${externalReference}`);
 
-    if (relations?.length) {
-      const ticketIds = relations.map((r) => r.ticket_id);
+    return Response.json({
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
 
-      // 3. Atualizar todos os bilhetes vinculados para 'paid'
-      await supabase
-        .from("tickets")
-        .update({ status: "paid" })
-        .in("id", ticketIds);
-    }
-
-    return Response.json({ success: true });
-  } catch (err) {
-    console.error("🔥 Webhook Error:", err);
-    return Response.json({ ok: false }, { status: 500 });
+    return Response.json(
+      {
+        success: false,
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }

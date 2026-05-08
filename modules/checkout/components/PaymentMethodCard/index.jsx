@@ -11,7 +11,7 @@ export function PaymentMethodCard({
   selected,
   onClick,
 }) {
-  console.log(selected);
+   
 
   return (
     <div

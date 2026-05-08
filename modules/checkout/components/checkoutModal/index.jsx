@@ -33,18 +33,16 @@ import { useCheckoutTransaction } from "../../hooks/useCheckoutTransaction";
 
 import PixPaymentModal from "../PixPaymentModal";
 import { usePixPayment } from "../../hooks/usePixPayment";
-import { executeCheckout } from "../../services/executeCheckout";
+import { useAuthStore } from "@/modules/auth/stores/auth.store";
 
 export default function CheckoutModal() {
-  const {paymentData, openModal, setOpenModal, generatePix } =
-    usePixPayment();
+  const { paymentData, openModal, setOpenModal, generatePix } = usePixPayment();
 
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
 
   const { selectedPaymentMethod, setPaymentMethod, clearPaymentMethod } =
     usePaymentMethodStore();
-
-  console.log(selectedPaymentMethod);
 
   const [step, setStep] = useState(1);
   const [customerSearch, setCustomerSearch] = useState("");
@@ -57,6 +55,8 @@ export default function CheckoutModal() {
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [verifiedClientID, setVerifiedClientID] = useState(null);
+  const [pixExternalReference, setPixExternalReference] = useState(null);
+  const [confirmedTransaction, setConfirmedTransaction] = useState(null);
 
   const { tickets, updateTicketsStatus } = useBetsStore();
   const open = useCheckoutStore((s) => s.open); // modal checkout
@@ -72,6 +72,8 @@ export default function CheckoutModal() {
     transaction: savedTransaction,
   } = useCheckoutTransaction();
 
+  const displayedTransaction = confirmedTransaction || savedTransaction;
+
   // trava scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -82,26 +84,48 @@ export default function CheckoutModal() {
     if (step === 1) clearPaymentMethod(); // Clear payment method when going back to step 1
   }, [step, clearPaymentMethod]);
 
-  // const handleNext = () => {
-  //   if (step === 1) {
-  //     setStep(2);
-  //   } else if (step === 2) {
-  //     if (!selectedPaymentMethod) {
-  //       toast.error("Por favor, selecione uma forma de pagamento.");
-  //       return;
-  //     }
-  //     // Abre o modal de confirmação antes de ir para o Step 3
-  //     setShowConfirmDialog(true);
-  //   } else {
-  //     setStep(1);
-  //     closeCheckout();
+  useEffect(() => {
+    if (!pixExternalReference) return;
 
-  //     console.log(verifiedClientID);
-  //     if (verifiedClientID === null) return router.replace("/pools/myBets");
-  //     router.replace("/bets");
+    let intervalId;
+    let isStopped = false;
 
-  //   }
-  // };
+    const checkStatus = async () => {
+      try {
+        const response = await fetch(
+          `/api/mercadopago/check-pix?external_reference=${encodeURIComponent(
+            pixExternalReference,
+          )}`,
+        );
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        if (data.success && data.completed && data.transaction) {
+          if (isStopped) return;
+
+          setConfirmedTransaction(data.transaction);
+          setOpenModal(false);
+          setPixExternalReference(null);
+          toast.success("Pagamento PIX confirmado com sucesso!");
+          setStep(3);
+          clearInterval(intervalId);
+        }
+      } catch (error) {
+        console.error("Erro ao verificar status PIX:", error);
+      }
+    };
+
+    // Verifica a cada 5 segundos se o webhook já processou o pagamento.
+    checkStatus();
+    intervalId = setInterval(checkStatus, 5000);
+
+    return () => {
+      isStopped = true;
+      clearInterval(intervalId);
+    };
+  }, [pixExternalReference, setOpenModal]);
 
   const handleNext = async () => {
     if (step === 1) {
@@ -118,29 +142,54 @@ export default function CheckoutModal() {
       // 🔥 SE FOR PIX, NÃO VAI PARA CONFIRMAÇÃO
       if (selectedPaymentMethod === "pix") {
         try {
-          // 1. Primeiro salva os bilhetes e a transação no banco com status 'pending'
-          const transaction = await executeCheckout(
-            selectedPaymentMethod,
-            selectedCustomer,
-            updateTicketsStatus,
-            handleCheckout,
-            registerTransaction,
-            setVerifiedClientID,
+          if (!user?.email) {
+            toast.error("Usuário sem email definido");
+            return;
+          }
+
+          const totalAmount = tickets.reduce(
+            (total, ticket) => total + ticket.total_value,
+            0,
           );
 
-          if (!transaction) return;
+          // referência única
+          const externalReference = `${user.id}_${Date.now()}`;
 
-          // 2. Agora gera o PIX usando o ID da transação como referência externa
+          setVerifiedClientID(selectedCustomer?.id || null);
+          setConfirmedTransaction(null);
+          setPixExternalReference(externalReference);
+
+          // 👇 salva temporariamente no Redis
+          await fetch("/api/mercadopago/save-temp", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              external_reference: externalReference,
+              tickets,
+              customer_id: selectedCustomer?.id,
+              payment_method: "pix",
+              user_id: user.id,
+            }),
+          });
+
+          // 👇 gera PIX
           await generatePix({
-            amount: transaction.total_amount,
-            email: selectedCustomer?.email,
-            name: selectedCustomer?.name, 
-            ticketId: transaction.id, // ID da transação que o webhook usará
+            transaction_amount: Number(totalAmount),
+            description: "Bolão de Dezenas",
+            payment_method: "pix",
+            payer: {
+              email: user.email,
+              first_name: user.name,
+            },
+            external_reference: externalReference,
           });
         } catch (error) {
-          toast.error("Erro ao processar pagamento PIX.");
+          console.error(error);
         }
-        return; // 🔴 trava o fluxo aqui
+
+        return; // trava o fluxo aqui
       }
 
       // 🔵 fluxo normal (cash / pending)
@@ -150,9 +199,7 @@ export default function CheckoutModal() {
 
     setStep(1);
     closeCheckout();
-
     if (verifiedClientID === null) return router.replace("/pools/myBets");
-
     router.replace("/bets");
   };
 
@@ -160,53 +207,38 @@ export default function CheckoutModal() {
     if (step > 1) setStep(step - 1);
   };
 
-  // const handleFinalConfirm = async () => {
-  //   const newStatus = selectedPaymentMethod === "cash" ? "paid" : "pending";
-
-  //   // 1. Atualiza o status, cliente e método de pagamento no store de forma síncrona
-  //   const updatedTickets = updateTicketsStatus(
-  //     newStatus,
-  //     selectedCustomer?.id,
-  //     selectedPaymentMethod,
-  //   );
-
-  //   if (!updatedTickets) return;
-  //   setVerifiedClientID(updatedTickets[0].customer_id);
-  //   console.log(updatedTickets);
-
-  //   // 2. Chama o hook que envia os dados atualizados para o banco (Supabase)
-  //   // O handleCheckout deve retornar o array de tickets salvos com seus IDs
-  //   const registeredTickets = await handleCheckout(updatedTickets);
-
-  //   if (!registeredTickets) return;
-
-  //   // 3. Registra a transação vinculando aos bilhetes recém criados
-  //   const transaction = await registerTransaction(
-  //     registeredTickets,
-  //     selectedPaymentMethod,
-  //     newStatus,
-  //   );
-
-  //   if (!transaction) return;
-
-  //   setShowConfirmDialog(false);
-  //   setStep(3);
-  // };
-
   const handleFinalConfirm = async () => {
-    const transaction = await executeCheckout(
+    const newStatus = selectedPaymentMethod === "cash" ? "paid" : "pending";
+
+    // 1. Atualiza o status, cliente e método de pagamento no store de forma síncrona
+    const updatedTickets = updateTicketsStatus(
+      newStatus,
+      selectedCustomer?.id,
       selectedPaymentMethod,
-      selectedCustomer,
-      updateTicketsStatus,
-      handleCheckout,
-      registerTransaction,
-      setVerifiedClientID,
+    );
+
+    if (!updatedTickets) return;
+    setVerifiedClientID(updatedTickets[0].customer_id);
+    console.log(updatedTickets);
+
+    // 2. Chama o hook que envia os dados atualizados para o banco (Supabase)
+    // O handleCheckout deve retornar o array de tickets salvos com seus IDs
+    const registeredTickets = await handleCheckout(updatedTickets);
+
+    if (!registeredTickets) return;
+
+    // 3. Registra a transação vinculando aos bilhetes recém criados
+    const transaction = await registerTransaction(
+      registeredTickets,
+      selectedPaymentMethod,
+      newStatus,
     );
 
     if (!transaction) return;
 
     setShowConfirmDialog(false);
     setStep(3);
+    return transaction;
   };
 
   const getConfirmMessage = () => {
@@ -379,13 +411,13 @@ export default function CheckoutModal() {
                       px-6"
                     >
                       <FaRegCircleCheck
-                        className={` ${savedTransaction?.status === "paid" ? "text-green-500" : "text-orange-400"}  text-7xl`}
+                        className={` ${displayedTransaction?.status === "paid" ? "text-green-500" : "text-orange-400"}  text-7xl`}
                       />
                       <Title text="Tudo pronto!" />
                       <Paragraph
                         text={` 
                           ${
-                            savedTransaction?.status === "paid"
+                            displayedTransaction?.status === "paid"
                               ? "Seu pagamento foi efetuado com sucesso!"
                               : "Suas apostas foram resgistradas como satus pendente."
                           }`}
@@ -393,26 +425,26 @@ export default function CheckoutModal() {
                       />
                     </div>
                     <ConfirmationCard
-                      totalBoloes={savedTransaction?.total_tickets || 0}
-                      totalJogos={savedTransaction?.total_bets || 0}
-                      valor={savedTransaction?.total_amount?.toLocaleString(
+                      totalBoloes={displayedTransaction?.total_tickets || 0}
+                      totalJogos={displayedTransaction?.total_bets || 0}
+                      valor={displayedTransaction?.total_amount?.toLocaleString(
                         "pt-BR",
                         {
                           style: "currency",
                           currency: "BRL",
                         },
                       )}
-                      paymentMethod={savedTransaction?.payment_method}
+                      paymentMethod={displayedTransaction?.payment_method}
                       status={
-                        savedTransaction?.status === "paid"
+                        displayedTransaction?.status === "paid"
                           ? "Pago"
                           : "Pendente"
                       }
-                      orderId={`#${savedTransaction?.id?.slice(0, 8).toUpperCase() || ""}`}
+                      orderId={`#${displayedTransaction?.id?.slice(0, 8).toUpperCase() || ""}`}
                       date={
-                        savedTransaction?.created_at
+                        displayedTransaction?.created_at
                           ? new Date(
-                              savedTransaction.created_at,
+                              displayedTransaction.created_at,
                             ).toLocaleString("pt-BR")
                           : ""
                       }
