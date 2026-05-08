@@ -1,25 +1,35 @@
 export async function POST(req) {
   try {
-    const body = await req.json();
+    let body;
+
+    try {
+      body = await req.json();
+    } catch (e) {
+      console.log("⚠️ JSON inválido, tentando texto...");
+      const text = await req.text();
+      console.log("RAW BODY:", text);
+      body = {};
+    }
 
     console.log("🔥 WEBHOOK RECEBIDO:");
+    console.log(body);
 
-    console.log(JSON.stringify(body, null, 2));
-
-    const type = body.type; // payment
-    const paymentId = body.data?.id;
+    const type = body?.type;
+    const paymentId = body?.data?.id;
 
     if (type === "payment") {
       console.log("💰 Pagamento atualizado:", paymentId);
-
-      // aqui você consulta o pagamento no Mercado Pago
-      // e atualiza seu banco (Supabase / DB)
     }
 
     return Response.json({ success: true });
+
   } catch (error) {
     console.error("Webhook error:", error);
 
-    return Response.json({ success: false }, { status: 500 });
+    return Response.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
   }
 }
+
