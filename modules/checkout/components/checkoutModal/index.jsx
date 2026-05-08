@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -35,46 +33,50 @@ import { useCheckoutTransaction } from "../../hooks/useCheckoutTransaction";
 
 import PixPaymentModal from "../PixPaymentModal";
 import { usePixPayment } from "../../hooks/usePixPayment";
-
+import { executeCheckout } from "../../services/executeCheckout";
 
 export default function CheckoutModal() {
-
-  const { loading, paymentData, openModal, setOpenModal, generatePix } = usePixPayment();
+  const {paymentData, openModal, setOpenModal, generatePix } =
+    usePixPayment();
 
   const router = useRouter();
 
-  const { selectedPaymentMethod, setPaymentMethod, clearPaymentMethod } = usePaymentMethodStore();
+  const { selectedPaymentMethod, setPaymentMethod, clearPaymentMethod } =
+    usePaymentMethodStore();
 
   console.log(selectedPaymentMethod);
 
   const [step, setStep] = useState(1);
   const [customerSearch, setCustomerSearch] = useState("");
-  const { customers, isLoading: isLoadingCustomers } = useCustomers(1, 100,customerSearch);
+  const { customers, isLoading: isLoadingCustomers } = useCustomers(
+    1,
+    100,
+    customerSearch,
+  );
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [verifiedClientID, setVerifiedClientID] = useState(null);
 
   const { tickets, updateTicketsStatus } = useBetsStore();
-  const open = useCheckoutStore((s) => s.open);// modal checkout
+  const open = useCheckoutStore((s) => s.open); // modal checkout
   const closeCheckout = useCheckoutStore((s) => s.closeCheckout);
 
   // Hook de checkout real
-  const {handleCheckout, isPending  } = useCheckout();
+  const { handleCheckout, isPending } = useCheckout();
 
   // Hook para transações financeiras
-  const { 
-    registerTransaction, 
-    isSaving: isSavingTransaction, 
-    transaction: savedTransaction 
+  const {
+    registerTransaction,
+    isSaving: isSavingTransaction,
+    transaction: savedTransaction,
   } = useCheckoutTransaction();
 
   // trava scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => (document.body.style.overflow = "auto");
-  }, []); 
-
+  }, []);
 
   useEffect(() => {
     if (step === 1) clearPaymentMethod(); // Clear payment method when going back to step 1
@@ -97,7 +99,7 @@ export default function CheckoutModal() {
   //     console.log(verifiedClientID);
   //     if (verifiedClientID === null) return router.replace("/pools/myBets");
   //     router.replace("/bets");
-     
+
   //   }
   // };
 
@@ -116,18 +118,28 @@ export default function CheckoutModal() {
       // 🔥 SE FOR PIX, NÃO VAI PARA CONFIRMAÇÃO
       if (selectedPaymentMethod === "pix") {
         try {
-          const data = await generatePix({
-            amount: 10, // depois você troca pelo total real
+          // 1. Primeiro salva os bilhetes e a transação no banco com status 'pending'
+          const transaction = await executeCheckout(
+            selectedPaymentMethod,
+            selectedCustomer,
+            updateTicketsStatus,
+            handleCheckout,
+            registerTransaction,
+            setVerifiedClientID,
+          );
+
+          if (!transaction) return;
+
+          // 2. Agora gera o PIX usando o ID da transação como referência externa
+          await generatePix({
+            amount: transaction.total_amount,
             email: selectedCustomer?.email || "cliente@email.com",
             name: selectedCustomer?.name || "Cliente",
-            ticketId: "ticket_" + Date.now(),
+            ticketId: transaction.id, // ID da transação que o webhook usará
           });
-          console.log(data);
-
         } catch (error) {
-          toast.error("Erro ao gerar PIX");
+          toast.error("Erro ao processar pagamento PIX.");
         }
-
         return; // 🔴 trava o fluxo aqui
       }
 
@@ -144,38 +156,51 @@ export default function CheckoutModal() {
     router.replace("/bets");
   };
 
-
-
-
   const handleBack = () => {
     if (step > 1) setStep(step - 1);
   };
 
+  // const handleFinalConfirm = async () => {
+  //   const newStatus = selectedPaymentMethod === "cash" ? "paid" : "pending";
+
+  //   // 1. Atualiza o status, cliente e método de pagamento no store de forma síncrona
+  //   const updatedTickets = updateTicketsStatus(
+  //     newStatus,
+  //     selectedCustomer?.id,
+  //     selectedPaymentMethod,
+  //   );
+
+  //   if (!updatedTickets) return;
+  //   setVerifiedClientID(updatedTickets[0].customer_id);
+  //   console.log(updatedTickets);
+
+  //   // 2. Chama o hook que envia os dados atualizados para o banco (Supabase)
+  //   // O handleCheckout deve retornar o array de tickets salvos com seus IDs
+  //   const registeredTickets = await handleCheckout(updatedTickets);
+
+  //   if (!registeredTickets) return;
+
+  //   // 3. Registra a transação vinculando aos bilhetes recém criados
+  //   const transaction = await registerTransaction(
+  //     registeredTickets,
+  //     selectedPaymentMethod,
+  //     newStatus,
+  //   );
+
+  //   if (!transaction) return;
+
+  //   setShowConfirmDialog(false);
+  //   setStep(3);
+  // };
+
   const handleFinalConfirm = async () => {
-    const newStatus = selectedPaymentMethod === "cash" ? "paid" : "pending";
-    
-    // 1. Atualiza o status, cliente e método de pagamento no store de forma síncrona
-    const updatedTickets = updateTicketsStatus(
-      newStatus,
-      selectedCustomer?.id,
+    const transaction = await executeCheckout(
       selectedPaymentMethod,
-    );
-
-    if (!updatedTickets) return;
-    setVerifiedClientID(updatedTickets[0].customer_id);
-    console.log(updatedTickets);
-
-    // 2. Chama o hook que envia os dados atualizados para o banco (Supabase)
-    // O handleCheckout deve retornar o array de tickets salvos com seus IDs
-    const registeredTickets = await handleCheckout(updatedTickets);
-
-    if (!registeredTickets) return; 
-
-    // 3. Registra a transação vinculando aos bilhetes recém criados
-    const transaction = await registerTransaction(
-      registeredTickets,
-      selectedPaymentMethod,
-      newStatus
+      selectedCustomer,
+      updateTicketsStatus,
+      handleCheckout,
+      registerTransaction,
+      setVerifiedClientID,
     );
 
     if (!transaction) return;
@@ -186,29 +211,22 @@ export default function CheckoutModal() {
 
   const getConfirmMessage = () => {
     switch (selectedPaymentMethod) {
-      case "pix": return "Deseja gerar o código PIX para realizar o pagamento?";
-      case "cash": return "Confirma que o pagamento em dinheiro foi recebido?";
-      case "pending": return "Deseja realmente deixar este pagamento como pendente?";
-      default: return "Deseja confirmar esta transação?";
+      case "pix":
+        return "Deseja gerar o código PIX para realizar o pagamento?";
+      case "cash":
+        return "Confirma que o pagamento em dinheiro foi recebido?";
+      case "pending":
+        return "Deseja realmente deixar este pagamento como pendente?";
+      default:
+        return "Deseja confirmar esta transação?";
     }
   };
-
 
   const getButtonLabel = () => {
     if (step === 1) return "Continuar para pagamento";
     if (step === 2) return "Confirmar pagamento";
     return "Ver meus bolões";
   };
-
-  // 
-  // async function handleCheckout() {
-  //   await generatePix({
-  //     amount: 10,
-  //     email: "cliente@email.com",
-  //     name: "Fernando",
-  //     ticketId: "ticket_" + Date.now(),
-  //   });
-  // }
 
   if (!open) return null;
 
