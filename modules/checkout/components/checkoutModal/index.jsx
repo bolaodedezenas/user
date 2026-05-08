@@ -133,8 +133,8 @@ export default function CheckoutModal() {
           // 2. Agora gera o PIX usando o ID da transação como referência externa
           await generatePix({
             amount: transaction.total_amount,
-            email: selectedCustomer?.email || "cliente@email.com",
-            name: selectedCustomer?.name || "Cliente",
+            email: selectedCustomer?.email,
+            name: selectedCustomer?.name, 
             ticketId: transaction.id, // ID da transação que o webhook usará
           });
         } catch (error) {

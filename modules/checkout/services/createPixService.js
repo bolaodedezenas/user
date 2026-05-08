@@ -1,15 +1,9 @@
 import { Payment } from "mercadopago";
-import { mercadopago } from "@/libs/mercadopago/client";
-import crypto from "crypto";
+import { mpClient } from "@/libs/mercadopago/client";
+ 
 
 export async function createPixService(payload) {
-  const payment = new Payment(mercadopago);
-
-  // Mercado Pago prefere nome e sobrenome separados
-  const nameParts = (payload.name || "").trim().split(" ");
-  const firstName = nameParts[0] || "Cliente";
-  const lastName =
-    nameParts.length > 1 ? nameParts.slice(1).join(" ") : "Consumidor";
+  const payment = new Payment(mpClient);
 
   const amount = Number(payload.amount);
   if (isNaN(amount) || amount <= 0) {
@@ -23,8 +17,7 @@ export async function createPixService(payload) {
       payment_method_id: "pix",
       payer: {
         email: payload.email,
-        first_name: firstName,
-        last_name: lastName,
+        name: payload.name,
         // Identificação (CPF) é OBRIGATÓRIA para PIX em muitos casos de produção
         ...(payload.cpf && {
           identification: {
@@ -37,9 +30,7 @@ export async function createPixService(payload) {
     },
     requestOptions: {
       // Garante uma chave única por tentativa de pagamento
-      idempotencyKey: payload.ticketId
-        ? `${payload.ticketId}-${Date.now()}`
-        : crypto.randomUUID(),
+      idempotencyKey: `${payload.ticketId}`,
     },
   });
 

@@ -1,4 +1,5 @@
 export async function executeCheckout(selectedPaymentMethod, selectedCustomer, updateTicketsStatus, handleCheckout, registerTransaction, setVerifiedClientID) {
+  
   const newStatus = selectedPaymentMethod === "cash" ? "paid" : "pending";
 
   const updatedTickets = updateTicketsStatus(
