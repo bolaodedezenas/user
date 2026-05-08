@@ -2,43 +2,37 @@
 
 import { useEffect, useState } from "react";
 
-const COLORS = [
-  "#c62828", "#ad1457", "#6a1b9a", "#202a79", "#1565c0",
-];
+const COLORS = ["#c62828", "#ad1457", "#6a1b9a", "#202a79", "#1565c0"];
 
 export default function NumberBallsLoader() {
+
   const BALL_COUNT = 5;
-
-  const [balls, setBalls] = useState([]);
-
-  const randomNumber = () =>
-    Math.floor(Math.random() * 100)
-      .toString()
-      .padStart(2, "0");
-
-  const initialBalls = Array.from({ length: BALL_COUNT }).map((_, i) => ({
-    number: randomNumber(),
-    color: COLORS[i % COLORS.length], // cor fixa por bola
-  }));
+    const [balls, setBalls] = useState([]);
   
-
-  // Inicializa bolas com números aleatórios e cores fixas
-  useEffect(() => {
-    setBalls(initialBalls);
-  }, []);
-
-  // Atualiza números continuamente
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBalls(prev =>
-        prev.map(ball => ({
-          ...ball,
-          number: randomNumber(), // só muda o número
-        }))
-      );
-    }, 800);
-    return () => clearInterval(interval);
-  }, []);
+    const randomNumber = () =>
+      Math.floor(Math.random() * 100).toString().padStart(2, "0");
+  
+    // Inicializa bolas com números aleatórios e cores fixas
+    useEffect(() => {
+      const initialBalls = Array.from({ length: BALL_COUNT }).map((_, i) => ({
+        number: randomNumber(),
+        color: COLORS[i % COLORS.length], // cor fixa por bola
+      }));
+      setBalls(initialBalls);
+    }, []);
+  
+    // Atualiza números continuamente
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setBalls(prev =>
+          prev.map(ball => ({
+            ...ball,
+            number: randomNumber(), // só muda o número
+          }))
+        );
+      }, 800);
+      return () => clearInterval(interval);
+    }, []);
 
   return (
     <div className="absolute h-screen inset-0 flex items-center justify-center z-100 bg-gradient-to-r from-[rgb(var(--background))] to-[rgb(var(--background-secundary))]">
@@ -47,7 +41,9 @@ export default function NumberBallsLoader() {
           <div
             key={index}
             className={`number-ball delay-${index * 200}`}
-            style={{ backgroundColor: ball.color }}
+            style={{
+              backgroundColor: ball.color,
+             }}
           >
             <span className="text-white font-bold">{ball.number}</span>
           </div>
@@ -89,14 +85,26 @@ export default function NumberBallsLoader() {
         }
 
         /* delays sequenciais */
-        .delay-0 { animation-delay: 0s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-400 { animation-delay: 0.4s; }
-        .delay-600 { animation-delay: 0.6s; }
-        .delay-800 { animation-delay: 0.8s; }
+        .delay-0 {
+          animation-delay: 0s;
+        }
+        .delay-200 {
+          animation-delay: 0.2s;
+        }
+        .delay-400 {
+          animation-delay: 0.4s;
+        }
+        .delay-600 {
+          animation-delay: 0.6s;
+        }
+        .delay-800 {
+          animation-delay: 0.8s;
+        }
 
         @keyframes pulse {
-          0%, 80%, 100% {
+          0%,
+          80%,
+          100% {
             transform: scale(0.5);
             opacity: 0.7;
           }
