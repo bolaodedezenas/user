@@ -58,7 +58,7 @@ export default function CheckoutModal() {
   const [pixExternalReference, setPixExternalReference] = useState(null);
   const [confirmedTransaction, setConfirmedTransaction] = useState(null);
 
-  const { tickets, updateTicketsStatus } = useBetsStore();
+  const { tickets, updateTicketsStatus, clearTickets } = useBetsStore();
   const open = useCheckoutStore((s) => s.open); // modal checkout
   const closeCheckout = useCheckoutStore((s) => s.closeCheckout);
 
@@ -109,6 +109,7 @@ export default function CheckoutModal() {
           setOpenModal(false);
           setPixExternalReference(null);
           toast.success("Pagamento PIX confirmado com sucesso!");
+          clearTickets();
           setStep(3);
           clearInterval(intervalId);
         }
@@ -244,6 +245,7 @@ export default function CheckoutModal() {
     if (!transaction) return;
 
     setShowConfirmDialog(false);
+    clearTickets();
     setStep(3);
     return transaction;
   };
