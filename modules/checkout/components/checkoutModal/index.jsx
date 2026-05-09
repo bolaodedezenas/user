@@ -22,6 +22,9 @@ import { PaymentMethodCard } from "../PaymentMethodCard";
 import { FaPix } from "react-icons/fa6";
 import { FiClock, FiDollarSign } from "react-icons/fi";
 import { MdDeleteForever } from "react-icons/md";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+ 
+
 
 //stores
 import { useCheckoutStore } from "../../stores/useCheckoutStore";
@@ -57,6 +60,7 @@ export default function CheckoutModal() {
   const [verifiedClientID, setVerifiedClientID] = useState(null);
   const [pixExternalReference, setPixExternalReference] = useState(null);
   const [confirmedTransaction, setConfirmedTransaction] = useState(null);
+  const [isGeneratingPix, setIsGeneratingPix] = useState(false);
 
   const { tickets, updateTicketsStatus, clearTickets } = useBetsStore();
   const open = useCheckoutStore((s) => s.open); // modal checkout
@@ -129,6 +133,8 @@ export default function CheckoutModal() {
   }, [pixExternalReference, setOpenModal]);
 
   const handleNext = async () => {
+    if (isGeneratingPix) return;
+
     if (step === 1) {
       setStep(2);
       return;
@@ -147,6 +153,8 @@ export default function CheckoutModal() {
             toast.error("Usuário sem email definido");
             return;
           }
+
+          setIsGeneratingPix(true);
 
           const totalAmount = tickets.reduce(
             (total, ticket) => total + ticket.total_value,
@@ -195,6 +203,8 @@ export default function CheckoutModal() {
           });
         } catch (error) {
           console.error(error);
+        } finally {
+          setIsGeneratingPix(false);
         }
 
         return; // trava o fluxo aqui
@@ -252,8 +262,6 @@ export default function CheckoutModal() {
 
   const getConfirmMessage = () => {
     switch (selectedPaymentMethod) {
-      case "pix":
-        return "Deseja gerar o código PIX para realizar o pagamento?";
       case "cash":
         return "Confirma que o pagamento em dinheiro foi recebido?";
       case "pending":
@@ -466,6 +474,24 @@ export default function CheckoutModal() {
               isOpen={isOpenForm}
               onClose={() => setIsOpenForm(false)}
             />
+
+
+            {/*loading de carregamento pix */}
+            {isGeneratingPix && (
+              <div
+                className="absolute inset-0 z-50 flex items-center justify-center
+                 bg-black/50 p-4"
+              >
+                <div className="relative">
+                  <AiOutlineLoading3Quarters
+                    size={70}
+                    className="text-white animate-spin"
+                  />
+                  <FaPix size={20} className="absolute text-white
+                    top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                </div>
+              </div>
+            )}
 
             {/* Modal de Confirmação de Ação */}
             {showConfirmDialog && (
