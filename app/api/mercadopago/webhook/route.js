@@ -1,4 +1,3 @@
- 
 export const runtime = "nodejs";
 
 import { redis } from "@/libs/redis";
@@ -14,28 +13,57 @@ export async function POST(req) {
 
     console.log("WEBHOOK:", body);
 
-    const paymentId = body.data.id;
+    const paymentId = body.data?.id;
+    if (!paymentId) {
+      console.log("WEBHOOK: payment id não encontrado no body", body);
+      return Response.json(
+        {
+          success: false,
+          error: "missing payment id",
+        },
+        { status: 400 },
+      );
+    }
 
     const payment = new Payment(mercadopago);
+    const paymentData = await payment.get({ id: paymentId });
 
-    const paymentData = await payment.get({
-      id: paymentId,
-    });
+    console.log(
+      "WEBHOOK: paymentData status=",
+      paymentData.status,
+      "external_reference=",
+      paymentData.external_reference,
+    );
 
-    // ignora pagamentos não aprovados
     if (paymentData.status !== "approved") {
-      return Response.json({
-        success: true,
-      });
+      console.log(
+        "WEBHOOK: pagamento não aprovado ainda, status=",
+        paymentData.status,
+      );
+      return Response.json({ success: true });
     }
 
     const externalReference = paymentData.external_reference;
+    if (!externalReference) {
+      console.log(
+        "WEBHOOK: external_reference faltando no pagamento",
+        paymentData,
+      );
+      return Response.json(
+        {
+          success: false,
+          error: "external_reference missing",
+        },
+        { status: 400 },
+      );
+    }
 
-    // Busca dados temporários que foram salvos quando o PIX foi gerado no cliente.
-    // Esse cache contém os tickets e o cliente selecionado para montar a transação.
     const tempData = await redis.get(`pix:${externalReference}`);
-
     if (!tempData) {
+      console.log(
+        "WEBHOOK: dados temporários não encontrados para chave",
+        `pix:${externalReference}`,
+      );
       return Response.json({
         success: false,
         error: "dados temporários não encontrados",

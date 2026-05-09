@@ -20,7 +20,7 @@ export default function Cart({ onClose }) {
   const openCheckout = useCheckoutStore((s) => s.openCheckout);
 
   const { tickets, setTickets, removeTicket } = useBetsStore();
-  console.log(tickets);
+
   const [editingPath, setEditingPath] = useState(null); // { pool_id, contest_id, betIndex }
   const [isOpen, setIsOpen] = useState(false);
   const [tempBet, setTempBet] = useState([]);

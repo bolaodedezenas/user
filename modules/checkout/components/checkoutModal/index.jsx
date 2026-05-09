@@ -160,7 +160,7 @@ export default function CheckoutModal() {
           setPixExternalReference(externalReference);
 
           // 👇 salva temporariamente no Redis
-          await fetch("/api/mercadopago/save-temp", {
+          const saveTempResponse = await fetch("/api/mercadopago/save-temp", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -173,6 +173,13 @@ export default function CheckoutModal() {
               user_id: user.id,
             }),
           });
+
+          const saveTempData = await saveTempResponse.json();
+          if (!saveTempResponse.ok || !saveTempData.success) {
+            throw new Error(
+              saveTempData.error || "Erro ao salvar dados temporários do PIX",
+            );
+          }
 
           // 👇 gera PIX
           await generatePix({
