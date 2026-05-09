@@ -2,10 +2,22 @@ export const runtime = "nodejs";
 
 import { redis } from "@/libs/redis";
 
+function getSearchParams(req) {
+  const requestUrl = typeof req.url === "string" ? req.url : "";
+
+  try {
+    return new URL(requestUrl).searchParams;
+  } catch {
+    const host = req.headers.get("host") || "localhost";
+    const protocol = req.headers.get("x-forwarded-proto") || "https";
+    return new URL(requestUrl, `${protocol}://${host}`).searchParams;
+  }
+}
+
 export async function GET(req) {
   try {
-    const url = new URL(req.url);
-    const externalReference = url.searchParams.get("external_reference");
+    const searchParams = getSearchParams(req);
+    const externalReference = searchParams.get("external_reference");
 
     if (!externalReference) {
       return Response.json(
@@ -32,11 +44,11 @@ export async function GET(req) {
       transaction: parsed.transaction,
     });
   } catch (error) {
-    console.error("check-pix error:", error);
+    console.error("check-pix error:", error?.message || error, error);
     return Response.json(
       {
         success: false,
-        error: "Internal server error",
+        error: error?.message || "Internal server error",
       },
       { status: 500 },
     );
