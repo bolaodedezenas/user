@@ -3,9 +3,11 @@ export const runtime = "nodejs";
 import { redis } from "@/libs/redis";
 import { Payment } from "mercadopago";
 import { mercadopago } from "@/libs/mercadopago/client";
+import { supabaseAdmin } from "@/libs/supabase/admin";
 
-import { checkoutTicketsService } from "@/modules/pools/services/ticketsService";
-import { registerTransactionServer } from "@/modules/checkout/services/registerTransactionServer";
+import { checkoutTicketsServiceServer } from "@/server/checkoutTicketsServiceServer";
+
+import { registerTransactionServerAdmin } from "@/modules/checkout/services/registerTransactionServerAdmin";
 
 export async function POST(req) {
   try {
@@ -83,10 +85,11 @@ export async function POST(req) {
     }));
 
     // salva tickets via serviço de checkout
-    const registeredTickets = await checkoutTicketsService(updatedTickets);
+    const registeredTickets =
+      await checkoutTicketsServiceServer(updatedTickets);
 
     // salva transação
-    const transaction = await registerTransactionServer({
+    const transaction = await registerTransactionServerAdmin({
       tickets: registeredTickets,
       paymentMethod: "pix",
       status: "paid",
