@@ -22,6 +22,7 @@ export const checkoutTicketsService = async (ticketsList) => {
 
       // 2. Salvar o bilhete e obter o ID
       const savedTicket = await ticketsRepository.createTicket(ticketToSave);
+      
       savedTickets.push(savedTicket);
 
       // 3. Preparar as apostas (Bets) vinculando o ticket_id recém-criado
