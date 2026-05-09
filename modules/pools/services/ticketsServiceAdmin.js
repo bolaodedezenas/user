@@ -1,6 +1,6 @@
 import * as repo from "../repository/ticketsRepositoryAdmin";
 
-export const checkoutTicketsServiceServer = async (ticketsList) => {
+export const checkoutTicketsServiceServerAdimin = async (ticketsList) => {
   const savedTickets = [];
 
   for (const ticket of ticketsList) {

@@ -5,7 +5,7 @@ import { Payment } from "mercadopago";
 import { mercadopago } from "@/libs/mercadopago/client";
 import { supabaseAdmin } from "@/libs/supabase/admin";
 
-import { checkoutTicketsServiceServer } from "@/server/checkoutTicketsServiceServer";
+import { checkoutTicketsServiceServerAdimin } from "@/modules/pools/services/ticketsServiceAdmin";
 
 import { registerTransactionServerAdmin } from "@/modules/checkout/services/registerTransactionServerAdmin";
 
@@ -86,7 +86,7 @@ export async function POST(req) {
 
     // salva tickets via serviço de checkout
     const registeredTickets =
-      await checkoutTicketsServiceServer(updatedTickets);
+      await checkoutTicketsServiceServerAdimin(updatedTickets);
 
     // salva transação
     const transaction = await registerTransactionServerAdmin({
