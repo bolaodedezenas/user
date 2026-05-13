@@ -30,18 +30,18 @@ import { useContests } from "@/modules/pools/hooks/useContests";
 // stores
 import { useSelectedPoolStore } from "@/modules/pools/stores/useSelectedPoolStore";
 
-
 export default function LayoutPools({ children }) {
   const { toggle } = useToggleStore();
-  const {setActiveContest, setActivePool } = useBetsStore();
- 
+  const { setActiveContest, setActivePool } = useBetsStore();
+
   usePools(); // Dispara a busca inicial se necessário
   const { pools, isLoading: isLoadingPools } = usePoolsStore();
   const [initialLoading, setInitialLoading] = useState(true);
 
-
   const selectedPool = useSelectedPoolStore((state) => state.selectedPool);
-  const setSelectedPool = useSelectedPoolStore((state) => state.setSelectedPool,);
+  const setSelectedPool = useSelectedPoolStore(
+    (state) => state.setSelectedPool,
+  );
 
   // 🔹 Hook que busca concursos automaticamente quando o 'pool' muda
   const {
@@ -51,7 +51,6 @@ export default function LayoutPools({ children }) {
   } = useContests(selectedPool?.id);
 
   const [itemContest, setItemContest] = useState(null);
-
 
   //  date format
   const { formatDate } = useFormatDateTime();
@@ -75,13 +74,16 @@ export default function LayoutPools({ children }) {
   };
 
   // 🔹 Quando busca um concurso específico pelo número
-  const handleSearchContest = useCallback(async (number) => {
-    const contest = await searchContestByNumber(selectedPool?.id, number);
-    
-    if (contest) {
-      setItemContest(contest);
-    }
-  }, [selectedPool?.id, searchContestByNumber]);
+  const handleSearchContest = useCallback(
+    async (number) => {
+      const contest = await searchContestByNumber(selectedPool?.id, number);
+
+      if (contest) {
+        setItemContest(contest);
+      }
+    },
+    [selectedPool?.id, searchContestByNumber],
+  );
 
   // 🔹 Define o concurso inicial assim que a lista de concursos carregar para o pool selecionado
   useEffect(() => {
@@ -117,14 +119,14 @@ export default function LayoutPools({ children }) {
     return () => clearTimeout(timer);
   }, []);
 
-  if (initialLoading || isLoadingPools) return <PageLoading />;
+  // if (initialLoading || isLoadingPools) return <PageLoading />;
 
   return (
     <section className="flex-1 h-full flex flex-col gap-3 bg-[rgb(var(--blue-50))]">
-      <Header>
-        <section className="relative bg-white w-full flex flex-wrap gap-4 items-center">
-          <div className="flex  flex-col   ml-14 xss:ml-2  ">
-            <div className="flex gap-3 items-center">
+      <section className="w-full flex flex-wrap  items-center justify-between bg-white shadow-md rounded-lg  px-4 py-2 gap-2 transition-all duration-300">
+        <div className="w-full  flex flex-wrap items-center justify-between gap-2  ">
+          <div className="  flex flex-col ml-10 xss:ml-0 ">
+            <div className="flex gap-2 items-center  ">
               <FaTrophy className="text-[1.5rem] text-[rgb(var(--btn))]" />
               <Title
                 text="Bolão"
@@ -137,7 +139,7 @@ export default function LayoutPools({ children }) {
             />
           </div>
 
-          <Box className="flex-1 flex justify-end items-center pr-2 ">
+          <div className=" max-pools-474:w-full  flex justify-center items-center pr-2 ">
             {/* SELECT BOLÕES */}
             <Select
               label={selectedPool?.name || "Selecione um Bolão"}
@@ -146,90 +148,94 @@ export default function LayoutPools({ children }) {
               onChange={handleChangePool}
               className="px-5 py-3"
             />
-          </Box>
-        </section>
-      </Header>
-
-      <BoxLayout
-        $toggle={toggle}
-        className="py-4 px-3 sm:p-4 bg-white flex flex-wrap justify-center gap-5 rounded-[10px]"
-      >
-        {/* CARD */}
-        <div className="flex flex-col gap-5">
-          {selectedPool && (
-            <PoolCard
-              name={selectedPool?.name}
-              color={selectedPool?.color}
-              money={itemContest?.total_prize}
-              time={countTime}
-              status={itemContest?.status}
-            />
-          )}
+          </div>
         </div>
+      </section>
 
-        {/* INFO */}
-        <section className="flex flex-col sm:px-5">
-          <div className="border-b-2 border-zinc-300 pb-4">
-            <h3 className="font-bold text-[1.2rem]">Status do bolão</h3>
-
-            <div className="flex flex-wrap gap-5">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h4 className="font-bold">
-                    {itemContest?.status === "open"
-                      ? "Aberto"
-                      : itemContest?.status === "closed"
-                        ? "Fechado"
-                        : "Finalizado"}
-                  </h4>
-                  <FaCircle
-                    className={`${
-                      itemContest?.status === "open"
-                        ? "text-green-500 animate-pulse"
-                        : itemContest?.status === "closed"
-                          ? "text-orange-400"
-                          : "text-red-500"
-                    } `}
-                  />
-                </div>
-                <p>
-                  {itemContest?.status === "open"
-                    ? "Aberto para Realizações de Apostas"
-                    : itemContest?.status === "closed"
-                      ? "Apostas encerradas"
-                      : "Bolão finalizado"}
-                </p>
-              </div>
-
-              <div>
-                <h4 className="font-bold">Prazo</h4>
-                <p>{` ${date} até ${time} horas`}</p>
-              </div>
-
-              {/* SELECT CONCURSOS */}
-              <div>
-                <h4 className="font-bold">Concurso</h4>
-                <Select
-                  label={itemContest?.contest_number}
-                  value={itemContest} // ✅ ESSENCIAL
-                  options={contests}
-                  isLoading={isLoadingContests}
-                  showSearch={true}
-                  onSearch={handleSearchContest}
-                  onChange={handleChangeContest}
-                  className="shadow-none"
+      {initialLoading || isLoadingPools ? (
+        <PageLoading />
+      ) : (
+        <section className=" flex-1 min-h-0 h-full flex gap-4 flex-col bg-[rgb(var(--blue-50))] overflow-auto">
+          <div
+            className=" py-4 px-3 sm:p-4 bg-white flex flex-wrap justify-center gap-5 rounded-[10px]"
+          >
+            {/* CARD */}
+            <div className="flex flex-col gap-5">
+              {selectedPool && (
+                <PoolCard
+                  name={selectedPool?.name}
+                  color={selectedPool?.color}
+                  money={itemContest?.total_prize}
+                  time={countTime}
+                  status={itemContest?.status}
                 />
-              </div>
+              )}
             </div>
-          </div>
 
-          <div className="flex-1 flex items-center justify-center pt-5">
-            <Submenu itemContest={itemContest} />
+            {/* INFO */}
+            <section className="flex flex-col sm:px-5">
+              <div className="border-b-2 border-zinc-300 pb-4">
+                <h3 className="font-bold text-[1.2rem]">Status do bolão</h3>
+
+                <div className="flex flex-wrap gap-5">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-bold">
+                        {itemContest?.status === "open"
+                          ? "Aberto"
+                          : itemContest?.status === "closed"
+                            ? "Fechado"
+                            : "Finalizado"}
+                      </h4>
+                      <FaCircle
+                        className={`${
+                          itemContest?.status === "open"
+                            ? "text-green-500 animate-pulse"
+                            : itemContest?.status === "closed"
+                              ? "text-orange-400"
+                              : "text-red-500"
+                        } `}
+                      />
+                    </div>
+                    <p>
+                      {itemContest?.status === "open"
+                        ? "Aberto para Realizações de Apostas"
+                        : itemContest?.status === "closed"
+                          ? "Fechado para Realizações de Apostas"
+                          : "Bolão finalizado"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold">Prazo</h4>
+                    <p>{` ${date} até ${time} horas`}</p>
+                  </div>
+
+                  {/* SELECT CONCURSOS */}
+                  <div>
+                    <h4 className="font-bold">Concurso</h4>
+                    <Select
+                      label={itemContest?.contest_number}
+                      value={itemContest} // ✅ ESSENCIAL
+                      options={contests}
+                      isLoading={isLoadingContests}
+                      showSearch={true}
+                      onSearch={handleSearchContest}
+                      onChange={handleChangeContest}
+                      className="shadow-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex-1 flex items-center justify-center pt-5">
+                <Submenu itemContest={itemContest} />
+              </div>
+            </section>
           </div>
+          <section className=" flex-1  ">{children}</section>
         </section>
-      </BoxLayout>
-
-      <section className=" flex-1  ">{children}</section>
+      )}
       <Cart />
       <CheckoutModal />
     </section>

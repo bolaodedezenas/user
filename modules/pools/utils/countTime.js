@@ -18,13 +18,13 @@ export function useCountTime(starts_at, status) {
 
       // Sorteio iniciado
       if (status === "closed") {
-        setText("🟠 Sorteio iniciado");
+        setText(" Sorteio em andamento 🟠");
         return;
       }
 
       // Finalizado
       if (status === "finished") {
-        setText("🔴 Sorteio finalizado");
+        setText("Sorteio finalizado 🔴");
         return;
       }
 

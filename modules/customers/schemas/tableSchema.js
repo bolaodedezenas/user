@@ -28,7 +28,7 @@ export const getTableSchema = (
   {
     label: "Telefone",
     key: "phone",
-    className: " w-30   flex items-center justify-center  ",
+    className: " w-32   flex items-center justify-center  ",
   },
 
   {

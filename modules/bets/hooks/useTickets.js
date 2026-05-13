@@ -8,6 +8,7 @@ export const useTickets = (
   page = 1,
   limit = 10,
   searchTerm = "",
+  user_id,
 ) => {
   const {
     tickets,
@@ -30,6 +31,7 @@ export const useTickets = (
         page,
         limit,
         searchTerm,
+        user_id
       );
       setTickets(tickets);
       setTotalCount(totalCount);

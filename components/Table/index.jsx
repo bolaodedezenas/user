@@ -83,7 +83,7 @@ export default function Table({ columns, data }) {
     <div className="w-full flex-1 overflow-x-auto flex flex-col min-h-0">
       <div className="flex flex-col flex-1 min-w-[1000px] min-h-0">
         {/* HEADER */}
-        <div className="border-b  border-zinc-300 px-10 py-4 flex justify-between items-center">
+        <div className="border-b  border-zinc-300 px-8 py-4 flex justify-between items-center">
           {columns.map((col) => (
             <div
               key={col.key}

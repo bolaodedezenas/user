@@ -12,12 +12,19 @@ import Table from "@/components/Table";
 import CardList from "@/modules/bets/components/CardList";
 import ViewToggle from "@/components/ViewToggle";
 import Pagination from "@/components/Pagination";
-import { useDebounce } from "@/hooks/useDebounce";
+import Ticket from "@/modules/myBets/components/Ticket";
+
 // hooks
 import { usePools } from "@/modules/pools/hooks/usePools";
 import { useContests } from "@/modules/pools/hooks/useContests";
 import { useTickets } from "@/modules/bets/hooks/useTickets";
+import { useDebounce } from "@/hooks/useDebounce";
+
+import { useBetsStore } from "@/modules/pools/stores/useBetsStore";
+import { useSelectedPoolStore } from "@/modules/pools/stores/useSelectedPoolStore";
+
 // stores
+import { useAuthStore } from "@/modules/auth/stores/auth.store";
 import { usePoolsStore } from "@/modules/pools/stores/usePoolsStore";
 import { useToggleStore } from "@/stores/toggleStore";
 // icons
@@ -35,17 +42,22 @@ import toast from "react-hot-toast";
 
 export default function Bets() {
   const { toggle } = useToggleStore();
+  const user = useAuthStore((state) => state.user);
+  const selectedPool = useSelectedPoolStore((state) => state.selectedPool);
+  
 
   // =========================================================
   // 📦 SCHEMAS
   // =========================================================
-  const columns = getTableSchema();
-  const schemaCard = getCardSchema();
+  const [selectedTicket, setSelectedTicket] = useState(null);
+ 
+  const columns = getTableSchema(setSelectedTicket);
+  const schemaCard = getCardSchema(setSelectedTicket);
 
   // =========================================================
   // 🎯 STATES
   // =========================================================
- 
+
   const [pool, setPool] = useState(null);
   const [contest, setContest] = useState(null);
 
@@ -61,6 +73,10 @@ export default function Bets() {
   const [loading, setLoading] = useState(true);
   const [viewLoading, setViewloading] = useState(true);
 
+  const { activePool, activeContest } = useBetsStore();
+ 
+
+
   const itemsPerPage = 12;
 
   // =========================================================
@@ -69,7 +85,7 @@ export default function Bets() {
   usePools();
   const { pools } = usePoolsStore();
   const { contests, isLoading: isLoadingContests } = useContests(pool?.id);
-  console.log(contests);
+  // console.log(contests);
 
   const {
     tickets,
@@ -80,6 +96,7 @@ export default function Bets() {
     currentPage,
     itemsPerPage,
     activeRemoteSearchTerm,
+    user?.id,
   );
 
   // =========================================================
@@ -87,47 +104,44 @@ export default function Bets() {
   // =========================================================
   const localFilteredTickets = tickets.filter((t) => {
     if (!searchTerm) return true;
-    return t.id?.toString().includes(searchTerm);
+    return t.ticket_number?.toString().includes(searchTerm);
   });
 
   // =========================================================
-  // 🔄 EFFECTS (BUSCA HÍBRIDA)
+  // 🔹 EFFECTS - BUSCA HÍBRIDA
   // =========================================================
+
+  // Centralizamos a lógica de busca em um único efeito robusto (Padrão Clientes)
+  // Isso garante que a busca remota só ocorra se não houver resultado local.
   useEffect(() => {
     if (searchTerm !== activeRemoteSearchTerm) {
       setRemoteEmpty(false);
-      toast.dismiss("search-not-found");
     }
 
+    // 1. Se campo limpo, reseta busca remota
     if (!searchTerm) {
       setActiveRemoteSearchTerm("");
       setRemoteEmpty(false);
       return;
     }
 
-    if (localFilteredTickets.length > 0) {
-      if (activeRemoteSearchTerm !== "") {
-        setActiveRemoteSearchTerm("");
-      }
-      setRemoteEmpty(false);
+    // 2. 🔍 VERIFICA LOCALMENTE (Filtra ID ou Número do bilhete presente na lista atual)
+    const hasLocalResults = tickets.some((t) =>
+      t.ticket_number?.toString().includes(searchTerm)
+    );
+
+    // 3. ✅ Achou local → NÃO faz busca remota
+    if (hasLocalResults) {
       return;
     }
 
-    if (
-      debouncedSearchTerm &&
-      contest?.id &&
-      debouncedSearchTerm !== activeRemoteSearchTerm
-    ) {
+    // 4. ❌ Não achou local → Busca remota após o debounce
+    if (debouncedSearchTerm && debouncedSearchTerm !== activeRemoteSearchTerm) {
       setRemoteEmpty(false);
       setActiveRemoteSearchTerm(debouncedSearchTerm);
+      setCurrentPage(1);
     }
-  }, [
-    debouncedSearchTerm,
-    searchTerm,
-    localFilteredTickets.length,
-    activeRemoteSearchTerm,
-    contest?.id,
-  ]);
+  }, [debouncedSearchTerm, searchTerm, activeRemoteSearchTerm, tickets]);
 
   useEffect(() => {
     if (!isLoadingTickets && activeRemoteSearchTerm) {
@@ -136,13 +150,17 @@ export default function Bets() {
   }, [isLoadingTickets, totalCount, activeRemoteSearchTerm]);
 
   useEffect(() => {
+    // Só mostra o toast se o searchTerm atual é o que ativou a busca remota
     if (searchTerm !== activeRemoteSearchTerm) return;
+
+    // Se houver resultados locais para o searchTerm atual, não mostra "não encontrado"
     if (localFilteredTickets.length > 0) return;
 
+    // Se a busca remota está vazia, há um termo de busca remota ativo e não está carregando
     if (remoteEmpty && activeRemoteSearchTerm && !isLoadingTickets) {
       toast.error(
         `Bilhete "${activeRemoteSearchTerm}" não encontrado. Verifique o bolão e o concurso selecionados.`,
-        { duration: 6000, id: "search-not-found", icon: "🔍" },
+        { duration: 8000,  icon: "🟠" },
       );
     }
   }, [
@@ -164,29 +182,29 @@ export default function Bets() {
     }, 500);
   }, [view]);
 
- useEffect(() => {
-   let lastWidth = window.innerWidth;
+  useEffect(() => {
+    let lastWidth = window.innerWidth;
 
-   const handleResize = () => {
-     const currentWidth = window.innerWidth;
+    const handleResize = () => {
+      const currentWidth = window.innerWidth;
 
-     // 🔥 Só executa se mudou a LARGURA (não altura do teclado)
-     if (currentWidth !== lastWidth) {
-       if (currentWidth >= 1064) {
-         setIsFilterOpen(true);
-       } else {
-         setIsFilterOpen(false);
-       }
+      // 🔥 Só executa se mudou a LARGURA (não altura do teclado)
+      if (currentWidth !== lastWidth) {
+        if (currentWidth >= 1064) {
+          setIsFilterOpen(true);
+        } else {
+          setIsFilterOpen(false);
+        }
 
-       lastWidth = currentWidth;
-     }
-   };
+        lastWidth = currentWidth;
+      }
+    };
 
-   handleResize();
-   window.addEventListener("resize", handleResize);
+    handleResize();
+    window.addEventListener("resize", handleResize);
 
-   return () => window.removeEventListener("resize", handleResize);
- }, []);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -245,7 +263,7 @@ export default function Bets() {
   // =========================================================
   // 🚨 LOADING
   // =========================================================
-  if (loading) return <PageLoading />;
+  // if (loading) return <PageLoading />;
 
   return (
     <section className="flex-1  h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
@@ -333,7 +351,6 @@ export default function Bets() {
             ) : (
               <section
                 className="flex-1 flex justify-center flex-wrap p-5 gap-5  overflow-y-auto  
-              //  max-h-[710px] 
               "
               >
                 <CardList schemaCard={schemaCard} data={localFilteredTickets} />
@@ -355,6 +372,14 @@ export default function Bets() {
         totalItems={totalCount}
         itemsPerPage={itemsPerPage}
         onPageChange={setCurrentPage}
+      />
+      <Ticket
+        isOpen={!!selectedTicket}
+        onClose={() => setSelectedTicket(null)}
+        ticket={selectedTicket} // Passar o objeto completo, não apenas o ID
+        poolName={activePool?.name}
+        contestNumber={activeContest?.contest_number}
+        borderColor={activePool?.color}
       />
     </section>
   );

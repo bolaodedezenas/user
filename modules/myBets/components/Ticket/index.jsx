@@ -18,8 +18,8 @@ export default function Ticket({
   userData,
   borderColor,
 }) {
-  console.log(userData);
-  const { bets } = useTicketBets(ticket?.id);
+ 
+   const { bets } = useTicketBets(ticket?.id);
   const ticketRef = useRef(null);
 
   if (!isOpen || !ticket) return null;
@@ -134,20 +134,22 @@ export default function Ticket({
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
+ 
+console.log(borderColor);
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-1 animate-in fade-in duration-200">
       {/* CONTAINER DO BILHETE */}
-      <div className="relative   bg-zinc-200 rounded-xl shadow-2xl overflow-hidden flex flex-col pt-10   max-h-[90vh]">
+      <div className="relative   bg-zinc-200 rounded-xl shadow-2xl overflow-hidden flex flex-col pt-13   max-h-[94vh]">
         {/* BOTÃO FECHAR */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 z-10 p-2 bg-white/80 hover:bg-white rounded-full text-zinc-500 shadow-sm transition-all"
+          className="absolute right-4 top-2 z-10 p-2 bg-white/80 hover:bg-white rounded-full text-zinc-500 shadow-sm transition-all"
         >
           <FaTimes size={20} />
         </button>
 
         {/* ÁREA DO "PAPEL" */}
-        <div className="flex-1 overflow-y-auto  p-6   scrollbar-thin">
+        <div className="flex-1 overflow-y-auto  max-xxs:px-2 px-6 pb-5   scrollbar-thin">
           <div
             ref={ticketRef}
             className="bg-white shadow-sm  relative p-6 flex flex-col gap-6"
@@ -162,7 +164,10 @@ export default function Ticket({
               </p>
               <div className="flex justify-center mb-2">
                 <div className="w-16 h-16 bg-[rgb(var(--blue-50))] rounded-full flex items-center justify-center  ">
-                  <MdLocalActivity size={32} style={{color: `${borderColor}`}} />
+                  <MdLocalActivity
+                    size={32}
+                    style={{ color: `${borderColor}` }}
+                  />
                 </div>
               </div>
               <h2 className="text-xl font-black text-zinc-800 uppercase tracking-tight">
@@ -215,7 +220,7 @@ export default function Ticket({
                     Nome
                   </span>
                   <span className="font-black text-zinc-800 uppercase">
-                    {userData?.name}
+                    {userData?.name || ticket?.name}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-[0.7rem]">
@@ -223,7 +228,7 @@ export default function Ticket({
                     Telefone
                   </span>
                   <span className="font-black text-zinc-800 uppercase">
-                    {userData?.phone}
+                    {userData?.phone || ticket?.phone}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-[0.7rem]">
@@ -233,7 +238,7 @@ export default function Ticket({
                   <span className="font-black text-zinc-800 uppercase">
                     {userData?.city
                       ? `${userData.city} / ${userData.state || ""}`
-                      : "Brasilia-DF"}
+                      : ticket?.endereco}
                   </span>
                 </div>
               </div>
@@ -248,7 +253,7 @@ export default function Ticket({
                 {bets?.map((bet, idx) => (
                   <div
                     key={bet.id}
-                    className="flex justify-center   flex-col gap-2 py-2 border-b border-zinc-200 last:border-0"
+                    className="flex justify-center flex-col gap-2 py-2 border-b border-zinc-200 last:border-0"
                   >
                     <div className="flex justify-between items-center">
                       <span className="text-[0.9rem] font-bold text-zinc-500 uppercase">
@@ -265,14 +270,16 @@ export default function Ticket({
                     </div>
                     <div className="flex w-full flex-wrap justify-center p-2 ">
                       <div className="flex w-70 justify-center  gap-3 flex-wrap">
-                        {bet.numbers.map((num) => (
-                          <Balls
-                            key={num}
-                            number={num}
-                            size="sm"
-                            className="w-10 h-10 text-[0.9rem] bg-zinc-300    "
-                          />
-                        ))}
+                        {bet.numbers
+                          .sort((a, b) => a - b)
+                          .map((num) => (
+                            <Balls
+                              key={num}
+                              number={num}
+                              size="sm"
+                              className="max-xxs:w-8 max-xxs:h-8 max-xxs:text-[0.8rem]  w-10 h-10 text-[0.9rem] bg-zinc-300  "
+                            />
+                          ))}
                       </div>
                     </div>
                   </div>

@@ -130,6 +130,7 @@ export default function Customers() {
     return c.name?.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
+
   // =========================================================
   // 🔹 EFFECTS - BUSCA HÍBRIDA
   // =========================================================
@@ -203,8 +204,9 @@ export default function Customers() {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => setViewloading(false), 400);
-  }, [view]);
+    setViewloading(true);
+    setTimeout(() => setViewloading(false), 2000);
+  }, [view, currentPage]);
 
  
 
@@ -232,7 +234,7 @@ export default function Customers() {
      return () => window.removeEventListener("resize", handleResize);
    }, []);
  
-  if (loading) return <PageLoading />;
+  // if (loading) return <PageLoading />;
 
   return (
     <section className="flex-1  h-full flex flex-col  overflow-hidden">
@@ -327,6 +329,7 @@ export default function Customers() {
           </div>
         )}
       </div>
+
       <Pagination
         currentPage={currentPage}
         totalItems={totalCount}
