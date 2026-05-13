@@ -1,22 +1,27 @@
 import { betsRepository } from "../repository/bets.repository";
 
 export const betsService = {
-  async getTicketsByContest(contestId, page, limit, searchTerm) {
+  async getTicketsByContest(contestId, page, limit, searchTerm, user_id) {
     const { data, count } = await betsRepository.getTicketsByContest(
       contestId,
       page,
       limit,
-      searchTerm
+      searchTerm,
+      user_id
     );
 
     return {
       tickets: data.map((ticket) => ({
-        id: ticket.ticket_number,
+        id: ticket.id,
+        ticket_number: ticket.ticket_number,
+        bet_price: ticket.bet_price,
+        // bets: ticket.bets.map((bet) => bet.numbers),
+        avatar_url: ticket.customers?.avatar_url || "N/A",
         name: ticket.customers?.name || "N/A",
         phone: ticket.customers?.phone || "N/A",
         endereco: `${ticket.customers?.city || ""}-${ticket.customers?.state || ""}`,
         jogos: ticket.total_bets,
-        valor: ticket.total_value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }),
+        total_value: ticket.total_value,
         status: ticket.status === "paid" ? "Pago" : "Pendente",
       })),
       totalCount: count,

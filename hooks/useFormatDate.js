@@ -1,23 +1,28 @@
 
 export function useFormatDateTime() {
   function formatDate(timestamp) {
-    if (!timestamp) return "";
+    if (!timestamp) {
+      return {
+        date: "",
+        time: "",
+      };
+    }
 
     const date = new Date(timestamp);
 
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-
-    // return `${day}/${month}/${year} até ${hours}:${minutes} horas`;
     return {
-      date: `${day}/${month}/${year}`,
-      time: `${hours}:${minutes}`,
-    }
+      date: date.toLocaleDateString("pt-BR", {
+        timeZone: "America/Sao_Paulo",
+      }),
+
+      time: date.toLocaleTimeString("pt-BR", {
+        timeZone: "America/Sao_Paulo",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
   }
 
   return { formatDate };
 }
+

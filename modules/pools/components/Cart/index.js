@@ -16,11 +16,10 @@ import toast from "react-hot-toast";
 // stores
 import { useCheckoutStore } from "@/modules/checkout/stores/useCheckoutStore";
 
-export default function Cart({ onClose }) {
+export default function Cart() {
   const openCheckout = useCheckoutStore((s) => s.openCheckout);
 
   const { tickets, setTickets, removeTicket } = useBetsStore();
-  console.log("TICKETS:", tickets);
 
   const [editingPath, setEditingPath] = useState(null); // { pool_id, contest_id, betIndex }
   const [isOpen, setIsOpen] = useState(false);
@@ -327,8 +326,7 @@ export default function Cart({ onClose }) {
             </span>
           </div>
           <button
-            // onClick={handleCheckout}
-            onClick={() => {console.log('oi'), openCheckout()}}
+            onClick={() =>  openCheckout()}
             disabled={isPending}
             className="w-full bg-[rgb(var(--btn))] text-white font-bold py-4 rounded-xl shadow-lg hover:brightness-110 
             transition-all flex items-center justify-center gap-2 cursor-pointer uppercase text-xs tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"

@@ -1,9 +1,7 @@
-
-
 import { supabase } from "@/libs/supabase/client";
 
 export const betsRepository = {
-  async getTicketsByContest(contestId, page = 1, limit = 10, searchTerm = "") {
+  async getTicketsByContest(contestId, page = 1, limit = 10, searchTerm = "", user_id) {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
@@ -16,9 +14,12 @@ export const betsRepository = {
         created_at,
         total_value,
         total_bets,
+        bet_price,
         status,
         customer_id,
         customers (
+          id,
+          avatar_url,
           name,
           phone,
           city,
@@ -27,6 +28,7 @@ export const betsRepository = {
       `,
         { count: "exact" },
       )
+      .eq("user_id", user_id)
       .eq("contest_id", contestId)
       .not("customer_id", "is", null);
 
@@ -34,7 +36,7 @@ export const betsRepository = {
       if (!isNaN(searchTerm)) {
         query = query.eq("ticket_number", searchTerm);
       } else {
-        query = query.ilike("ticket_number", `%${searchTerm}%`);
+        query = query.ilike("ticket_number",  Number(searchTerm));
       }
     }
 
@@ -43,10 +45,9 @@ export const betsRepository = {
       .range(from, to);
 
     if (error) throw error;
-
+    console.log(data);
     return { data, count };
   },
 };
-
 
 

@@ -50,9 +50,9 @@ export default function LotteryCard({
 
         {/* Balls */}
         <div className="border-t border-zinc-300 w-55 flex flex-wrap justify-center gap-2 py-3 p-1">
-          {numbers.map((num) => (
+          {numbers.map((num, index) => (
             <Balls
-              key={num}
+              key={index}
               number={num}
               size="sm"
               className="w-8 h-8 text-[0.8rem] bg-[rgb(var(--btn))] text-white"

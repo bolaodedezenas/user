@@ -1,4 +1,3 @@
-
 "use client";
 
 import PageLoading from "@/components/PageLoading";
@@ -20,7 +19,7 @@ export default function Dashboard() {
     dailySalesData,
   } = useDashboardData();
 
-  if (isLoading) return <PageLoading />;
+  // if (isLoading) return <PageLoading />;
 
   return (
     <section className="flex-1 h-full flex flex-col bg-[rgb(var(--blue-50))] overflow-hidden">
@@ -42,51 +41,55 @@ export default function Dashboard() {
       </section>
 
       {/* CONTEÚDO */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden pt-4">
-        {/* quebra automático ao invés de scroll lateral */}
-        <div className="flex flex-wrap gap-6 items-start">
-          {/* COLUNA ESQUERDA */}
-          <div className="flex-1 min-w-[320px] flex flex-col gap-6">
-            <div className="bg-white rounded-md shadow-md px-5 max-w-full">
-              <SalesLineChart
-                yearlyData={salesLineData}
-                monthlyData={dailySalesData}
-              />
-            </div>
-
-            <div className="bg-white rounded-md shadow-md p-5 flex flex-col gap-4 max-w-full">
-              <div>
-                <h2 className="text-xl font-semibold">Vendas por bolão</h2>
-                <p className="text-sm opacity-90">Vendas desse mês</p>
+      {isLoading ? (
+        <PageLoading />
+      ) : (
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pt-4">
+          {/* quebra automático ao invés de scroll lateral */}
+          <div className="flex flex-wrap gap-6 items-start">
+            {/* COLUNA ESQUERDA */}
+            <div className="flex-1 min-w-[320px] flex flex-col gap-6">
+              <div className="bg-white rounded-md shadow-md px-5 max-w-full">
+                <SalesLineChart
+                  yearlyData={salesLineData}
+                  monthlyData={dailySalesData}
+                />
               </div>
 
-              <div className="flex flex-col gap-4">
-                {betsStats.map((item, index) => (
-                  <BetCardDashboard
-                    key={index}
-                    title={item.title}
-                    prize={item.prize}
-                    status={item.status}
-                    sales={item.sales}
-                    $color={item.color}
-                  />
-                ))}
+              <div className="bg-white rounded-md shadow-md p-5 flex flex-col gap-4 max-w-full">
+                <div>
+                  <h2 className="text-xl font-semibold">Vendas por bolão</h2>
+                  <p className="text-sm opacity-90">Vendas desse mês</p>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  {betsStats.map((item, index) => (
+                    <BetCardDashboard
+                      key={index}
+                      title={item.title}
+                      prize={item.prize}
+                      status={item.status}
+                      sales={item.sales}
+                      $color={item.color}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* COLUNA DIREITA */}
-          <div className="flex-1 min-w-[320px] flex flex-col gap-6">
-            <div className="bg-white rounded-md shadow-md max-w-full">
-              <MonthSummary data={pizzaChartData} />
-            </div>
+            {/* COLUNA DIREITA */}
+            <div className="flex-1 min-w-[320px] flex flex-col gap-6">
+              <div className="bg-white rounded-md shadow-md max-w-full">
+                <MonthSummary data={pizzaChartData} />
+              </div>
 
-            <div className="bg-white rounded-md shadow-md max-w-full">
-              <RankingList data={rankingData} />
+              <div className="bg-white rounded-md shadow-md max-w-full">
+                <RankingList data={rankingData} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

@@ -2,26 +2,40 @@ import StatusBadge from "@/modules/bets/components/StatusBadge";
 // icons
 import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineExport } from "react-icons/ai";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import toast from "react-hot-toast";
 
-export const getCardSchema = (
-  handleStatusToggle,
-  handleDeleteClick,
-  nWatsapp,
-  onEdit,
-  onDelete,
-) => [
+
+export const getCardSchema = (setSelectedTicket) => [
   {
-    type: "normal",
-    label: "# Bilhete",
-    key: "id",
-    className: "justify-between ",
+    type: "group",
+    label: "",
+    className: "",
+
+    fields: [
+      {
+        key: "avatar_url",
+        render: (value) => (
+          <div className="w-10 h-10 rounded-full overflow-hidden">
+            <img
+              src={value}
+              className=" object-cover w-full  h-full rounded-full   "
+            />
+          </div>
+        ),
+      },
+      {
+        key: "name",
+        className: "px-4 w-full font-semibold   text-[0.8rem]",
+      },
+    ],
   },
 
   {
     type: "normal",
-    label: "Apostador (a)",
-    key: "name",
-    className: " flex-col items-start  ",
+    label: "# Bilhete",
+    key: "ticket_number",
+    className: "justify-between ",
   },
 
   {
@@ -48,7 +62,7 @@ export const getCardSchema = (
   {
     type: "normal",
     label: "Valor",
-    key: "valor",
+    key: "total_value",
     className: "justify-between ",
   },
 
@@ -66,6 +80,15 @@ export const getCardSchema = (
     className: "flex justify-center items-center gap-2",
     actions: [
       {
+        icon: FaMoneyBillTrendUp,
+        onClick: (row) => {
+          (toast("💳 Em desenvolvimento"), console.log(row));
+        },
+        className:
+          "text-[1.3rem] text-zinc-950 hover:bg-zinc-100  text-blue-800! cursor-pointer",
+      },
+
+      {
         icon: FaWhatsapp,
         onClick: (row) =>
           window.open(
@@ -78,7 +101,7 @@ export const getCardSchema = (
 
       {
         icon: AiOutlineExport,
-        onClick: (row) => console.log("Exportar:", row),
+        onClick: (row) => setSelectedTicket(row),
         className:
           "text-[1.3rem] text-zinc-950 hover:bg-blue-100 cursor-pointer",
       },

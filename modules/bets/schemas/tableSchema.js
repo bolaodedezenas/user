@@ -3,18 +3,22 @@ import StatusBadge from "@/modules/bets/components/StatusBadge";
 // icons
 import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineExport } from "react-icons/ai";
+import { IoPerson } from "react-icons/io5";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 
-export const getTableSchema = (
-  handleStatusToggle,
-  handleDeleteClick,
-  nWatsapp,
-  onEdit,
-  onDelete,
-) => [
+import toast from "react-hot-toast";
+
+
+export const getTableSchema = (setSelectedTicket) => [
   {
-    label: "# Bilhete",
-    key: "id",
-    className: " w-20   flex items-center justify-center ",
+    label: <IoPerson size={20} />,
+    key: "avatar_url",
+    className: " justify-center w-12 ",
+    render: (value) => (
+      <div>
+        <img src={value} className=" w-12 h-12 rounded-full object-cover" />
+      </div>
+    ),
   },
 
   {
@@ -24,9 +28,15 @@ export const getTableSchema = (
   },
 
   {
+    label: "# Bilhete",
+    key: "ticket_number",
+    className: " w-20   flex items-center justify-center ",
+  },
+
+  {
     label: "Telefone",
     key: "phone",
-    className: "  w-30   flex items-center justify-center ",
+    className: "  w-34   flex items-center justify-center ",
   },
 
   {
@@ -43,7 +53,7 @@ export const getTableSchema = (
 
   {
     label: "Valor",
-    key: "valor",
+    key: "total_value",
     className: "  w-30   flex  items-center justify-center ",
   },
 
@@ -60,6 +70,13 @@ export const getTableSchema = (
     className: " w-30   flex justify-center items-center gap-2",
     actions: [
       {
+        icon: FaMoneyBillTrendUp,
+        onClick: (row) => {toast("💳 Em desenvolvimento"), console.log(row)} ,
+        className:
+          "text-[1.3rem] text-zinc-950 hover:bg-zinc-100  text-blue-800! cursor-pointer",
+      },
+
+      {
         icon: FaWhatsapp,
         onClick: (row) =>
           window.open(
@@ -72,7 +89,7 @@ export const getTableSchema = (
 
       {
         icon: AiOutlineExport,
-        onClick: (row) => console.log("Exportar:", row),
+        onClick: (row) => setSelectedTicket(row),
         className:
           "text-[1.4rem] text-zinc-800 hover:bg-blue-100 cursor-pointer",
       },

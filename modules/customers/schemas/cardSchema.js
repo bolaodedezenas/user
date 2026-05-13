@@ -3,7 +3,9 @@ import ToggleSwitch from "@/components/ToggleSwitch";
 // icons
 import { FaWhatsapp, FaEdit, FaTrashAlt } from "react-icons/fa";
 
-export const getCardSchema = (handleStatusToggle, handleDeleteClick, onEdit) => [
+export const getCardSchema = (
+  handleStatusToggle, handleDeleteClick, onEdit
+) => [
   {
     type: "group",
     label: "",
